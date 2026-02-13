@@ -1,0 +1,184 @@
+@page "/global-config"
+@using MediatR
+@using OcelotUI.Application.GlobalConfig.Queries.GetGlobalConfig
+@using OcelotUI.Application.GlobalConfig.Commands.UpdateGlobalConfig
+@using OcelotUI.Domain.Entities
+@using OcelotUI.Web.Components.Shared
+@inject IMediator Mediator
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<SharedResource> L
+
+<MudText Typo="Typo.h5" Class="mb-4">@L["GlobalConfig_Title"]</MudText>
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+}
+else
+{
+    <EditForm Model="_config" OnValidSubmit="Save">
+        <MudStack Spacing="4">
+            @* Toolbar *@
+            <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2">
+                <MudButton Variant="Variant.Outlined"
+                           OnClick="Cancel">
+                    @L["Btn_Cancel"]
+                </MudButton>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           ButtonType="ButtonType.Submit"
+                           Disabled="_saving">
+                    @(_saving ? L["Saving"] : L["Btn_Save"])
+                </MudButton>
+            </MudStack>
+
+            @* Basic Settings *@
+            <MudPaper Class="pa-4" Elevation="1">
+                <MudText Typo="Typo.h6" Class="mb-3">@L["GlobalConfig_Basic"]</MudText>
+                <MudStack Spacing="3">
+                    <MudTextField T="string"
+                                  Label="@L["GlobalConfig_BaseUrl"]"
+                                  @bind-Value="_config.BaseUrl"
+                                  Variant="Variant.Outlined"
+                                  Placeholder="https://my-gateway.com" />
+                    <MudGrid>
+                        <MudItem xs="3">
+                            <MudSelect T="string"
+                                       Label="@L["GlobalConfig_DownstreamScheme"]"
+                                       Value="@(_config.DownstreamScheme ?? string.Empty)"
+                                       ValueChanged="v => _config.DownstreamScheme = string.IsNullOrEmpty(v) ? null : v"
+                                       Variant="Variant.Outlined">
+                                <MudSelectItem T="string" Value="@string.Empty">—</MudSelectItem>
+                                <MudSelectItem T="string" Value="@("https")">https</MudSelectItem>
+                                <MudSelectItem T="string" Value="@("http")">http</MudSelectItem>
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="3">
+                            <MudTextField T="string"
+                                          Label="@L["GlobalConfig_HttpVersion"]"
+                                          @bind-Value="_config.DownstreamHttpVersion"
+                                          Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem xs="3">
+                            <MudTextField T="string"
+                                          Label="@L["GlobalConfig_HttpVersionPolicy"]"
+                                          @bind-Value="_config.DownstreamHttpVersionPolicy"
+                                          Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem xs="3">
+                            <MudNumericField T="int?"
+                                             Label="@L["GlobalConfig_Timeout"]"
+                                             @bind-Value="_config.Timeout"
+                                             Variant="Variant.Outlined" />
+                        </MudItem>
+                    </MudGrid>
+                    <MudTextField T="string"
+                                  Label="@L["GlobalConfig_RequestIdKey"]"
+                                  @bind-Value="_config.RequestIdKey"
+                                  Variant="Variant.Outlined" />
+                </MudStack>
+            </MudPaper>
+
+            @* Sub-object Sections *@
+            <MudExpansionPanels>
+                <MudExpansionPanel Text="@L["GlobalConfig_ServiceDiscovery"]">
+                    <ServiceDiscoveryProviderEditor @bind-Value="_config.ServiceDiscoveryProvider" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_AuthenticationOptions"]">
+                    <AuthenticationOptionsEditor @bind-Value="_config.AuthenticationOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_RateLimitOptions"]">
+                    <RateLimitOptionsEditor @bind-Value="_config.RateLimitOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_LoadBalancerOptions"]">
+                    <LoadBalancerOptionsEditor @bind-Value="_config.LoadBalancerOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_QoSOptions"]">
+                    <QoSOptionsEditor @bind-Value="_config.QoSOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_CacheOptions"]">
+                    <CacheOptionsEditor @bind-Value="_config.CacheOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_HttpHandlerOptions"]">
+                    <HttpHandlerOptionsEditor @bind-Value="_config.HttpHandlerOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_SecurityOptions"]">
+                    <SecurityOptionsEditor @bind-Value="_config.SecurityOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["GlobalConfig_MetadataOptions"]">
+                    <MetadataOptionsEditor @bind-Value="_config.MetadataOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["GlobalConfig_UpstreamHeaderTransform"]">
+                    <DictionaryEditor @bind-Items="_config.UpstreamHeaderTransform"
+                                      Label="@L["GlobalConfig_UpstreamHeaderTransform"]"
+                                      KeyPlaceholder="Header"
+                                      ValuePlaceholder="Transform" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["GlobalConfig_DownstreamHeaderTransform"]">
+                    <DictionaryEditor @bind-Items="_config.DownstreamHeaderTransform"
+                                      Label="@L["GlobalConfig_DownstreamHeaderTransform"]"
+                                      KeyPlaceholder="Header"
+                                      ValuePlaceholder="Transform" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_Metadata"]">
+                    <DictionaryEditor @bind-Items="_config.Metadata"
+                                      Label="@L["RouteEdit_Metadata"]"
+                                      KeyPlaceholder="Key"
+                                      ValuePlaceholder="Value" />
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        </MudStack>
+    </EditForm>
+}
+
+@code {
+    private OcelotGlobalConfiguration _config = new();
+    private bool _loading = true;
+    private bool _saving;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Mediator.Send(new GetGlobalConfigQuery());
+        if (result.IsSuccess && result.Value is not null)
+        {
+            _config = result.Value.Config;
+        }
+        _loading = false;
+    }
+
+    private async Task Save()
+    {
+        _saving = true;
+        try
+        {
+            var result = await Mediator.Send(
+                new UpdateGlobalConfigCommand(new GlobalConfigDto { Config = _config }));
+            if (result.IsSuccess)
+            {
+                Snackbar.Add(L["GlobalConfig_SaveSuccess"], Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add(string.Format(L["RouteEdit_Failed"], result.Error), Severity.Error);
+            }
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+
+    private void Cancel() => Navigation.NavigateTo("/routes");
+}

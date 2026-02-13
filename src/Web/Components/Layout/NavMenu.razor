@@ -1,0 +1,29 @@
+@inject IStringLocalizer<SharedResource> L
+
+<MudNavMenu>
+    <MudNavLink Href="/routes"
+                Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.AltRoute">
+        @L["Nav_Routes"]
+    </MudNavLink>
+    <MudNavLink Href="/global-config"
+                Match="NavLinkMatch.All"
+                Icon="@Icons.Material.Filled.Settings">
+        @L["Nav_GlobalConfig"]
+    </MudNavLink>
+    <MudNavLink Href="/aggregates"
+                Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.MergeType">
+        @L["Nav_Aggregates"]
+    </MudNavLink>
+    <MudNavLink Href="/dynamic-routes"
+                Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.DynamicFeed">
+        @L["Nav_DynamicRoutes"]
+    </MudNavLink>
+    <MudNavLink Href="/guide"
+                Match="NavLinkMatch.All"
+                Icon="@Icons.Material.Filled.MenuBook">
+        @L["Nav_Guide"]
+    </MudNavLink>
+</MudNavMenu>

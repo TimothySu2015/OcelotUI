@@ -1,0 +1,62 @@
+@using OcelotUI.Domain.Entities
+@inject IStringLocalizer<SharedResource> L
+
+<MudPaper Class="pa-3" Outlined="true">
+    <MudText Typo="Typo.caption" Class="mb-2">@L["Aggregate_RouteKeysConfig"]</MudText>
+
+    @if (Items is not null && Items.Count > 0)
+    {
+        @for (var i = 0; i < Items.Count; i++)
+        {
+            var index = i;
+            <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-2" Spacing="2">
+                <MudTextField T="string"
+                              Label="@L["Aggregate_RouteKey"]"
+                              @bind-Value="Items[index].RouteKey"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense" />
+                <MudTextField T="string"
+                              Label="@L["Aggregate_JsonPath"]"
+                              @bind-Value="Items[index].JsonPath"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense" />
+                <MudTextField T="string"
+                              Label="@L["Aggregate_Parameter"]"
+                              @bind-Value="Items[index].Parameter"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Size="Size.Small"
+                               OnClick="() => RemoveItem(index)" />
+            </MudStack>
+        }
+    }
+
+    <MudButton Variant="Variant.Text"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               OnClick="AddItem"
+               Size="Size.Small">
+        @L["Btn_Add"]
+    </MudButton>
+</MudPaper>
+
+@code {
+    [Parameter] public List<AggregateRouteConfig>? Items { get; set; }
+    [Parameter] public EventCallback<List<AggregateRouteConfig>?> ItemsChanged { get; set; }
+
+    private async Task AddItem()
+    {
+        Items ??= [];
+        Items.Add(new AggregateRouteConfig());
+        await ItemsChanged.InvokeAsync(Items);
+    }
+
+    private async Task RemoveItem(int index)
+    {
+        if (Items is null) return;
+        Items.RemoveAt(index);
+        await ItemsChanged.InvokeAsync(Items.Count == 0 ? null : Items);
+    }
+}

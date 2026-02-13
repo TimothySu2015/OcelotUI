@@ -1,0 +1,64 @@
+@inject IStringLocalizer<SharedResource> L
+
+<MudPaper Class="pa-3" Outlined="true">
+    <MudText Typo="Typo.caption" Class="mb-2">@Label</MudText>
+
+    @if (Items is not null && Items.Count > 0)
+    {
+        @for (var i = 0; i < Items.Count; i++)
+        {
+            var index = i;
+            <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-1" Spacing="1">
+                <MudText Typo="Typo.body2" Class="flex-grow-1">@Items[index]</MudText>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Size="Size.Small"
+                               OnClick="() => RemoveItem(index)" />
+            </MudStack>
+        }
+    }
+    else
+    {
+        <MudText Typo="Typo.body2" Class="mud-text-secondary mb-2">@L["ListEditor_Empty"]</MudText>
+    }
+
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+        <MudTextField T="string"
+                      @bind-Value="_newItem"
+                      Placeholder="@Placeholder"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      Class="flex-grow-1" />
+        <MudIconButton Icon="@Icons.Material.Filled.Add"
+                       Color="Color.Primary"
+                       Size="Size.Small"
+                       Disabled="@string.IsNullOrWhiteSpace(_newItem)"
+                       OnClick="AddItem" />
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter] public List<string>? Items { get; set; }
+    [Parameter] public EventCallback<List<string>?> ItemsChanged { get; set; }
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public string? Placeholder { get; set; }
+
+    private string? _newItem;
+
+    private async Task AddItem()
+    {
+        if (string.IsNullOrWhiteSpace(_newItem)) return;
+
+        Items ??= [];
+        Items.Add(_newItem.Trim());
+        _newItem = null;
+        await ItemsChanged.InvokeAsync(Items);
+    }
+
+    private async Task RemoveItem(int index)
+    {
+        if (Items is null) return;
+        Items.RemoveAt(index);
+        await ItemsChanged.InvokeAsync(Items.Count == 0 ? null : Items);
+    }
+}

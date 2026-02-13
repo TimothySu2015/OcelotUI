@@ -1,0 +1,67 @@
+@using OcelotUI.Domain.Entities
+@inject IStringLocalizer<SharedResource> L
+
+<MudStack Spacing="3" Class="pa-2">
+    <MudGrid>
+        <MudItem xs="6">
+            <MudNumericField T="int?"
+                             Label="@L["QoS_BreakDuration"]"
+                             Value="Value?.BreakDuration"
+                             ValueChanged="v => Update(o => o.BreakDuration = v)"
+                             Variant="Variant.Outlined"
+                             HelperText="ms" />
+        </MudItem>
+        <MudItem xs="6">
+            <MudNumericField T="int?"
+                             Label="@L["QoS_MinimumThroughput"]"
+                             Value="Value?.MinimumThroughput"
+                             ValueChanged="v => Update(o => o.MinimumThroughput = v)"
+                             Variant="Variant.Outlined"
+                             Min="2" />
+        </MudItem>
+    </MudGrid>
+    <MudGrid>
+        <MudItem xs="4">
+            <MudNumericField T="double?"
+                             Label="@L["QoS_FailureRatio"]"
+                             Value="Value?.FailureRatio"
+                             ValueChanged="v => Update(o => o.FailureRatio = v)"
+                             Variant="Variant.Outlined"
+                             Min="0.0" Max="1.0" Step="0.01" />
+        </MudItem>
+        <MudItem xs="4">
+            <MudNumericField T="int?"
+                             Label="@L["QoS_SamplingDuration"]"
+                             Value="Value?.SamplingDuration"
+                             ValueChanged="v => Update(o => o.SamplingDuration = v)"
+                             Variant="Variant.Outlined"
+                             HelperText="ms" />
+        </MudItem>
+        <MudItem xs="4">
+            <MudNumericField T="int?"
+                             Label="@L["QoS_Timeout"]"
+                             Value="Value?.Timeout"
+                             ValueChanged="v => Update(o => o.Timeout = v)"
+                             Variant="Variant.Outlined"
+                             HelperText="ms" />
+        </MudItem>
+    </MudGrid>
+</MudStack>
+
+@code {
+    [Parameter] public QoSOptions? Value { get; set; }
+    [Parameter] public EventCallback<QoSOptions?> ValueChanged { get; set; }
+
+    private void Update(Action<QoSOptions> apply)
+    {
+        var v = Value ?? new QoSOptions();
+        apply(v);
+        var result = IsEmpty(v) ? null : v;
+        ValueChanged.InvokeAsync(result);
+    }
+
+    private static bool IsEmpty(QoSOptions o) =>
+        o.BreakDuration is null && o.MinimumThroughput is null
+        && o.FailureRatio is null && o.SamplingDuration is null
+        && o.Timeout is null && o.ExtensionData is null;
+}

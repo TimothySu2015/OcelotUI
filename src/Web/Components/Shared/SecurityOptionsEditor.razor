@@ -1,0 +1,48 @@
+@using OcelotUI.Domain.Entities
+@inject IStringLocalizer<SharedResource> L
+
+<MudStack Spacing="3" Class="pa-2">
+    <StringListEditor @bind-Items="_ipAllowed"
+                      Label="@L["Security_IPAllowedList"]"
+                      Placeholder="e.g. 192.168.1.0/24" />
+
+    <StringListEditor @bind-Items="_ipBlocked"
+                      Label="@L["Security_IPBlockedList"]"
+                      Placeholder="e.g. 10.0.0.0/8" />
+
+    <MudCheckBox T="bool?"
+                 Label="@L["Security_ExcludeAllowedFromBlocked"]"
+                 Value="Value?.ExcludeAllowedFromBlocked"
+                 ValueChanged="v => Update(o => o.ExcludeAllowedFromBlocked = v)" />
+</MudStack>
+
+@code {
+    [Parameter] public SecurityOptions? Value { get; set; }
+    [Parameter] public EventCallback<SecurityOptions?> ValueChanged { get; set; }
+
+    private List<string>? _ipAllowed
+    {
+        get => Value?.IPAllowedList;
+        set => Update(o => o.IPAllowedList = value);
+    }
+
+    private List<string>? _ipBlocked
+    {
+        get => Value?.IPBlockedList;
+        set => Update(o => o.IPBlockedList = value);
+    }
+
+    private void Update(Action<SecurityOptions> apply)
+    {
+        var v = Value ?? new SecurityOptions();
+        apply(v);
+        var result = IsEmpty(v) ? null : v;
+        ValueChanged.InvokeAsync(result);
+    }
+
+    private static bool IsEmpty(SecurityOptions o) =>
+        (o.IPAllowedList is null || o.IPAllowedList.Count == 0)
+        && (o.IPBlockedList is null || o.IPBlockedList.Count == 0)
+        && o.ExcludeAllowedFromBlocked is null
+        && o.ExtensionData is null;
+}

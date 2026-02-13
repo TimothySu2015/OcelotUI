@@ -1,0 +1,140 @@
+@page "/aggregates/new"
+@page "/aggregates/edit/{Index:int}"
+@using MediatR
+@using OcelotUI.Application.Aggregates.Queries.GetAggregateByIndex
+@using OcelotUI.Application.Aggregates.Commands.AddAggregate
+@using OcelotUI.Application.Aggregates.Commands.UpdateAggregate
+@using OcelotUI.Domain.Entities
+@using OcelotUI.Web.Components.Shared
+@inject IMediator Mediator
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<SharedResource> L
+
+<MudText Typo="Typo.h5" Class="mb-4">
+    @(IsNew ? L["Aggregate_NewTitle"] : string.Format(L["Aggregate_EditTitle"], Index))
+</MudText>
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+}
+else
+{
+    <EditForm Model="_aggregate" OnValidSubmit="Save">
+        <MudStack Spacing="4">
+            <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2">
+                <MudButton Variant="Variant.Outlined" OnClick="Cancel">@L["Btn_Cancel"]</MudButton>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           ButtonType="ButtonType.Submit"
+                           Disabled="_saving">
+                    @(_saving ? L["Saving"] : L["Btn_Save"])
+                </MudButton>
+            </MudStack>
+
+            <MudPaper Class="pa-4" Elevation="1">
+                <MudStack Spacing="3">
+                    <MudTextField T="string"
+                                  Label="@L["Aggregate_UpstreamPath"]"
+                                  @bind-Value="_aggregate.UpstreamPathTemplate"
+                                  Required="true"
+                                  RequiredError="@string.Format(L["RouteEdit_Required"], L["Aggregate_UpstreamPath"])"
+                                  Variant="Variant.Outlined"
+                                  Placeholder="/api/aggregated" />
+
+                    <StringListEditor @bind-Items="_aggregate.RouteKeys"
+                                      Label="@L["Aggregate_RouteKeys"]"
+                                      Placeholder="e.g. route-key-1" />
+
+                    <MudTextField T="string"
+                                  Label="@L["Aggregate_UpstreamHost"]"
+                                  @bind-Value="_aggregate.UpstreamHost"
+                                  Variant="Variant.Outlined" />
+
+                    <MudCheckBox T="bool?"
+                                 Label="@L["RouteEdit_CaseSensitive"]"
+                                 @bind-Value="_aggregate.RouteIsCaseSensitive" />
+
+                    <MudTextField T="string"
+                                  Label="@L["Aggregate_Aggregator"]"
+                                  @bind-Value="_aggregate.Aggregator"
+                                  Variant="Variant.Outlined" />
+                </MudStack>
+            </MudPaper>
+
+            <MudExpansionPanels>
+                <MudExpansionPanel Text="@L["Aggregate_RouteKeysConfig"]">
+                    <AggregateRouteConfigEditor @bind-Items="_aggregate.RouteKeysConfig" />
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        </MudStack>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int? Index { get; set; }
+
+    private bool IsNew => Index is null;
+    private OcelotAggregate _aggregate = new();
+    private bool _loading = true;
+    private bool _saving;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!IsNew)
+        {
+            var result = await Mediator.Send(new GetAggregateByIndexQuery(Index!.Value));
+            if (result.IsSuccess && result.Value is not null)
+            {
+                _aggregate = result.Value.Aggregate;
+            }
+            else
+            {
+                Snackbar.Add(L["Aggregate_NotFound"], Severity.Error);
+                Navigation.NavigateTo("/aggregates");
+                return;
+            }
+        }
+        _loading = false;
+    }
+
+    private async Task Save()
+    {
+        _saving = true;
+        try
+        {
+            var dto = new AggregateDetailDto { Index = Index, Aggregate = _aggregate };
+
+            if (IsNew)
+            {
+                var result = await Mediator.Send(new AddAggregateCommand(dto));
+                if (result.IsSuccess)
+                {
+                    Snackbar.Add(L["Aggregate_SaveSuccess"], Severity.Success);
+                    Navigation.NavigateTo("/aggregates");
+                }
+                else
+                {
+                    Snackbar.Add(string.Format(L["RouteEdit_Failed"], result.Error), Severity.Error);
+                }
+            }
+            else
+            {
+                var result = await Mediator.Send(new UpdateAggregateCommand(Index!.Value, dto));
+                if (result.IsSuccess)
+                {
+                    Snackbar.Add(L["Aggregate_SaveSuccess"], Severity.Success);
+                    Navigation.NavigateTo("/aggregates");
+                }
+                else
+                {
+                    Snackbar.Add(string.Format(L["RouteEdit_Failed"], result.Error), Severity.Error);
+                }
+            }
+        }
+        finally { _saving = false; }
+    }
+
+    private void Cancel() => Navigation.NavigateTo("/aggregates");
+}

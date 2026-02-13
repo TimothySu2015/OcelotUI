@@ -1,0 +1,24 @@
+{
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/api/health",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/health",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "backend-service",
+          "Port": 443
+        }
+      ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "HttpHandlerOptions": {
+      "UseCookieContainer": true,
+      "UseTracing": true
+    }
+  }
+}

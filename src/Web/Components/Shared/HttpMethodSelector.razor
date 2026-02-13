@@ -1,0 +1,39 @@
+@inject IStringLocalizer<SharedResource> L
+
+<MudPaper Class="pa-2" Outlined="true">
+    <MudText Typo="Typo.caption" Class="mb-1">@L["RouteEdit_HttpMethods"]</MudText>
+    <MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap">
+        @foreach (var method in _allMethods)
+        {
+            var isSelected = SelectedMethods.Contains(method);
+            <MudChip T="string"
+                     Value="@method"
+                     Color="@(isSelected ? Color.Primary : Color.Default)"
+                     Variant="@(isSelected ? Variant.Filled : Variant.Outlined)"
+                     OnClick="() => ToggleMethod(method)">
+                @method
+            </MudChip>
+        }
+    </MudStack>
+</MudPaper>
+
+@code {
+    private static readonly string[] _allMethods =
+        ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"];
+
+    [Parameter]
+    public List<string> SelectedMethods { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<List<string>> SelectedMethodsChanged { get; set; }
+
+    private async Task ToggleMethod(string method)
+    {
+        if (SelectedMethods.Contains(method))
+            SelectedMethods.Remove(method);
+        else
+            SelectedMethods.Add(method);
+
+        await SelectedMethodsChanged.InvokeAsync(SelectedMethods);
+    }
+}

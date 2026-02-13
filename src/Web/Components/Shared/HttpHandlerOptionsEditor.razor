@@ -1,0 +1,69 @@
+@using OcelotUI.Domain.Entities
+@inject IStringLocalizer<SharedResource> L
+
+<MudStack Spacing="3" Class="pa-2">
+    <MudGrid>
+        <MudItem xs="6">
+            <MudCheckBox T="bool?"
+                         Label="@L["HttpHandler_AllowAutoRedirect"]"
+                         Value="Value?.AllowAutoRedirect"
+                         ValueChanged="v => Update(o => o.AllowAutoRedirect = v)" />
+        </MudItem>
+        <MudItem xs="6">
+            <MudCheckBox T="bool?"
+                         Label="@L["HttpHandler_UseCookieContainer"]"
+                         Value="Value?.UseCookieContainer"
+                         ValueChanged="v => Update(o => o.UseCookieContainer = v)" />
+        </MudItem>
+    </MudGrid>
+    <MudGrid>
+        <MudItem xs="6">
+            <MudCheckBox T="bool?"
+                         Label="@L["HttpHandler_UseProxy"]"
+                         Value="Value?.UseProxy"
+                         ValueChanged="v => Update(o => o.UseProxy = v)" />
+        </MudItem>
+        <MudItem xs="6">
+            <MudCheckBox T="bool?"
+                         Label="@L["HttpHandler_UseTracing"]"
+                         Value="Value?.UseTracing"
+                         ValueChanged="v => Update(o => o.UseTracing = v)" />
+        </MudItem>
+    </MudGrid>
+    <MudGrid>
+        <MudItem xs="6">
+            <MudNumericField T="int?"
+                             Label="@L["HttpHandler_MaxConnections"]"
+                             Value="Value?.MaxConnectionsPerServer"
+                             ValueChanged="v => Update(o => o.MaxConnectionsPerServer = v)"
+                             Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem xs="6">
+            <MudNumericField T="int?"
+                             Label="@L["HttpHandler_PooledLifetime"]"
+                             Value="Value?.PooledConnectionLifetimeSeconds"
+                             ValueChanged="v => Update(o => o.PooledConnectionLifetimeSeconds = v)"
+                             Variant="Variant.Outlined"
+                             HelperText="sec" />
+        </MudItem>
+    </MudGrid>
+</MudStack>
+
+@code {
+    [Parameter] public HttpHandlerOptions? Value { get; set; }
+    [Parameter] public EventCallback<HttpHandlerOptions?> ValueChanged { get; set; }
+
+    private void Update(Action<HttpHandlerOptions> apply)
+    {
+        var v = Value ?? new HttpHandlerOptions();
+        apply(v);
+        var result = IsEmpty(v) ? null : v;
+        ValueChanged.InvokeAsync(result);
+    }
+
+    private static bool IsEmpty(HttpHandlerOptions o) =>
+        o.AllowAutoRedirect is null && o.UseCookieContainer is null
+        && o.UseProxy is null && o.UseTracing is null
+        && o.MaxConnectionsPerServer is null && o.PooledConnectionLifetimeSeconds is null
+        && o.ExtensionData is null;
+}

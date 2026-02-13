@@ -1,0 +1,57 @@
+@using OcelotUI.Domain.Entities
+@inject IStringLocalizer<SharedResource> L
+
+<MudStack Spacing="3" Class="pa-2">
+    <MudCheckBox T="bool?"
+                 Label="@L["Auth_AllowAnonymous"]"
+                 Value="Value?.AllowAnonymous"
+                 ValueChanged="v => Update(o => o.AllowAnonymous = v)" />
+
+    <StringListEditor @bind-Items="_providerKeys"
+                      Label="@L["Auth_ProviderKeys"]"
+                      Placeholder="e.g. Bearer" />
+
+    <MudTextField T="string"
+                  Label="@L["Auth_ProviderKey"]"
+                  Value="@(Value?.AuthenticationProviderKey)"
+                  ValueChanged="v => Update(o => o.AuthenticationProviderKey = string.IsNullOrWhiteSpace(v) ? null : v)"
+                  Variant="Variant.Outlined"
+                  HelperText="@L["Auth_ProviderKey_Deprecated"]"
+                  Disabled="true" />
+
+    <StringListEditor @bind-Items="_allowedScopes"
+                      Label="@L["Auth_AllowedScopes"]"
+                      Placeholder="e.g. api.read" />
+</MudStack>
+
+@code {
+    [Parameter] public AuthenticationOptions? Value { get; set; }
+    [Parameter] public EventCallback<AuthenticationOptions?> ValueChanged { get; set; }
+
+    private List<string>? _providerKeys
+    {
+        get => Value?.AuthenticationProviderKeys;
+        set => Update(o => o.AuthenticationProviderKeys = value);
+    }
+
+    private List<string>? _allowedScopes
+    {
+        get => Value?.AllowedScopes;
+        set => Update(o => o.AllowedScopes = value);
+    }
+
+    private void Update(Action<AuthenticationOptions> apply)
+    {
+        var v = Value ?? new AuthenticationOptions();
+        apply(v);
+        var result = IsEmpty(v) ? null : v;
+        ValueChanged.InvokeAsync(result);
+    }
+
+    private static bool IsEmpty(AuthenticationOptions o) =>
+        o.AllowAnonymous is null
+        && (o.AllowedScopes is null || o.AllowedScopes.Count == 0)
+        && string.IsNullOrWhiteSpace(o.AuthenticationProviderKey)
+        && (o.AuthenticationProviderKeys is null || o.AuthenticationProviderKeys.Count == 0)
+        && o.ExtensionData is null;
+}

@@ -1,0 +1,176 @@
+@page "/dynamic-routes/new"
+@page "/dynamic-routes/edit/{Index:int}"
+@using MediatR
+@using OcelotUI.Application.DynamicRoutes.Queries.GetDynamicRouteByIndex
+@using OcelotUI.Application.DynamicRoutes.Commands.AddDynamicRoute
+@using OcelotUI.Application.DynamicRoutes.Commands.UpdateDynamicRoute
+@using OcelotUI.Domain.Entities
+@using OcelotUI.Web.Components.Shared
+@inject IMediator Mediator
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<SharedResource> L
+
+<MudText Typo="Typo.h5" Class="mb-4">
+    @(IsNew ? L["DynamicRoute_NewTitle"] : string.Format(L["DynamicRoute_EditTitle"], Index))
+</MudText>
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+}
+else
+{
+    <EditForm Model="_dynamicRoute" OnValidSubmit="Save">
+        <MudStack Spacing="4">
+            <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2">
+                <MudButton Variant="Variant.Outlined" OnClick="Cancel">@L["Btn_Cancel"]</MudButton>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           ButtonType="ButtonType.Submit"
+                           Disabled="_saving">
+                    @(_saving ? L["Saving"] : L["Btn_Save"])
+                </MudButton>
+            </MudStack>
+
+            <MudPaper Class="pa-4" Elevation="1">
+                <MudStack Spacing="3">
+                    <MudGrid>
+                        <MudItem xs="6">
+                            <MudTextField T="string"
+                                          Label="@L["DynamicRoute_ServiceName"]"
+                                          @bind-Value="_dynamicRoute.ServiceName"
+                                          Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudTextField T="string"
+                                          Label="@L["DynamicRoute_ServiceNamespace"]"
+                                          @bind-Value="_dynamicRoute.ServiceNamespace"
+                                          Variant="Variant.Outlined" />
+                        </MudItem>
+                    </MudGrid>
+                    <MudGrid>
+                        <MudItem xs="4">
+                            <MudTextField T="string"
+                                          Label="@L["GlobalConfig_HttpVersion"]"
+                                          @bind-Value="_dynamicRoute.DownstreamHttpVersion"
+                                          Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudTextField T="string"
+                                          Label="@L["GlobalConfig_HttpVersionPolicy"]"
+                                          @bind-Value="_dynamicRoute.DownstreamHttpVersionPolicy"
+                                          Variant="Variant.Outlined" />
+                        </MudItem>
+                        <MudItem xs="4">
+                            <MudNumericField T="int?"
+                                             Label="@L["RouteEdit_Timeout"]"
+                                             @bind-Value="_dynamicRoute.Timeout"
+                                             Variant="Variant.Outlined" />
+                        </MudItem>
+                    </MudGrid>
+                </MudStack>
+            </MudPaper>
+
+            <MudExpansionPanels>
+                <MudExpansionPanel Text="@L["RouteEdit_AuthenticationOptions"]">
+                    <AuthenticationOptionsEditor @bind-Value="_dynamicRoute.AuthenticationOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_RateLimitOptions"]">
+                    <RateLimitOptionsEditor @bind-Value="_dynamicRoute.RateLimitOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_LoadBalancerOptions"]">
+                    <LoadBalancerOptionsEditor @bind-Value="_dynamicRoute.LoadBalancerOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_QoSOptions"]">
+                    <QoSOptionsEditor @bind-Value="_dynamicRoute.QoSOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_CacheOptions"]">
+                    <CacheOptionsEditor @bind-Value="_dynamicRoute.CacheOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_HttpHandlerOptions"]">
+                    <HttpHandlerOptionsEditor @bind-Value="_dynamicRoute.HttpHandlerOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_Metadata"]">
+                    <DictionaryEditor @bind-Items="_dynamicRoute.Metadata"
+                                      Label="@L["RouteEdit_Metadata"]"
+                                      KeyPlaceholder="Key"
+                                      ValuePlaceholder="Value" />
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        </MudStack>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int? Index { get; set; }
+
+    private bool IsNew => Index is null;
+    private OcelotDynamicRoute _dynamicRoute = new();
+    private bool _loading = true;
+    private bool _saving;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!IsNew)
+        {
+            var result = await Mediator.Send(new GetDynamicRouteByIndexQuery(Index!.Value));
+            if (result.IsSuccess && result.Value is not null)
+            {
+                _dynamicRoute = result.Value.DynamicRoute;
+            }
+            else
+            {
+                Snackbar.Add(L["DynamicRoute_NotFound"], Severity.Error);
+                Navigation.NavigateTo("/dynamic-routes");
+                return;
+            }
+        }
+        _loading = false;
+    }
+
+    private async Task Save()
+    {
+        _saving = true;
+        try
+        {
+            var dto = new DynamicRouteDetailDto { Index = Index, DynamicRoute = _dynamicRoute };
+
+            if (IsNew)
+            {
+                var result = await Mediator.Send(new AddDynamicRouteCommand(dto));
+                if (result.IsSuccess)
+                {
+                    Snackbar.Add(L["DynamicRoute_SaveSuccess"], Severity.Success);
+                    Navigation.NavigateTo("/dynamic-routes");
+                }
+                else
+                {
+                    Snackbar.Add(string.Format(L["RouteEdit_Failed"], result.Error), Severity.Error);
+                }
+            }
+            else
+            {
+                var result = await Mediator.Send(new UpdateDynamicRouteCommand(Index!.Value, dto));
+                if (result.IsSuccess)
+                {
+                    Snackbar.Add(L["DynamicRoute_SaveSuccess"], Severity.Success);
+                    Navigation.NavigateTo("/dynamic-routes");
+                }
+                else
+                {
+                    Snackbar.Add(string.Format(L["RouteEdit_Failed"], result.Error), Severity.Error);
+                }
+            }
+        }
+        finally { _saving = false; }
+    }
+
+    private void Cancel() => Navigation.NavigateTo("/dynamic-routes");
+}

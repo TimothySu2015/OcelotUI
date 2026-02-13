@@ -1,0 +1,105 @@
+@page "/aggregates"
+@using MediatR
+@using OcelotUI.Application.Aggregates.Queries.GetAllAggregates
+@using OcelotUI.Application.Aggregates.Commands.DeleteAggregate
+@inject IMediator Mediator
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<SharedResource> L
+
+<MudText Typo="Typo.h5" Class="mb-4">@L["Aggregate_Title"]</MudText>
+
+<MudStack Row="true" Justify="Justify.FlexEnd" Class="mb-4">
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               OnClick="@(() => Navigation.NavigateTo("/aggregates/new"))">
+        @L["Aggregate_Add"]
+    </MudButton>
+</MudStack>
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+}
+else if (_items is null)
+{
+    <MudAlert Severity="Severity.Error">@L["Aggregate_LoadFailed"]</MudAlert>
+}
+else
+{
+    <MudDataGrid T="AggregateListItemDto"
+                 Items="_items"
+                 Dense="true"
+                 Hover="true"
+                 Striped="true">
+        <Columns>
+            <PropertyColumn Property="x => x.Index" Title="#" />
+            <PropertyColumn Property="x => x.UpstreamPathTemplate" Title="@L["Aggregate_UpstreamPath"]" />
+            <TemplateColumn Title="@L["Aggregate_RouteKeys"]">
+                <CellTemplate>
+                    <MudText Typo="Typo.body2">@string.Join(", ", context.Item.RouteKeys)</MudText>
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.Aggregator" Title="@L["Aggregate_Aggregator"]" />
+            <TemplateColumn Title="@L["RouteList_Col_Actions"]" StickyRight="true">
+                <CellTemplate>
+                    <MudStack Row="true" Spacing="0">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Size="Size.Small"
+                                       Color="Color.Primary"
+                                       OnClick="@(() => Navigation.NavigateTo($"/aggregates/edit/{context.Item.Index}"))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Size="Size.Small"
+                                       Color="Color.Error"
+                                       OnClick="@(() => ConfirmDelete(context.Item))" />
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+}
+
+@code {
+    private List<AggregateListItemDto>? _items;
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync() => await Load();
+
+    private async Task Load()
+    {
+        _loading = true;
+        var result = await Mediator.Send(new GetAllAggregatesQuery());
+        _items = result.IsSuccess ? result.Value : null;
+        _loading = false;
+    }
+
+    private async Task ConfirmDelete(AggregateListItemDto item)
+    {
+        var parameters = new DialogParameters<MudMessageBox>
+        {
+            { x => x.MarkupMessage,
+              new MarkupString($"{L["Aggregate_DeleteConfirm"]} <b>{item.UpstreamPathTemplate}</b>?") },
+            { x => x.YesText, L["Btn_Delete"].Value },
+            { x => x.NoText, L["Btn_Cancel"].Value }
+        };
+
+        var dialog = await DialogService.ShowAsync<MudMessageBox>(
+            L["RouteList_ConfirmDeleteTitle"], parameters);
+        var dialogResult = await dialog.Result;
+
+        if (dialogResult?.Canceled != false) return;
+
+        var result = await Mediator.Send(new DeleteAggregateCommand(item.Index));
+        if (result.IsSuccess)
+        {
+            Snackbar.Add(L["Aggregate_DeleteSuccess"], Severity.Success);
+            await Load();
+        }
+        else
+        {
+            Snackbar.Add(string.Format(L["RouteEdit_Failed"], result.Error), Severity.Error);
+        }
+    }
+}

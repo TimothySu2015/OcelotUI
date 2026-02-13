@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- Common -->
+  <data name="AppTitle" xml:space="preserve"><value>OcelotUI - Configuration Editor</value></data>
+  <data name="Nav_Routes" xml:space="preserve"><value>Routes</value></data>
+  <data name="Nav_GlobalConfig" xml:space="preserve"><value>Global Config</value></data>
+  <data name="Nav_Aggregates" xml:space="preserve"><value>Aggregates</value></data>
+  <data name="Nav_DynamicRoutes" xml:space="preserve"><value>Dynamic Routes</value></data>
+  <data name="Nav_Guide" xml:space="preserve"><value>Guide</value></data>
+  <data name="Btn_Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Btn_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Btn_Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Btn_Add" xml:space="preserve"><value>Add</value></data>
+  <data name="Saving" xml:space="preserve"><value>Saving...</value></data>
+  <data name="Confirm" xml:space="preserve"><value>Confirm</value></data>
+
+  <!-- RouteList -->
+  <data name="RouteList_Title" xml:space="preserve"><value>Ocelot Routes</value></data>
+  <data name="RouteList_Search" xml:space="preserve"><value>Search by Upstream Path...</value></data>
+  <data name="RouteList_AddRoute" xml:space="preserve"><value>Add Route</value></data>
+  <data name="RouteList_Col_Upstream" xml:space="preserve"><value>Upstream</value></data>
+  <data name="RouteList_Col_Downstream" xml:space="preserve"><value>Downstream</value></data>
+  <data name="RouteList_Col_Key" xml:space="preserve"><value>Key</value></data>
+  <data name="RouteList_Col_Actions" xml:space="preserve"><value>Actions</value></data>
+  <data name="RouteList_DeleteConfirm" xml:space="preserve"><value>Are you sure you want to delete route</value></data>
+  <data name="RouteList_DeleteSuccess" xml:space="preserve"><value>Route deleted successfully.</value></data>
+  <data name="RouteList_LoadFailed" xml:space="preserve"><value>Failed to load routes.</value></data>
+  <data name="RouteList_ConfirmDeleteTitle" xml:space="preserve"><value>Confirm Delete</value></data>
+
+  <!-- RouteEdit -->
+  <data name="RouteEdit_NewTitle" xml:space="preserve"><value>New Route</value></data>
+  <data name="RouteEdit_EditTitle" xml:space="preserve"><value>Edit Route #{0}</value></data>
+  <data name="RouteEdit_Upstream" xml:space="preserve"><value>Upstream</value></data>
+  <data name="RouteEdit_Downstream" xml:space="preserve"><value>Downstream</value></data>
+  <data name="RouteEdit_PathTemplate" xml:space="preserve"><value>Path Template</value></data>
+  <data name="RouteEdit_HttpMethods" xml:space="preserve"><value>HTTP Methods</value></data>
+  <data name="RouteEdit_Host" xml:space="preserve"><value>Host (optional)</value></data>
+  <data name="RouteEdit_Scheme" xml:space="preserve"><value>Scheme</value></data>
+  <data name="RouteEdit_HttpVersion" xml:space="preserve"><value>HTTP Version (optional)</value></data>
+  <data name="RouteEdit_HostAndPorts" xml:space="preserve"><value>Downstream Host &amp; Ports</value></data>
+  <data name="RouteEdit_AddHost" xml:space="preserve"><value>Add Host</value></data>
+  <data name="RouteEdit_Options" xml:space="preserve"><value>Options</value></data>
+  <data name="RouteEdit_Key" xml:space="preserve"><value>Key</value></data>
+  <data name="RouteEdit_Priority" xml:space="preserve"><value>Priority</value></data>
+  <data name="RouteEdit_Timeout" xml:space="preserve"><value>Timeout (sec)</value></data>
+  <data name="RouteEdit_CaseSensitive" xml:space="preserve"><value>Case Sensitive</value></data>
+  <data name="RouteEdit_AcceptAnyCert" xml:space="preserve"><value>Accept Any Certificate</value></data>
+  <data name="RouteEdit_Advanced" xml:space="preserve"><value>Advanced (JSON)</value></data>
+  <data name="RouteEdit_Required" xml:space="preserve"><value>{0} is required</value></data>
+  <data name="RouteEdit_SaveSuccess" xml:space="preserve"><value>Route saved successfully.</value></data>
+  <data name="RouteEdit_NotFound" xml:space="preserve"><value>Route not found.</value></data>
+  <data name="RouteEdit_InvalidJson" xml:space="preserve"><value>Invalid JSON format.</value></data>
+  <data name="RouteEdit_ApplyTemplate" xml:space="preserve"><value>Apply Template</value></data>
+  <data name="RouteEdit_TemplateApplied" xml:space="preserve"><value>Template "{0}" applied.</value></data>
+  <data name="RouteEdit_OverwriteConfirm" xml:space="preserve"><value>Current data will be overwritten. Continue?</value></data>
+  <data name="RouteEdit_JsonHelper" xml:space="preserve"><value>Enter valid JSON or leave empty</value></data>
+  <data name="RouteEdit_Failed" xml:space="preserve"><value>Failed: {0}</value></data>
+  <data name="RouteEdit_Port" xml:space="preserve"><value>Port</value></data>
+  <data name="RouteEdit_AuthenticationOptions" xml:space="preserve"><value>Authentication Options</value></data>
+  <data name="RouteEdit_RateLimitOptions" xml:space="preserve"><value>Rate Limit Options</value></data>
+  <data name="RouteEdit_LoadBalancerOptions" xml:space="preserve"><value>Load Balancer Options</value></data>
+  <data name="RouteEdit_QoSOptions" xml:space="preserve"><value>QoS Options</value></data>
+  <data name="RouteEdit_CacheOptions" xml:space="preserve"><value>Cache Options</value></data>
+  <data name="RouteEdit_HttpHandlerOptions" xml:space="preserve"><value>HTTP Handler Options</value></data>
+  <data name="RouteEdit_SecurityOptions" xml:space="preserve"><value>Security Options</value></data>
+  <data name="RouteEdit_Metadata" xml:space="preserve"><value>Metadata</value></data>
+  <data name="RouteEdit_AddHeadersToRequest" xml:space="preserve"><value>Add Headers To Request</value></data>
+  <data name="RouteEdit_AddClaimsToRequest" xml:space="preserve"><value>Add Claims To Request</value></data>
+  <data name="RouteEdit_AddQueriesToRequest" xml:space="preserve"><value>Add Queries To Request</value></data>
+  <data name="RouteEdit_RouteClaimsRequirement" xml:space="preserve"><value>Route Claims Requirement</value></data>
+  <data name="RouteEdit_UpstreamHeaderTransform" xml:space="preserve"><value>Upstream Header Transform</value></data>
+  <data name="RouteEdit_DownstreamHeaderTransform" xml:space="preserve"><value>Downstream Header Transform</value></data>
+  <data name="RouteEdit_DelegatingHandlers" xml:space="preserve"><value>Delegating Handlers</value></data>
+
+  <!-- Authentication Editor -->
+  <data name="Auth_AllowAnonymous" xml:space="preserve"><value>Allow Anonymous</value></data>
+  <data name="Auth_ProviderKeys" xml:space="preserve"><value>Authentication Provider Keys</value></data>
+  <data name="Auth_ProviderKey" xml:space="preserve"><value>Authentication Provider Key</value></data>
+  <data name="Auth_ProviderKey_Deprecated" xml:space="preserve"><value>Deprecated in v24.1 - use Provider Keys instead</value></data>
+  <data name="Auth_AllowedScopes" xml:space="preserve"><value>Allowed Scopes</value></data>
+
+  <!-- RateLimit Editor -->
+  <data name="RateLimit_Enable" xml:space="preserve"><value>Enable Rate Limiting</value></data>
+  <data name="RateLimit_Limit" xml:space="preserve"><value>Limit</value></data>
+  <data name="RateLimit_Period" xml:space="preserve"><value>Period</value></data>
+  <data name="RateLimit_Wait" xml:space="preserve"><value>Wait</value></data>
+  <data name="RateLimit_ClientIdHeader" xml:space="preserve"><value>Client ID Header</value></data>
+  <data name="RateLimit_ClientWhitelist" xml:space="preserve"><value>Client Whitelist</value></data>
+  <data name="RateLimit_EnableHeaders" xml:space="preserve"><value>Enable Headers</value></data>
+  <data name="RateLimit_StatusCode" xml:space="preserve"><value>Status Code</value></data>
+  <data name="RateLimit_QuotaMessage" xml:space="preserve"><value>Quota Message</value></data>
+  <data name="RateLimit_KeyPrefix" xml:space="preserve"><value>Key Prefix</value></data>
+
+  <!-- LoadBalancer Editor -->
+  <data name="LoadBalancer_Type" xml:space="preserve"><value>Type</value></data>
+  <data name="LoadBalancer_None" xml:space="preserve"><value>None</value></data>
+  <data name="LoadBalancer_Key" xml:space="preserve"><value>Cookie Key</value></data>
+  <data name="LoadBalancer_Key_Helper" xml:space="preserve"><value>Cookie name for sticky sessions</value></data>
+  <data name="LoadBalancer_Expiry" xml:space="preserve"><value>Expiry</value></data>
+
+  <!-- QoS Editor -->
+  <data name="QoS_BreakDuration" xml:space="preserve"><value>Break Duration</value></data>
+  <data name="QoS_MinimumThroughput" xml:space="preserve"><value>Minimum Throughput</value></data>
+  <data name="QoS_FailureRatio" xml:space="preserve"><value>Failure Ratio</value></data>
+  <data name="QoS_SamplingDuration" xml:space="preserve"><value>Sampling Duration</value></data>
+  <data name="QoS_Timeout" xml:space="preserve"><value>Timeout</value></data>
+
+  <!-- Cache Editor -->
+  <data name="Cache_TtlSeconds" xml:space="preserve"><value>TTL (seconds)</value></data>
+  <data name="Cache_Region" xml:space="preserve"><value>Region</value></data>
+  <data name="Cache_Header" xml:space="preserve"><value>Header</value></data>
+  <data name="Cache_EnableContentHashing" xml:space="preserve"><value>Enable Content Hashing</value></data>
+
+  <!-- HttpHandler Editor -->
+  <data name="HttpHandler_AllowAutoRedirect" xml:space="preserve"><value>Allow Auto Redirect</value></data>
+  <data name="HttpHandler_UseCookieContainer" xml:space="preserve"><value>Use Cookie Container</value></data>
+  <data name="HttpHandler_UseProxy" xml:space="preserve"><value>Use Proxy</value></data>
+  <data name="HttpHandler_UseTracing" xml:space="preserve"><value>Use Tracing</value></data>
+  <data name="HttpHandler_MaxConnections" xml:space="preserve"><value>Max Connections Per Server</value></data>
+  <data name="HttpHandler_PooledLifetime" xml:space="preserve"><value>Pooled Connection Lifetime</value></data>
+
+  <!-- Security Editor -->
+  <data name="Security_IPAllowedList" xml:space="preserve"><value>IP Allowed List</value></data>
+  <data name="Security_IPBlockedList" xml:space="preserve"><value>IP Blocked List</value></data>
+  <data name="Security_ExcludeAllowedFromBlocked" xml:space="preserve"><value>Exclude Allowed From Blocked</value></data>
+
+  <!-- ServiceDiscovery Editor -->
+  <data name="ServiceDiscovery_Type" xml:space="preserve"><value>Type</value></data>
+  <data name="ServiceDiscovery_Host" xml:space="preserve"><value>Host</value></data>
+  <data name="ServiceDiscovery_Port" xml:space="preserve"><value>Port</value></data>
+  <data name="ServiceDiscovery_Scheme" xml:space="preserve"><value>Scheme</value></data>
+  <data name="ServiceDiscovery_Token" xml:space="preserve"><value>Token</value></data>
+  <data name="ServiceDiscovery_ConfigurationKey" xml:space="preserve"><value>Configuration Key</value></data>
+  <data name="ServiceDiscovery_PollingInterval" xml:space="preserve"><value>Polling Interval</value></data>
+  <data name="ServiceDiscovery_Namespace" xml:space="preserve"><value>Namespace</value></data>
+
+  <!-- MetadataOptions Editor -->
+  <data name="MetadataOpt_CurrentCulture" xml:space="preserve"><value>Current Culture</value></data>
+  <data name="MetadataOpt_NumberStyle" xml:space="preserve"><value>Number Style</value></data>
+  <data name="MetadataOpt_Separators" xml:space="preserve"><value>Separators</value></data>
+  <data name="MetadataOpt_StringSplitOption" xml:space="preserve"><value>String Split Option</value></data>
+  <data name="MetadataOpt_TrimChars" xml:space="preserve"><value>Trim Characters</value></data>
+  <data name="MetadataOpt_Metadata" xml:space="preserve"><value>Metadata</value></data>
+
+  <!-- Shared Editors -->
+  <data name="ListEditor_Empty" xml:space="preserve"><value>No items added yet.</value></data>
+  <data name="DictEditor_Empty" xml:space="preserve"><value>No entries added yet.</value></data>
+  <data name="DictEditor_DuplicateKey" xml:space="preserve"><value>Key already exists.</value></data>
+
+  <!-- GlobalConfig -->
+  <data name="GlobalConfig_Title" xml:space="preserve"><value>Global Configuration</value></data>
+  <data name="GlobalConfig_Basic" xml:space="preserve"><value>Basic Settings</value></data>
+  <data name="GlobalConfig_BaseUrl" xml:space="preserve"><value>Base URL</value></data>
+  <data name="GlobalConfig_DownstreamScheme" xml:space="preserve"><value>Downstream Scheme</value></data>
+  <data name="GlobalConfig_HttpVersion" xml:space="preserve"><value>HTTP Version</value></data>
+  <data name="GlobalConfig_HttpVersionPolicy" xml:space="preserve"><value>HTTP Version Policy</value></data>
+  <data name="GlobalConfig_Timeout" xml:space="preserve"><value>Timeout</value></data>
+  <data name="GlobalConfig_RequestIdKey" xml:space="preserve"><value>Request ID Key</value></data>
+  <data name="GlobalConfig_ServiceDiscovery" xml:space="preserve"><value>Service Discovery</value></data>
+  <data name="GlobalConfig_MetadataOptions" xml:space="preserve"><value>Metadata Options</value></data>
+  <data name="GlobalConfig_UpstreamHeaderTransform" xml:space="preserve"><value>Upstream Header Transform</value></data>
+  <data name="GlobalConfig_DownstreamHeaderTransform" xml:space="preserve"><value>Downstream Header Transform</value></data>
+  <data name="GlobalConfig_SaveSuccess" xml:space="preserve"><value>Global configuration saved successfully.</value></data>
+
+  <!-- Aggregates -->
+  <data name="Aggregate_Title" xml:space="preserve"><value>Route Aggregates</value></data>
+  <data name="Aggregate_Add" xml:space="preserve"><value>Add Aggregate</value></data>
+  <data name="Aggregate_NewTitle" xml:space="preserve"><value>New Aggregate</value></data>
+  <data name="Aggregate_EditTitle" xml:space="preserve"><value>Edit Aggregate #{0}</value></data>
+  <data name="Aggregate_UpstreamPath" xml:space="preserve"><value>Upstream Path Template</value></data>
+  <data name="Aggregate_RouteKeys" xml:space="preserve"><value>Route Keys</value></data>
+  <data name="Aggregate_UpstreamHost" xml:space="preserve"><value>Upstream Host</value></data>
+  <data name="Aggregate_Aggregator" xml:space="preserve"><value>Aggregator</value></data>
+  <data name="Aggregate_RouteKeysConfig" xml:space="preserve"><value>Route Keys Config</value></data>
+  <data name="Aggregate_RouteKey" xml:space="preserve"><value>Route Key</value></data>
+  <data name="Aggregate_JsonPath" xml:space="preserve"><value>JSON Path</value></data>
+  <data name="Aggregate_Parameter" xml:space="preserve"><value>Parameter</value></data>
+  <data name="Aggregate_DeleteConfirm" xml:space="preserve"><value>Are you sure you want to delete aggregate</value></data>
+  <data name="Aggregate_DeleteSuccess" xml:space="preserve"><value>Aggregate deleted successfully.</value></data>
+  <data name="Aggregate_SaveSuccess" xml:space="preserve"><value>Aggregate saved successfully.</value></data>
+  <data name="Aggregate_NotFound" xml:space="preserve"><value>Aggregate not found.</value></data>
+  <data name="Aggregate_LoadFailed" xml:space="preserve"><value>Failed to load aggregates.</value></data>
+
+  <!-- DynamicRoutes -->
+  <data name="DynamicRoute_Title" xml:space="preserve"><value>Dynamic Routes</value></data>
+  <data name="DynamicRoute_Add" xml:space="preserve"><value>Add Dynamic Route</value></data>
+  <data name="DynamicRoute_NewTitle" xml:space="preserve"><value>New Dynamic Route</value></data>
+  <data name="DynamicRoute_EditTitle" xml:space="preserve"><value>Edit Dynamic Route #{0}</value></data>
+  <data name="DynamicRoute_ServiceName" xml:space="preserve"><value>Service Name</value></data>
+  <data name="DynamicRoute_ServiceNamespace" xml:space="preserve"><value>Service Namespace</value></data>
+  <data name="DynamicRoute_DeleteConfirm" xml:space="preserve"><value>Are you sure you want to delete dynamic route</value></data>
+  <data name="DynamicRoute_DeleteSuccess" xml:space="preserve"><value>Dynamic route deleted successfully.</value></data>
+  <data name="DynamicRoute_SaveSuccess" xml:space="preserve"><value>Dynamic route saved successfully.</value></data>
+  <data name="DynamicRoute_NotFound" xml:space="preserve"><value>Dynamic route not found.</value></data>
+  <data name="DynamicRoute_LoadFailed" xml:space="preserve"><value>Failed to load dynamic routes.</value></data>
+
+  <!-- Tooltips -->
+  <data name="Tip_UpstreamPath" xml:space="preserve"><value>The URL pattern that Ocelot matches against incoming client requests. Supports placeholders like {id} and catch-all {everything}.</value></data>
+  <data name="Tip_HttpMethods" xml:space="preserve"><value>Select which HTTP methods this route will match. Leave empty to match all methods.</value></data>
+  <data name="Tip_UpstreamHost" xml:space="preserve"><value>Optional host header filter. Only requests with this Host header will match this route.</value></data>
+  <data name="Tip_DownstreamPath" xml:space="preserve"><value>The URL path that Ocelot forwards the request to on the downstream service. Use matching placeholders from upstream.</value></data>
+  <data name="Tip_Scheme" xml:space="preserve"><value>The protocol used to communicate with the downstream service: https, http, ws (WebSocket), or wss (secure WebSocket).</value></data>
+  <data name="Tip_HttpVersion" xml:space="preserve"><value>The HTTP version used for downstream requests. Common values: 1.1, 2.0. Leave empty for default.</value></data>
+  <data name="Tip_HostAndPorts" xml:space="preserve"><value>The target server addresses. Add multiple hosts for load balancing. Each entry needs a hostname and port.</value></data>
+  <data name="Tip_Key" xml:space="preserve"><value>A unique identifier for this route. Required when using service discovery or route aggregation.</value></data>
+  <data name="Tip_Priority" xml:space="preserve"><value>Route matching priority. Lower numbers are matched first. Use when multiple routes could match the same request.</value></data>
+  <data name="Tip_Timeout" xml:space="preserve"><value>Maximum time (in seconds) to wait for a downstream response before timing out.</value></data>
+  <data name="Tip_CaseSensitive" xml:space="preserve"><value>Whether URL path matching is case-sensitive. Default is false (case-insensitive).</value></data>
+  <data name="Tip_AcceptAnyCert" xml:space="preserve"><value>Accept any SSL/TLS certificate from downstream, including self-signed. Use only for development.</value></data>
+  <data name="Tip_AuthenticationOptions" xml:space="preserve"><value>Configure authentication provider and allowed scopes for this route.</value></data>
+  <data name="Tip_AuthorizationOptions" xml:space="preserve"><value>Define required claims and allowed values for route access control.</value></data>
+  <data name="Tip_RateLimitOptions" xml:space="preserve"><value>Control request rate limiting: period, limit count, and client whitelist.</value></data>
+  <data name="Tip_LoadBalancerOptions" xml:space="preserve"><value>Load balancing strategy across downstream hosts: RoundRobin, LeastConnection, or NoLoadBalancer.</value></data>
+  <data name="Tip_QoSOptions" xml:space="preserve"><value>Quality of Service settings: circuit breaker thresholds, timeout exceptions, and duration of break.</value></data>
+  <data name="Tip_CacheOptions" xml:space="preserve"><value>Response caching: TTL (seconds), cache region, and custom header for cache key.</value></data>
+  <data name="Tip_SecurityOptions" xml:space="preserve"><value>IP allow/block lists for route-level security filtering.</value></data>
+  <data name="Tip_HttpHandlerOptions" xml:space="preserve"><value>HTTP handler behavior: allow auto-redirect, use cookie container, use tracing, use proxy.</value></data>
+
+  <!-- Templates -->
+  <data name="Template_BasicRestApi" xml:space="preserve"><value>Basic REST API Proxy</value></data>
+  <data name="Template_BasicRestApi_Desc" xml:space="preserve"><value>GET/POST/PUT/DELETE proxy to downstream service</value></data>
+  <data name="Template_SingleGet" xml:space="preserve"><value>Single GET Endpoint</value></data>
+  <data name="Template_SingleGet_Desc" xml:space="preserve"><value>Single GET endpoint proxy</value></data>
+  <data name="Template_WebSocket" xml:space="preserve"><value>WebSocket Proxy</value></data>
+  <data name="Template_WebSocket_Desc" xml:space="preserve"><value>WebSocket connection proxy</value></data>
+  <data name="Template_CatchAll" xml:space="preserve"><value>Path with Catch-All</value></data>
+  <data name="Template_CatchAll_Desc" xml:space="preserve"><value>Proxy entire service using {everything} wildcard</value></data>
+  <data name="Template_RateLimited" xml:space="preserve"><value>Rate Limited API</value></data>
+  <data name="Template_RateLimited_Desc" xml:space="preserve"><value>API proxy with rate limiting</value></data>
+  <data name="Template_Authenticated" xml:space="preserve"><value>Authenticated API</value></data>
+  <data name="Template_Authenticated_Desc" xml:space="preserve"><value>API proxy with authentication</value></data>
+  <data name="Template_LoadBalanced" xml:space="preserve"><value>Load Balanced</value></data>
+  <data name="Template_LoadBalanced_Desc" xml:space="preserve"><value>Multi-target host load balancing</value></data>
+
+  <!-- Guide -->
+  <data name="Guide_Title" xml:space="preserve"><value>User Guide</value></data>
+  <data name="Guide_Step1_Title" xml:space="preserve"><value>What is Ocelot?</value></data>
+  <data name="Guide_Step1_Content" xml:space="preserve"><value>Ocelot is an API Gateway framework for .NET. It uses ocelot.json to define routing rules that map client requests to downstream services.</value></data>
+  <data name="Guide_Step2_Title" xml:space="preserve"><value>Configure File Path</value></data>
+  <data name="Guide_Step2_Content" xml:space="preserve"><value>Set OcelotConfig.FilePath in appsettings.json to point to your ocelot.json location. The default path is "ocelot.json" in the application directory.</value></data>
+  <data name="Guide_Step3_Title" xml:space="preserve"><value>Route Basics</value></data>
+  <data name="Guide_Step3_Content" xml:space="preserve"><value>Each route maps an Upstream path (client request) to a Downstream path (target service). For example, /api/users/* can be routed to an internal user-service.</value></data>
+  <data name="Guide_Step4_Title" xml:space="preserve"><value>Managing Routes</value></data>
+  <data name="Guide_Step4_Content" xml:space="preserve"><value>Use the Routes page to view all configured routes. Click the edit icon to modify a route, or the delete icon to remove it.</value></data>
+  <data name="Guide_Step5_Title" xml:space="preserve"><value>Creating a Route</value></data>
+  <data name="Guide_Step5_Content" xml:space="preserve"><value>Click "Add Route" to create a new route. Fill in the Upstream and Downstream settings, or use "Apply Template" to quickly start from a predefined example.</value></data>
+  <data name="Guide_Step6_Title" xml:space="preserve"><value>Advanced Settings</value></data>
+  <data name="Guide_Step6_Content" xml:space="preserve"><value>Expand the Options and Advanced sections to configure authentication, rate limiting, load balancing, caching, QoS, and security options using raw JSON.</value></data>
+  <data name="Guide_Step7_Title" xml:space="preserve"><value>Saving Changes</value></data>
+  <data name="Guide_Step7_Content" xml:space="preserve"><value>Click Save to write your changes directly to the ocelot.json file. The file is written atomically to prevent corruption.</value></data>
+</root>

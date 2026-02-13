@@ -1,0 +1,32 @@
+@page "/guide"
+@inject IStringLocalizer<SharedResource> L
+
+<MudText Typo="Typo.h5" Class="mb-4">@L["Guide_Title"]</MudText>
+
+<MudTimeline TimelinePosition="TimelinePosition.Start">
+    @for (var i = 1; i <= 7; i++)
+    {
+        var step = i;
+        <MudTimelineItem Color="Color.Primary" Variant="Variant.Filled">
+            <ItemContent>
+                <MudCard Elevation="1" Class="mb-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">
+                                @L[$"Guide_Step{step}_Title"]
+                            </MudText>
+                        </CardHeaderContent>
+                        <CardHeaderAvatar>
+                            <MudAvatar Color="Color.Primary" Variant="Variant.Filled">@step</MudAvatar>
+                        </CardHeaderAvatar>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudText Typo="Typo.body1">
+                            @L[$"Guide_Step{step}_Content"]
+                        </MudText>
+                    </MudCardContent>
+                </MudCard>
+            </ItemContent>
+        </MudTimelineItem>
+    }
+</MudTimeline>

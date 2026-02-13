@@ -1,0 +1,57 @@
+@using OcelotUI.Domain.Entities
+@inject IStringLocalizer<SharedResource> L
+
+<MudPaper Class="pa-3" Outlined="true">
+    <MudText Typo="Typo.caption" Class="mb-2">@L["RouteEdit_HostAndPorts"]</MudText>
+
+    @for (var i = 0; i < Hosts.Count; i++)
+    {
+        var index = i;
+        <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-2" Spacing="2">
+            <MudTextField T="string"
+                          Label="Host"
+                          @bind-Value="Hosts[index].Host"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense" />
+            <MudNumericField T="int"
+                             Label="@L["RouteEdit_Port"]"
+                             @bind-Value="Hosts[index].Port"
+                             Variant="Variant.Outlined"
+                             Margin="Margin.Dense"
+                             Min="1" Max="65535"
+                             Style="max-width: 120px;" />
+            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                           Color="Color.Error"
+                           Size="Size.Small"
+                           OnClick="() => RemoveHost(index)" />
+        </MudStack>
+    }
+
+    <MudButton Variant="Variant.Text"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               OnClick="AddHost"
+               Size="Size.Small">
+        @L["RouteEdit_AddHost"]
+    </MudButton>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public List<DownstreamHostAndPort> Hosts { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<List<DownstreamHostAndPort>> HostsChanged { get; set; }
+
+    private async Task AddHost()
+    {
+        Hosts.Add(new DownstreamHostAndPort { Host = "localhost", Port = 80 });
+        await HostsChanged.InvokeAsync(Hosts);
+    }
+
+    private async Task RemoveHost(int index)
+    {
+        Hosts.RemoveAt(index);
+        await HostsChanged.InvokeAsync(Hosts);
+    }
+}

@@ -1,0 +1,99 @@
+@using OcelotUI.Domain.Entities
+@inject IStringLocalizer<SharedResource> L
+
+<MudStack Spacing="3" Class="pa-2">
+    <MudCheckBox T="bool?"
+                 Label="@L["RateLimit_Enable"]"
+                 Value="Value?.EnableRateLimiting"
+                 ValueChanged="v => Update(o => o.EnableRateLimiting = v)" />
+
+    <MudGrid>
+        <MudItem xs="4">
+            <MudNumericField T="int?"
+                             Label="@L["RateLimit_Limit"]"
+                             Value="Value?.Limit"
+                             ValueChanged="v => Update(o => o.Limit = v)"
+                             Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem xs="4">
+            <MudTextField T="string"
+                          Label="@L["RateLimit_Period"]"
+                          Value="@(Value?.Period)"
+                          ValueChanged="v => Update(o => o.Period = string.IsNullOrWhiteSpace(v) ? null : v)"
+                          Variant="Variant.Outlined"
+                          HelperText="1s, 5m, 1h, 1d" />
+        </MudItem>
+        <MudItem xs="4">
+            <MudTextField T="string"
+                          Label="@L["RateLimit_Wait"]"
+                          Value="@(Value?.Wait)"
+                          ValueChanged="v => Update(o => o.Wait = string.IsNullOrWhiteSpace(v) ? null : v)"
+                          Variant="Variant.Outlined"
+                          HelperText="1s, 5m, 1h, 1d" />
+        </MudItem>
+    </MudGrid>
+
+    <MudTextField T="string"
+                  Label="@L["RateLimit_ClientIdHeader"]"
+                  Value="@(Value?.ClientIdHeader)"
+                  ValueChanged="v => Update(o => o.ClientIdHeader = string.IsNullOrWhiteSpace(v) ? null : v)"
+                  Variant="Variant.Outlined" />
+
+    <StringListEditor @bind-Items="_clientWhitelist"
+                      Label="@L["RateLimit_ClientWhitelist"]"
+                      Placeholder="e.g. trusted-client" />
+
+    <MudCheckBox T="bool?"
+                 Label="@L["RateLimit_EnableHeaders"]"
+                 Value="Value?.EnableHeaders"
+                 ValueChanged="v => Update(o => o.EnableHeaders = v)" />
+
+    <MudGrid>
+        <MudItem xs="4">
+            <MudNumericField T="int?"
+                             Label="@L["RateLimit_StatusCode"]"
+                             Value="Value?.StatusCode"
+                             ValueChanged="v => Update(o => o.StatusCode = v)"
+                             Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem xs="8">
+            <MudTextField T="string"
+                          Label="@L["RateLimit_QuotaMessage"]"
+                          Value="@(Value?.QuotaMessage)"
+                          ValueChanged="v => Update(o => o.QuotaMessage = string.IsNullOrWhiteSpace(v) ? null : v)"
+                          Variant="Variant.Outlined" />
+        </MudItem>
+    </MudGrid>
+
+    <MudTextField T="string"
+                  Label="@L["RateLimit_KeyPrefix"]"
+                  Value="@(Value?.KeyPrefix)"
+                  ValueChanged="v => Update(o => o.KeyPrefix = string.IsNullOrWhiteSpace(v) ? null : v)"
+                  Variant="Variant.Outlined" />
+</MudStack>
+
+@code {
+    [Parameter] public RateLimitOptions? Value { get; set; }
+    [Parameter] public EventCallback<RateLimitOptions?> ValueChanged { get; set; }
+
+    private List<string>? _clientWhitelist
+    {
+        get => Value?.ClientWhitelist;
+        set => Update(o => o.ClientWhitelist = value);
+    }
+
+    private void Update(Action<RateLimitOptions> apply)
+    {
+        var v = Value ?? new RateLimitOptions();
+        apply(v);
+        var result = IsEmpty(v) ? null : v;
+        ValueChanged.InvokeAsync(result);
+    }
+
+    private static bool IsEmpty(RateLimitOptions o) =>
+        o.EnableRateLimiting is null && o.Limit is null && o.Period is null
+        && o.Wait is null && o.ClientIdHeader is null && o.EnableHeaders is null
+        && o.StatusCode is null && o.QuotaMessage is null && o.KeyPrefix is null
+        && (o.ClientWhitelist is null || o.ClientWhitelist.Count == 0)
+        && o.ExtensionData is null;
+}

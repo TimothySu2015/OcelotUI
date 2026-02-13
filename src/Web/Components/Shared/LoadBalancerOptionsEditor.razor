@@ -1,0 +1,50 @@
+@using OcelotUI.Domain.Entities
+@inject IStringLocalizer<SharedResource> L
+
+<MudStack Spacing="3" Class="pa-2">
+    <MudSelect T="string"
+               Label="@L["LoadBalancer_Type"]"
+               Value="@(Value?.Type ?? string.Empty)"
+               ValueChanged="v => Update(o => o.Type = string.IsNullOrEmpty(v) ? null : v)"
+               Variant="Variant.Outlined">
+        <MudSelectItem T="string" Value="@string.Empty">(@L["LoadBalancer_None"])</MudSelectItem>
+        <MudSelectItem T="string" Value="@("RoundRobin")">RoundRobin</MudSelectItem>
+        <MudSelectItem T="string" Value="@("LeastConnection")">LeastConnection</MudSelectItem>
+        <MudSelectItem T="string" Value="@("CookieStickySessions")">CookieStickySessions</MudSelectItem>
+        <MudSelectItem T="string" Value="@("NoLoadBalancer")">NoLoadBalancer</MudSelectItem>
+    </MudSelect>
+
+    @if (Value?.Type == "CookieStickySessions")
+    {
+        <MudTextField T="string"
+                      Label="@L["LoadBalancer_Key"]"
+                      Value="@(Value?.Key)"
+                      ValueChanged="v => Update(o => o.Key = string.IsNullOrWhiteSpace(v) ? null : v)"
+                      Variant="Variant.Outlined"
+                      HelperText="@L["LoadBalancer_Key_Helper"]" />
+
+        <MudNumericField T="int?"
+                         Label="@L["LoadBalancer_Expiry"]"
+                         Value="Value?.Expiry"
+                         ValueChanged="v => Update(o => o.Expiry = v)"
+                         Variant="Variant.Outlined"
+                         HelperText="ms" />
+    }
+</MudStack>
+
+@code {
+    [Parameter] public LoadBalancerOptions? Value { get; set; }
+    [Parameter] public EventCallback<LoadBalancerOptions?> ValueChanged { get; set; }
+
+    private void Update(Action<LoadBalancerOptions> apply)
+    {
+        var v = Value ?? new LoadBalancerOptions();
+        apply(v);
+        var result = IsEmpty(v) ? null : v;
+        ValueChanged.InvokeAsync(result);
+    }
+
+    private static bool IsEmpty(LoadBalancerOptions o) =>
+        string.IsNullOrWhiteSpace(o.Type) && string.IsNullOrWhiteSpace(o.Key)
+        && o.Expiry is null && o.ExtensionData is null;
+}

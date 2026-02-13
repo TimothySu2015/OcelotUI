@@ -1,0 +1,51 @@
+@using OcelotUI.Domain.Entities
+@inject IStringLocalizer<SharedResource> L
+
+<MudStack Spacing="3" Class="pa-2">
+    <MudGrid>
+        <MudItem xs="4">
+            <MudNumericField T="int?"
+                             Label="@L["Cache_TtlSeconds"]"
+                             Value="Value?.TtlSeconds"
+                             ValueChanged="v => Update(o => o.TtlSeconds = v)"
+                             Variant="Variant.Outlined"
+                             HelperText="0 = no cache" />
+        </MudItem>
+        <MudItem xs="4">
+            <MudTextField T="string"
+                          Label="@L["Cache_Region"]"
+                          Value="@(Value?.Region)"
+                          ValueChanged="v => Update(o => o.Region = string.IsNullOrWhiteSpace(v) ? null : v)"
+                          Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem xs="4">
+            <MudTextField T="string"
+                          Label="@L["Cache_Header"]"
+                          Value="@(Value?.Header)"
+                          ValueChanged="v => Update(o => o.Header = string.IsNullOrWhiteSpace(v) ? null : v)"
+                          Variant="Variant.Outlined" />
+        </MudItem>
+    </MudGrid>
+    <MudCheckBox T="bool?"
+                 Label="@L["Cache_EnableContentHashing"]"
+                 Value="Value?.EnableContentHashing"
+                 ValueChanged="v => Update(o => o.EnableContentHashing = v)" />
+</MudStack>
+
+@code {
+    [Parameter] public CacheOptions? Value { get; set; }
+    [Parameter] public EventCallback<CacheOptions?> ValueChanged { get; set; }
+
+    private void Update(Action<CacheOptions> apply)
+    {
+        var v = Value ?? new CacheOptions();
+        apply(v);
+        var result = IsEmpty(v) ? null : v;
+        ValueChanged.InvokeAsync(result);
+    }
+
+    private static bool IsEmpty(CacheOptions o) =>
+        o.TtlSeconds is null && string.IsNullOrWhiteSpace(o.Region)
+        && string.IsNullOrWhiteSpace(o.Header) && o.EnableContentHashing is null
+        && o.ExtensionData is null;
+}

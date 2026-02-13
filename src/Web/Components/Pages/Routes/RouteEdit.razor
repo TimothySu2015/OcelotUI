@@ -1,0 +1,378 @@
+@page "/routes/new"
+@page "/routes/edit/{Index:int}"
+@using MediatR
+@using OcelotUI.Application.Routes.Queries.GetRouteByIndex
+@using OcelotUI.Application.Routes.Commands.AddRoute
+@using OcelotUI.Application.Routes.Commands.UpdateRoute
+@using OcelotUI.Domain.Entities
+@using OcelotUI.Web.Components.Shared
+@using OcelotUI.Web.Services
+@inject IMediator Mediator
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject IStringLocalizer<SharedResource> L
+
+<MudText Typo="Typo.h5" Class="mb-4">
+    @(IsNew ? L["RouteEdit_NewTitle"] : string.Format(L["RouteEdit_EditTitle"], Index))
+</MudText>
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+}
+else
+{
+    <EditForm Model="_route" OnValidSubmit="Save">
+        <MudStack Spacing="4">
+            @* Toolbar *@
+            <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2">
+                <MudMenu Label="@L["RouteEdit_ApplyTemplate"]"
+                         Variant="Variant.Outlined"
+                         StartIcon="@Icons.Material.Filled.ContentPaste"
+                         EndIcon="@Icons.Material.Filled.ArrowDropDown">
+                    @foreach (var tpl in RouteTemplateProvider.Templates)
+                    {
+                        var current = tpl;
+                        <MudMenuItem OnClick="@(() => ApplyTemplate(current))">
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.body2"><b>@L[current.NameKey]</b></MudText>
+                                <MudText Typo="Typo.caption" Class="mud-text-secondary">@L[current.DescriptionKey]</MudText>
+                            </MudStack>
+                        </MudMenuItem>
+                    }
+                </MudMenu>
+                <MudButton Variant="Variant.Outlined"
+                           OnClick="Cancel">
+                    @L["Btn_Cancel"]
+                </MudButton>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           ButtonType="ButtonType.Submit"
+                           Disabled="_saving">
+                    @(_saving ? L["Saving"] : L["Btn_Save"])
+                </MudButton>
+            </MudStack>
+
+            @* Upstream Section *@
+            <MudPaper Class="pa-4" Elevation="1">
+                <MudText Typo="Typo.h6" Class="mb-3">@L["RouteEdit_Upstream"]</MudText>
+                <MudStack Spacing="3">
+                    <MudTooltip Text="@L["Tip_UpstreamPath"]" Arrow="true" Placement="Placement.Top">
+                        <MudTextField T="string"
+                                      Label="@L["RouteEdit_PathTemplate"]"
+                                      @bind-Value="_route.UpstreamPathTemplate"
+                                      Required="true"
+                                      RequiredError="@string.Format(L["RouteEdit_Required"], L["RouteEdit_PathTemplate"])"
+                                      Placeholder="/api/users/{id}"
+                                      Variant="Variant.Outlined" />
+                    </MudTooltip>
+                    <MudTooltip Text="@L["Tip_HttpMethods"]" Arrow="true" Placement="Placement.Top">
+                        <HttpMethodSelector @bind-SelectedMethods="_route.UpstreamHttpMethod" />
+                    </MudTooltip>
+                    <MudTooltip Text="@L["Tip_UpstreamHost"]" Arrow="true" Placement="Placement.Top">
+                        <MudTextField T="string"
+                                      Label="@L["RouteEdit_Host"]"
+                                      @bind-Value="_route.UpstreamHost"
+                                      Variant="Variant.Outlined" />
+                    </MudTooltip>
+                </MudStack>
+            </MudPaper>
+
+            @* Downstream Section *@
+            <MudPaper Class="pa-4" Elevation="1">
+                <MudText Typo="Typo.h6" Class="mb-3">@L["RouteEdit_Downstream"]</MudText>
+                <MudStack Spacing="3">
+                    <MudTooltip Text="@L["Tip_DownstreamPath"]" Arrow="true" Placement="Placement.Top">
+                        <MudTextField T="string"
+                                      Label="@L["RouteEdit_PathTemplate"]"
+                                      @bind-Value="_route.DownstreamPathTemplate"
+                                      Placeholder="/api/users/{id}"
+                                      Variant="Variant.Outlined" />
+                    </MudTooltip>
+                    <MudGrid>
+                        <MudItem xs="6">
+                            <MudTooltip Text="@L["Tip_Scheme"]" Arrow="true" Placement="Placement.Top">
+                                <MudSelect T="string"
+                                           Label="@L["RouteEdit_Scheme"]"
+                                           @bind-Value="_route.DownstreamScheme"
+                                           Variant="Variant.Outlined">
+                                    <MudSelectItem Value="@("https")">https</MudSelectItem>
+                                    <MudSelectItem Value="@("http")">http</MudSelectItem>
+                                    <MudSelectItem Value="@("ws")">ws</MudSelectItem>
+                                    <MudSelectItem Value="@("wss")">wss</MudSelectItem>
+                                </MudSelect>
+                            </MudTooltip>
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudTooltip Text="@L["Tip_HttpVersion"]" Arrow="true" Placement="Placement.Top">
+                                <MudTextField T="string"
+                                              Label="@L["RouteEdit_HttpVersion"]"
+                                              @bind-Value="_route.DownstreamHttpVersion"
+                                              Placeholder="1.1, 2.0"
+                                              Variant="Variant.Outlined" />
+                            </MudTooltip>
+                        </MudItem>
+                    </MudGrid>
+                    <MudTooltip Text="@L["Tip_HostAndPorts"]" Arrow="true" Placement="Placement.Top">
+                        <DownstreamHostEditor @bind-Hosts="_route.DownstreamHostAndPorts" />
+                    </MudTooltip>
+                </MudStack>
+            </MudPaper>
+
+            @* Options & Sub-object Sections *@
+            <MudExpansionPanels>
+                <MudExpansionPanel Text="@L["RouteEdit_Options"]">
+                    <MudStack Spacing="3" Class="pa-2">
+                        <MudGrid>
+                            <MudItem xs="4">
+                                <MudTooltip Text="@L["Tip_Key"]" Arrow="true" Placement="Placement.Top">
+                                    <MudTextField T="string"
+                                                  Label="@L["RouteEdit_Key"]"
+                                                  @bind-Value="_route.Key"
+                                                  Variant="Variant.Outlined" />
+                                </MudTooltip>
+                            </MudItem>
+                            <MudItem xs="4">
+                                <MudTooltip Text="@L["Tip_Priority"]" Arrow="true" Placement="Placement.Top">
+                                    <MudNumericField T="int?"
+                                                     Label="@L["RouteEdit_Priority"]"
+                                                     @bind-Value="_route.Priority"
+                                                     Variant="Variant.Outlined" />
+                                </MudTooltip>
+                            </MudItem>
+                            <MudItem xs="4">
+                                <MudTooltip Text="@L["Tip_Timeout"]" Arrow="true" Placement="Placement.Top">
+                                    <MudNumericField T="int?"
+                                                     Label="@L["RouteEdit_Timeout"]"
+                                                     @bind-Value="_route.Timeout"
+                                                     Variant="Variant.Outlined" />
+                                </MudTooltip>
+                            </MudItem>
+                        </MudGrid>
+                        <MudGrid>
+                            <MudItem xs="6">
+                                <MudTooltip Text="@L["Tip_CaseSensitive"]" Arrow="true" Placement="Placement.Top">
+                                    <MudCheckBox T="bool?"
+                                                 Label="@L["RouteEdit_CaseSensitive"]"
+                                                 @bind-Value="_route.RouteIsCaseSensitive" />
+                                </MudTooltip>
+                            </MudItem>
+                            <MudItem xs="6">
+                                <MudTooltip Text="@L["Tip_AcceptAnyCert"]" Arrow="true" Placement="Placement.Top">
+                                    <MudCheckBox T="bool?"
+                                                 Label="@L["RouteEdit_AcceptAnyCert"]"
+                                                 @bind-Value="_route.DangerousAcceptAnyServerCertificateValidator" />
+                                </MudTooltip>
+                            </MudItem>
+                        </MudGrid>
+                    </MudStack>
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_AuthenticationOptions"]">
+                    <AuthenticationOptionsEditor @bind-Value="_route.AuthenticationOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_RateLimitOptions"]">
+                    <RateLimitOptionsEditor @bind-Value="_route.RateLimitOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_LoadBalancerOptions"]">
+                    <LoadBalancerOptionsEditor @bind-Value="_route.LoadBalancerOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_QoSOptions"]">
+                    <QoSOptionsEditor @bind-Value="_route.QoSOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_CacheOptions"]">
+                    <CacheOptionsEditor @bind-Value="_route.CacheOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_HttpHandlerOptions"]">
+                    <HttpHandlerOptionsEditor @bind-Value="_route.HttpHandlerOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_SecurityOptions"]">
+                    <SecurityOptionsEditor @bind-Value="_route.SecurityOptions" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_Metadata"]">
+                    <DictionaryEditor @bind-Items="_route.Metadata"
+                                      Label="@L["RouteEdit_Metadata"]"
+                                      KeyPlaceholder="e.g. project"
+                                      ValuePlaceholder="e.g. ocelot-ui" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_AddHeadersToRequest"]">
+                    <DictionaryEditor @bind-Items="_route.AddHeadersToRequest"
+                                      Label="@L["RouteEdit_AddHeadersToRequest"]"
+                                      KeyPlaceholder="Header"
+                                      ValuePlaceholder="Value" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_AddClaimsToRequest"]">
+                    <DictionaryEditor @bind-Items="_route.AddClaimsToRequest"
+                                      Label="@L["RouteEdit_AddClaimsToRequest"]"
+                                      KeyPlaceholder="Claim"
+                                      ValuePlaceholder="Value" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_AddQueriesToRequest"]">
+                    <DictionaryEditor @bind-Items="_route.AddQueriesToRequest"
+                                      Label="@L["RouteEdit_AddQueriesToRequest"]"
+                                      KeyPlaceholder="Query"
+                                      ValuePlaceholder="Value" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_RouteClaimsRequirement"]">
+                    <DictionaryEditor @bind-Items="_route.RouteClaimsRequirement"
+                                      Label="@L["RouteEdit_RouteClaimsRequirement"]"
+                                      KeyPlaceholder="Claim"
+                                      ValuePlaceholder="Required Value" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_UpstreamHeaderTransform"]">
+                    <DictionaryEditor @bind-Items="_route.UpstreamHeaderTransform"
+                                      Label="@L["RouteEdit_UpstreamHeaderTransform"]"
+                                      KeyPlaceholder="Header"
+                                      ValuePlaceholder="Transform" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_DownstreamHeaderTransform"]">
+                    <DictionaryEditor @bind-Items="_route.DownstreamHeaderTransform"
+                                      Label="@L["RouteEdit_DownstreamHeaderTransform"]"
+                                      KeyPlaceholder="Header"
+                                      ValuePlaceholder="Transform" />
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@L["RouteEdit_DelegatingHandlers"]">
+                    <StringListEditor @bind-Items="_route.DelegatingHandlers"
+                                      Label="@L["RouteEdit_DelegatingHandlers"]"
+                                      Placeholder="e.g. MyHandler" />
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        </MudStack>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int? Index { get; set; }
+
+    private bool IsNew => Index is null;
+    private OcelotRoute _route = new();
+    private bool _loading = true;
+    private bool _saving;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!IsNew)
+        {
+            var result = await Mediator.Send(new GetRouteByIndexQuery(Index!.Value));
+            if (result.IsSuccess && result.Value is not null)
+            {
+                _route = result.Value.Route;
+            }
+            else
+            {
+                Snackbar.Add(L["RouteEdit_NotFound"], Severity.Error);
+                Navigation.NavigateTo("/routes");
+                return;
+            }
+        }
+
+        _loading = false;
+    }
+
+    private async Task ApplyTemplate(RouteTemplate template)
+    {
+        var hasData = !string.IsNullOrWhiteSpace(_route.UpstreamPathTemplate)
+                      || _route.DownstreamHostAndPorts.Count > 0;
+
+        if (hasData)
+        {
+            var parameters = new DialogParameters<MudMessageBox>
+            {
+                { x => x.MarkupMessage, new MarkupString(L["RouteEdit_OverwriteConfirm"]) },
+                { x => x.YesText, L["Confirm"].Value },
+                { x => x.NoText, L["Btn_Cancel"].Value }
+            };
+
+            var dialog = await DialogService.ShowAsync<MudMessageBox>(
+                L["RouteEdit_ApplyTemplate"], parameters);
+            var dialogResult = await dialog.Result;
+
+            if (dialogResult?.Canceled != false)
+                return;
+        }
+
+        var src = template.Route;
+        _route.UpstreamPathTemplate = src.UpstreamPathTemplate;
+        _route.UpstreamHttpMethod = [.. src.UpstreamHttpMethod];
+        _route.UpstreamHost = src.UpstreamHost;
+        _route.DownstreamPathTemplate = src.DownstreamPathTemplate;
+        _route.DownstreamScheme = src.DownstreamScheme;
+        _route.DownstreamHostAndPorts = src.DownstreamHostAndPorts
+            .Select(h => new DownstreamHostAndPort { Host = h.Host, Port = h.Port }).ToList();
+        _route.DownstreamHttpVersion = src.DownstreamHttpVersion;
+        _route.Key = src.Key;
+        _route.Priority = src.Priority;
+        _route.RouteIsCaseSensitive = src.RouteIsCaseSensitive;
+        _route.Timeout = src.Timeout;
+        _route.DangerousAcceptAnyServerCertificateValidator = src.DangerousAcceptAnyServerCertificateValidator;
+        _route.AuthenticationOptions = src.AuthenticationOptions;
+        _route.RateLimitOptions = src.RateLimitOptions;
+        _route.LoadBalancerOptions = src.LoadBalancerOptions;
+        _route.QoSOptions = src.QoSOptions;
+        _route.CacheOptions = src.CacheOptions;
+        _route.SecurityOptions = src.SecurityOptions;
+        _route.HttpHandlerOptions = src.HttpHandlerOptions;
+
+        Snackbar.Add(string.Format(L["RouteEdit_TemplateApplied"], L[template.NameKey]), Severity.Success);
+        StateHasChanged();
+    }
+
+    private async Task Save()
+    {
+        _saving = true;
+
+        try
+        {
+            var dto = new RouteDetailDto { Index = Index, Route = _route };
+
+            if (IsNew)
+            {
+                var result = await Mediator.Send(new AddRouteCommand(dto));
+                if (result.IsSuccess)
+                {
+                    Snackbar.Add(L["RouteEdit_SaveSuccess"], Severity.Success);
+                    Navigation.NavigateTo("/routes");
+                }
+                else
+                {
+                    Snackbar.Add(string.Format(L["RouteEdit_Failed"], result.Error), Severity.Error);
+                }
+            }
+            else
+            {
+                var result = await Mediator.Send(new UpdateRouteCommand(Index!.Value, dto));
+                if (result.IsSuccess)
+                {
+                    Snackbar.Add(L["RouteEdit_SaveSuccess"], Severity.Success);
+                    Navigation.NavigateTo("/routes");
+                }
+                else
+                {
+                    Snackbar.Add(string.Format(L["RouteEdit_Failed"], result.Error), Severity.Error);
+                }
+            }
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+
+    private void Cancel() => Navigation.NavigateTo("/routes");
+}

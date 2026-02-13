@@ -1,0 +1,85 @@
+@inject IStringLocalizer<SharedResource> L
+
+<MudPaper Class="pa-3" Outlined="true">
+    <MudText Typo="Typo.caption" Class="mb-2">@Label</MudText>
+
+    @if (Items is not null && Items.Count > 0)
+    {
+        @foreach (var kvp in Items.ToList())
+        {
+            var key = kvp.Key;
+            <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-1" Spacing="1">
+                <MudText Typo="Typo.body2" Style="min-width:120px;"><b>@key</b></MudText>
+                <MudText Typo="Typo.body2" Class="flex-grow-1">@kvp.Value</MudText>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Size="Size.Small"
+                               OnClick="() => RemoveItem(key)" />
+            </MudStack>
+        }
+    }
+    else
+    {
+        <MudText Typo="Typo.body2" Class="mud-text-secondary mb-2">@L["DictEditor_Empty"]</MudText>
+    }
+
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+        <MudTextField T="string"
+                      @bind-Value="_newKey"
+                      Placeholder="@KeyPlaceholder"
+                      Label="@KeyLabel"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      Style="min-width:120px;" />
+        <MudTextField T="string"
+                      @bind-Value="_newValue"
+                      Placeholder="@ValuePlaceholder"
+                      Label="@ValueLabel"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      Class="flex-grow-1" />
+        <MudIconButton Icon="@Icons.Material.Filled.Add"
+                       Color="Color.Primary"
+                       Size="Size.Small"
+                       Disabled="@(string.IsNullOrWhiteSpace(_newKey) || _duplicateKey)"
+                       OnClick="AddItem" />
+    </MudStack>
+    @if (_duplicateKey)
+    {
+        <MudText Typo="Typo.caption" Color="Color.Error">@L["DictEditor_DuplicateKey"]</MudText>
+    }
+</MudPaper>
+
+@code {
+    [Parameter] public Dictionary<string, string>? Items { get; set; }
+    [Parameter] public EventCallback<Dictionary<string, string>?> ItemsChanged { get; set; }
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public string KeyLabel { get; set; } = "Key";
+    [Parameter] public string ValueLabel { get; set; } = "Value";
+    [Parameter] public string? KeyPlaceholder { get; set; }
+    [Parameter] public string? ValuePlaceholder { get; set; }
+
+    private string? _newKey;
+    private string? _newValue;
+    private bool _duplicateKey => !string.IsNullOrWhiteSpace(_newKey)
+                                  && Items is not null
+                                  && Items.ContainsKey(_newKey!.Trim());
+
+    private async Task AddItem()
+    {
+        if (string.IsNullOrWhiteSpace(_newKey) || _duplicateKey) return;
+
+        Items ??= new Dictionary<string, string>();
+        Items[_newKey.Trim()] = _newValue?.Trim() ?? string.Empty;
+        _newKey = null;
+        _newValue = null;
+        await ItemsChanged.InvokeAsync(Items);
+    }
+
+    private async Task RemoveItem(string key)
+    {
+        if (Items is null) return;
+        Items.Remove(key);
+        await ItemsChanged.InvokeAsync(Items.Count == 0 ? null : Items);
+    }
+}

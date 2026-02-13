@@ -1,0 +1,99 @@
+@using OcelotUI.Domain.Entities
+@inject IStringLocalizer<SharedResource> L
+
+<MudStack Spacing="3" Class="pa-2">
+    <MudGrid>
+        <MudItem xs="4">
+            <MudSelect T="string"
+                       Label="@L["ServiceDiscovery_Type"]"
+                       Value="@(Value?.Type ?? string.Empty)"
+                       ValueChanged="v => Update(o => o.Type = string.IsNullOrEmpty(v) ? null : v)"
+                       Variant="Variant.Outlined">
+                <MudSelectItem T="string" Value="@string.Empty">(@L["LoadBalancer_None"])</MudSelectItem>
+                <MudSelectItem T="string" Value="@("Consul")">Consul</MudSelectItem>
+                <MudSelectItem T="string" Value="@("PollConsul")">PollConsul</MudSelectItem>
+                <MudSelectItem T="string" Value="@("Eureka")">Eureka</MudSelectItem>
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="4">
+            <MudTextField T="string"
+                          Label="@L["ServiceDiscovery_Host"]"
+                          Value="@(Value?.Host)"
+                          ValueChanged="v => Update(o => o.Host = string.IsNullOrWhiteSpace(v) ? null : v)"
+                          Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem xs="2">
+            <MudNumericField T="int?"
+                             Label="@L["ServiceDiscovery_Port"]"
+                             Value="Value?.Port"
+                             ValueChanged="v => Update(o => o.Port = v)"
+                             Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem xs="2">
+            <MudSelect T="string"
+                       Label="@L["ServiceDiscovery_Scheme"]"
+                       Value="@(Value?.Scheme ?? string.Empty)"
+                       ValueChanged="v => Update(o => o.Scheme = string.IsNullOrEmpty(v) ? null : v)"
+                       Variant="Variant.Outlined">
+                <MudSelectItem T="string" Value="@string.Empty">—</MudSelectItem>
+                <MudSelectItem T="string" Value="@("http")">http</MudSelectItem>
+                <MudSelectItem T="string" Value="@("https")">https</MudSelectItem>
+            </MudSelect>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <MudItem xs="6">
+            <MudTextField T="string"
+                          Label="@L["ServiceDiscovery_Token"]"
+                          Value="@(Value?.Token)"
+                          ValueChanged="v => Update(o => o.Token = string.IsNullOrWhiteSpace(v) ? null : v)"
+                          Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem xs="6">
+            <MudTextField T="string"
+                          Label="@L["ServiceDiscovery_ConfigurationKey"]"
+                          Value="@(Value?.ConfigurationKey)"
+                          ValueChanged="v => Update(o => o.ConfigurationKey = string.IsNullOrWhiteSpace(v) ? null : v)"
+                          Variant="Variant.Outlined" />
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <MudItem xs="6">
+            <MudNumericField T="int?"
+                             Label="@L["ServiceDiscovery_PollingInterval"]"
+                             Value="Value?.PollingInterval"
+                             ValueChanged="v => Update(o => o.PollingInterval = v)"
+                             Variant="Variant.Outlined"
+                             HelperText="ms" />
+        </MudItem>
+        <MudItem xs="6">
+            <MudTextField T="string"
+                          Label="@L["ServiceDiscovery_Namespace"]"
+                          Value="@(Value?.Namespace)"
+                          ValueChanged="v => Update(o => o.Namespace = string.IsNullOrWhiteSpace(v) ? null : v)"
+                          Variant="Variant.Outlined" />
+        </MudItem>
+    </MudGrid>
+</MudStack>
+
+@code {
+    [Parameter] public ServiceDiscoveryProvider? Value { get; set; }
+    [Parameter] public EventCallback<ServiceDiscoveryProvider?> ValueChanged { get; set; }
+
+    private void Update(Action<ServiceDiscoveryProvider> apply)
+    {
+        var v = Value ?? new ServiceDiscoveryProvider();
+        apply(v);
+        var result = IsEmpty(v) ? null : v;
+        ValueChanged.InvokeAsync(result);
+    }
+
+    private static bool IsEmpty(ServiceDiscoveryProvider o) =>
+        string.IsNullOrWhiteSpace(o.Type) && string.IsNullOrWhiteSpace(o.Host)
+        && o.Port is null && string.IsNullOrWhiteSpace(o.Scheme)
+        && string.IsNullOrWhiteSpace(o.Token) && string.IsNullOrWhiteSpace(o.ConfigurationKey)
+        && o.PollingInterval is null && string.IsNullOrWhiteSpace(o.Namespace)
+        && o.ExtensionData is null;
+}

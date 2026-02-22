@@ -1,1 +1,21 @@
 /* OcelotUI custom styles */
+
+.monaco-editor-container {
+    height: 100%;
+}
+
+/* Resize handle between main content and JSON preview */
+.resize-handle {
+    width: 6px;
+    cursor: col-resize;
+    background: transparent;
+    flex-shrink: 0;
+    align-self: stretch;
+    position: relative;
+    transition: background-color 0.15s;
+}
+
+.resize-handle:hover,
+.resize-handle.dragging {
+    background-color: var(--mud-palette-primary);
+}

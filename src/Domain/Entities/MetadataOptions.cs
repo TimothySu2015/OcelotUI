@@ -10,7 +10,6 @@ public class MetadataOptions
     public List<string>? Separators { get; set; }
     public string? StringSplitOption { get; set; }
     public List<string>? TrimChars { get; set; }
-    public Dictionary<string, string>? Metadata { get; set; }
 
     [JsonExtensionData]
     public Dictionary<string, JsonElement>? ExtensionData { get; set; }

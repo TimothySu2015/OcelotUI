@@ -1,26 +1,43 @@
 @inject NavigationManager Navigation
 
-<MudSelect T="string"
-           Value="@_currentCulture"
-           ValueChanged="OnCultureChanged"
-           Variant="Variant.Text"
-           Margin="Margin.Dense"
-           Dense="true"
-           Style="color: white; min-width: 120px;"
-           Class="ml-auto">
-    <MudSelectItem Value="@("en")">English</MudSelectItem>
-    <MudSelectItem Value="@("zh-TW")">繁體中文</MudSelectItem>
-</MudSelect>
+<MudMenu Icon="@Icons.Material.Filled.Language"
+         Color="Color.Inherit"
+         AriaLabel="Language"
+         Dense="true">
+    @foreach (var (code, label) in _cultures)
+    {
+        var current = code;
+        <MudMenuItem OnClick="@(() => OnCultureChanged(current))">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                @if (current == _currentCulture)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Small" Color="Color.Primary" />
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Small" Style="visibility: hidden;" />
+                }
+                <MudText>@label</MudText>
+            </MudStack>
+        </MudMenuItem>
+    }
+</MudMenu>
 
 @code {
     private string _currentCulture = CultureInfo.CurrentUICulture.Name;
+
+    private static readonly (string Code, string Label)[] _cultures =
+    [
+        ("en", "English"),
+        ("zh-TW", "繁體中文"),
+    ];
 
     private void OnCultureChanged(string culture)
     {
         if (culture == _currentCulture) return;
 
         var uri = new Uri(Navigation.Uri)
-            .GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+            .GetComponents(System.UriComponents.PathAndQuery, UriFormat.Unescaped);
         var encodedCulture = Uri.EscapeDataString(culture);
         var encodedRedirect = Uri.EscapeDataString("/" + uri.TrimStart('/'));
 

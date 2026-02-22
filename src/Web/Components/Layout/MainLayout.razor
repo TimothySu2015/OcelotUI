@@ -1,5 +1,15 @@
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using OcelotUI.Application.Interfaces
+@using OcelotUI.Domain.Entities
 @inherits LayoutComponentBase
 @inject IStringLocalizer<SharedResource> L
+@inject JsonPreviewState PreviewState
+@inject IOcelotConfigurationRepository Repository
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@implements IDisposable
 
 <MudThemeProvider />
 <MudPopoverProvider />
@@ -14,6 +24,25 @@
                        OnClick="ToggleDrawer" />
         <MudText Typo="Typo.h6" Class="ml-3">@L["AppTitle"]</MudText>
         <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Download"
+                       Color="Color.Inherit"
+                       OnClick="ExportAsync"
+                       title="@L["Export_Tooltip"]" />
+        <MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="ImportAsync" Class="d-inline-flex" Style="margin:0;padding:0;">
+            <ActivatorContent>
+                <MudIconButton Icon="@Icons.Material.Filled.Upload"
+                               Color="Color.Inherit"
+                               title="@L["Import_Tooltip"]" />
+            </ActivatorContent>
+        </MudFileUpload>
+        <MudIconButton Icon="@Icons.Material.Filled.DataObject"
+                       Color="@(PreviewState.IsOpen ? Color.Warning : Color.Inherit)"
+                       OnClick="PreviewState.Toggle"
+                       title="@L["JsonPreview_Toggle"]" />
+        <MudIconButton Icon="@Icons.Material.Filled.MenuBook"
+                       Color="Color.Inherit"
+                       Href="/guide"
+                       title="@L["Nav_Guide"]" />
         <CultureSelector />
     </MudAppBar>
 
@@ -21,13 +50,84 @@
         <NavMenu />
     </MudDrawer>
 
-    <MudMainContent Class="pa-4">
-        @Body
+    <MudMainContent Style="padding: 16px; padding-top: 80px;">
+        <div style="display: flex; align-items: flex-start;">
+            <div style="flex: 1; min-width: 0;">
+                @Body
+            </div>
+            @if (PreviewState.IsOpen)
+            {
+                <div class="resize-handle" onmousedown="window.startPanelResize(event)"></div>
+                <div id="json-preview-panel" style="width: 480px; flex-shrink: 0;">
+                    <JsonPreviewPanel />
+                </div>
+            }
+        </div>
     </MudMainContent>
 </MudLayout>
 
 @code {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
+
     private bool _drawerOpen = true;
 
+    protected override void OnInitialized()
+    {
+        PreviewState.OnChange += OnPreviewStateChanged;
+    }
+
+    private void OnPreviewStateChanged() => InvokeAsync(StateHasChanged);
+
     private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
+
+    private async Task ExportAsync()
+    {
+        var config = await Repository.LoadAsync();
+        var json = JsonSerializer.Serialize(config, JsonOptions);
+        await JS.InvokeVoidAsync("downloadFile", "ocelot.json", "application/json", json);
+    }
+
+    private async Task ImportAsync(IBrowserFile file)
+    {
+        try
+        {
+            using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+            using var reader = new StreamReader(stream);
+            var json = await reader.ReadToEndAsync();
+
+            var config = JsonSerializer.Deserialize<OcelotConfiguration>(json, JsonOptions);
+            if (config is null)
+            {
+                Snackbar.Add(L["Import_Failed"], Severity.Error);
+                return;
+            }
+
+            var confirmed = await DialogService.ShowMessageBox(
+                L["Import_Confirm_Title"],
+                L["Import_Confirm_Message"],
+                yesText: L["Confirm"],
+                cancelText: L["Btn_Cancel"]);
+
+            if (confirmed != true)
+                return;
+
+            await Repository.SaveAsync(config);
+            Snackbar.Add(L["Import_Success"], Severity.Success);
+            PreviewState.NotifyChanged();
+        }
+        catch
+        {
+            Snackbar.Add(L["Import_Failed"], Severity.Error);
+        }
+    }
+
+    public void Dispose()
+    {
+        PreviewState.OnChange -= OnPreviewStateChanged;
+    }
 }

@@ -4,53 +4,87 @@
 <MudStack Spacing="3" Class="pa-2">
     <MudGrid>
         <MudItem xs="6">
-            <MudNumericField T="int?"
-                             Label="@L["QoS_BreakDuration"]"
-                             Value="Value?.BreakDuration"
-                             ValueChanged="v => Update(o => o.BreakDuration = v)"
-                             Variant="Variant.Outlined"
-                             HelperText="ms" />
+            <div class="d-flex align-start gap-1">
+                <MudNumericField T="int?"
+                                 Label="@L["QoS_BreakDuration"]"
+                                 Value="Value?.BreakDuration"
+                                 ValueChanged="v => Update(o => o.BreakDuration = v)"
+                                 Variant="Variant.Outlined"
+                                 HelperText="ms"
+                                 Style="flex:1" />
+                <HelpIcon Text="@L["QoS_BreakDuration_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="6">
-            <MudNumericField T="int?"
-                             Label="@L["QoS_MinimumThroughput"]"
-                             Value="Value?.MinimumThroughput"
-                             ValueChanged="v => Update(o => o.MinimumThroughput = v)"
-                             Variant="Variant.Outlined"
-                             Min="2" />
+            <div class="d-flex align-start gap-1">
+                <MudNumericField T="int?"
+                                 Label="@L["QoS_MinimumThroughput"]"
+                                 Value="Value?.MinimumThroughput"
+                                 ValueChanged="v => Update(o => o.MinimumThroughput = v)"
+                                 Variant="Variant.Outlined"
+                                 Min="2"
+                                 Style="flex:1" />
+                <HelpIcon Text="@L["QoS_MinimumThroughput_Desc"]" />
+            </div>
         </MudItem>
     </MudGrid>
     <MudGrid>
         <MudItem xs="4">
-            <MudNumericField T="double?"
-                             Label="@L["QoS_FailureRatio"]"
-                             Value="Value?.FailureRatio"
-                             ValueChanged="v => Update(o => o.FailureRatio = v)"
-                             Variant="Variant.Outlined"
-                             Min="0.0" Max="1.0" Step="0.01" />
+            <div class="d-flex align-start gap-1">
+                <MudNumericField T="double?"
+                                 Label="@L["QoS_FailureRatio"]"
+                                 Value="Value?.FailureRatio"
+                                 ValueChanged="v => Update(o => o.FailureRatio = v)"
+                                 Variant="Variant.Outlined"
+                                 Min="0.0" Max="1.0" Step="0.01"
+                                 Style="flex:1" />
+                <HelpIcon Text="@L["QoS_FailureRatio_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="4">
-            <MudNumericField T="int?"
-                             Label="@L["QoS_SamplingDuration"]"
-                             Value="Value?.SamplingDuration"
-                             ValueChanged="v => Update(o => o.SamplingDuration = v)"
-                             Variant="Variant.Outlined"
-                             HelperText="ms" />
+            <div class="d-flex align-start gap-1">
+                <MudNumericField T="int?"
+                                 Label="@L["QoS_SamplingDuration"]"
+                                 Value="Value?.SamplingDuration"
+                                 ValueChanged="v => Update(o => o.SamplingDuration = v)"
+                                 Variant="Variant.Outlined"
+                                 HelperText="ms"
+                                 Style="flex:1" />
+                <HelpIcon Text="@L["QoS_SamplingDuration_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="4">
-            <MudNumericField T="int?"
-                             Label="@L["QoS_Timeout"]"
-                             Value="Value?.Timeout"
-                             ValueChanged="v => Update(o => o.Timeout = v)"
-                             Variant="Variant.Outlined"
-                             HelperText="ms" />
+            <div class="d-flex align-start gap-1">
+                <MudNumericField T="int?"
+                                 Label="@L["QoS_Timeout"]"
+                                 Value="Value?.Timeout"
+                                 ValueChanged="v => Update(o => o.Timeout = v)"
+                                 Variant="Variant.Outlined"
+                                 HelperText="ms"
+                                 Style="flex:1" />
+                <HelpIcon Text="@L["QoS_Timeout_Desc"]" />
+            </div>
         </MudItem>
     </MudGrid>
+
+    @if (ShowRouteKeys)
+    {
+        <StringListEditor @bind-Items="_routeKeys"
+                          Label="@L["Global_RouteKeys"]"
+                          Placeholder="e.g. route-key" />
+    }
 </MudStack>
 
 @code {
     [Parameter] public QoSOptions? Value { get; set; }
     [Parameter] public EventCallback<QoSOptions?> ValueChanged { get; set; }
+    [Parameter] public bool ShowRouteKeys { get; set; }
+
+    private List<string>? _routeKeys
+    {
+        get => Value?.RouteKeys;
+        set => Update(o => o.RouteKeys = value);
+    }
 
     private void Update(Action<QoSOptions> apply)
     {
@@ -63,5 +97,7 @@
     private static bool IsEmpty(QoSOptions o) =>
         o.BreakDuration is null && o.MinimumThroughput is null
         && o.FailureRatio is null && o.SamplingDuration is null
-        && o.Timeout is null && o.ExtensionData is null;
+        && o.Timeout is null
+        && (o.RouteKeys is null || o.RouteKeys.Count == 0)
+        && o.ExtensionData is null;
 }

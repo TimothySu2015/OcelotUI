@@ -10,6 +10,7 @@ public class QoSOptions
     public double? FailureRatio { get; set; }
     public int? SamplingDuration { get; set; }
     public int? Timeout { get; set; }
+    public List<string>? RouteKeys { get; set; }
 
     [JsonExtensionData]
     public Dictionary<string, JsonElement>? ExtensionData { get; set; }

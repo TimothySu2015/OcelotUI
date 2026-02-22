@@ -10,6 +10,7 @@
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
 @inject IStringLocalizer<SharedResource> L
+@inject IJSRuntime JS
 
 <MudText Typo="Typo.h5" Class="mb-4">
     @(IsNew ? L["Aggregate_NewTitle"] : string.Format(L["Aggregate_EditTitle"], Index))
@@ -47,14 +48,26 @@ else
                                       Label="@L["Aggregate_RouteKeys"]"
                                       Placeholder="e.g. route-key-1" />
 
+                    <HttpMethodSelector @bind-SelectedMethods="_upstreamHttpMethod" />
+
                     <MudTextField T="string"
                                   Label="@L["Aggregate_UpstreamHost"]"
                                   @bind-Value="_aggregate.UpstreamHost"
                                   Variant="Variant.Outlined" />
 
-                    <MudCheckBox T="bool?"
-                                 Label="@L["RouteEdit_CaseSensitive"]"
-                                 @bind-Value="_aggregate.RouteIsCaseSensitive" />
+                    <MudGrid>
+                        <MudItem xs="6">
+                            <MudCheckBox T="bool?"
+                                         Label="@L["RouteEdit_CaseSensitive"]"
+                                         @bind-Value="_aggregate.RouteIsCaseSensitive" />
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudNumericField T="int?"
+                                             Label="@L["RouteEdit_Priority"]"
+                                             @bind-Value="_aggregate.Priority"
+                                             Variant="Variant.Outlined" />
+                        </MudItem>
+                    </MudGrid>
 
                     <MudTextField T="string"
                                   Label="@L["Aggregate_Aggregator"]"
@@ -64,8 +77,19 @@ else
             </MudPaper>
 
             <MudExpansionPanels>
-                <MudExpansionPanel Text="@L["Aggregate_RouteKeysConfig"]">
-                    <AggregateRouteConfigEditor @bind-Items="_aggregate.RouteKeysConfig" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitleWithGuide(L["Aggregate_RouteKeysConfig"], OcelotDocs + "aggregation.html")</TitleContent>
+                    <ChildContent><AggregateRouteConfigEditor @bind-Items="_aggregate.RouteKeysConfig" /></ChildContent>
+                </MudExpansionPanel>
+
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitleWithGuide(L["Aggregate_UpstreamHeaderTemplates"], OcelotDocs + "aggregation.html")</TitleContent>
+                    <ChildContent>
+                        <DictionaryEditor @bind-Items="_aggregate.UpstreamHeaderTemplates"
+                                          Label="@L["Aggregate_UpstreamHeaderTemplates"]"
+                                          KeyPlaceholder="Header"
+                                          ValuePlaceholder="Template" />
+                    </ChildContent>
                 </MudExpansionPanel>
             </MudExpansionPanels>
         </MudStack>
@@ -79,6 +103,12 @@ else
     private OcelotAggregate _aggregate = new();
     private bool _loading = true;
     private bool _saving;
+
+    private List<string> _upstreamHttpMethod
+    {
+        get => _aggregate.UpstreamHttpMethod ??= [];
+        set => _aggregate.UpstreamHttpMethod = value.Count > 0 ? value : null;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -137,4 +167,33 @@ else
     }
 
     private void Cancel() => Navigation.NavigateTo("/aggregates");
+
+    private const string OcelotDocs = "https://ocelot.readthedocs.io/en/latest/features/";
+
+    private RenderFragment PanelTitleWithGuide(string label, string docUrl) => builder =>
+    {
+        builder.OpenComponent<MudStack>(0);
+        builder.AddAttribute(1, "Row", true);
+        builder.AddAttribute(2, "AlignItems", AlignItems.Center);
+        builder.AddAttribute(3, "Spacing", 2);
+        builder.AddAttribute(4, "ChildContent", (RenderFragment)(inner =>
+        {
+            inner.OpenComponent<MudText>(0);
+            inner.AddAttribute(1, "ChildContent", (RenderFragment)(t => t.AddContent(0, label)));
+            inner.CloseComponent();
+            inner.OpenComponent<MudTooltip>(10);
+            inner.AddAttribute(11, "Text", L["Nav_Guide"].Value);
+            inner.AddAttribute(12, "ChildContent", (RenderFragment)(tip =>
+            {
+                tip.OpenComponent<MudIconButton>(0);
+                tip.AddAttribute(1, "Icon", Icons.Material.Outlined.HelpOutline);
+                tip.AddAttribute(2, "Size", Size.Small);
+                tip.AddAttribute(3, "Color", Color.Default);
+                tip.AddAttribute(4, "OnClick", EventCallback.Factory.Create<MouseEventArgs>(this, () => JS.InvokeVoidAsync("open", docUrl, "_blank")));
+                tip.CloseComponent();
+            }));
+            inner.CloseComponent();
+        }));
+        builder.CloseComponent();
+    };
 }

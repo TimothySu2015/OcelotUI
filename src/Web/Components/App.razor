@@ -6,11 +6,59 @@
     <base href="/" />
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <link href="app.css" rel="stylesheet" />
     <HeadOutlet @rendermode="RenderMode.InteractiveServer" />
 </head>
 <body>
     <Routes @rendermode="RenderMode.InteractiveServer" />
     <script src="_framework/blazor.web.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="_content/BlazorMonaco/jsInterop.js"></script>
+    <script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/loader.js"></script>
+    <script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/editor/editor.main.js"></script>
+    <script>
+        window.downloadFile = function(filename, contentType, content) {
+            var blob = new Blob([content], { type: contentType });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+        };
+
+        window.startPanelResize = function(e) {
+            e.preventDefault();
+            var handle = e.currentTarget;
+            var panel = document.getElementById('json-preview-panel');
+            if (!panel) return;
+            var startX = e.clientX;
+            var startWidth = panel.offsetWidth;
+            handle.classList.add('dragging');
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+
+            function onMove(ev) {
+                var delta = startX - ev.clientX;
+                var newWidth = Math.max(280, Math.min(startWidth + delta, window.innerWidth * 0.6));
+                panel.style.width = newWidth + 'px';
+            }
+
+            function onUp() {
+                handle.classList.remove('dragging');
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onUp);
+            }
+
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        };
+    </script>
 </body>
 </html>

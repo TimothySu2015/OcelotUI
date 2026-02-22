@@ -1,32 +1,96 @@
 @page "/guide"
 @inject IStringLocalizer<SharedResource> L
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
 
-<MudText Typo="Typo.h5" Class="mb-4">@L["Guide_Title"]</MudText>
+<MudText Typo="Typo.h5" Class="mb-2">@L["Guide_Title"]</MudText>
+<MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-6">@L["Guide_Subtitle"]</MudText>
 
-<MudTimeline TimelinePosition="TimelinePosition.Start">
-    @for (var i = 1; i <= 7; i++)
+@* ── Quick Start ── *@
+<MudText Typo="Typo.h6" Class="mb-3">@L["Guide_QuickStart"]</MudText>
+
+<MudTimeline TimelinePosition="TimelinePosition.Start" Class="mb-6">
+    @for (var i = 1; i <= 3; i++)
     {
         var step = i;
-        <MudTimelineItem Color="Color.Primary" Variant="Variant.Filled">
+        <MudTimelineItem Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">
             <ItemContent>
-                <MudCard Elevation="1" Class="mb-4">
+                <MudCard Elevation="1" Class="mb-2">
                     <MudCardHeader>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.h6">
-                                @L[$"Guide_Step{step}_Title"]
-                            </MudText>
-                        </CardHeaderContent>
                         <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Primary" Variant="Variant.Filled">@step</MudAvatar>
+                            <MudAvatar Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small">@step</MudAvatar>
                         </CardHeaderAvatar>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.subtitle1">@L[$"Guide_QS{step}_Title"]</MudText>
+                        </CardHeaderContent>
                     </MudCardHeader>
                     <MudCardContent>
-                        <MudText Typo="Typo.body1">
-                            @L[$"Guide_Step{step}_Content"]
-                        </MudText>
+                        <MudText Typo="Typo.body2">@L[$"Guide_QS{step}_Content"]</MudText>
                     </MudCardContent>
                 </MudCard>
             </ItemContent>
         </MudTimelineItem>
     }
 </MudTimeline>
+
+@* ── Feature Reference ── *@
+<MudText Typo="Typo.h6" Class="mb-3">@L["Guide_Reference"]</MudText>
+
+<MudExpansionPanels MultiExpansion="true" Elevation="1" Class="mb-6">
+    @foreach (var item in _sections)
+    {
+        <div id="@item.Id">
+            <MudExpansionPanel>
+                <TitleContent>
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@item.Icon" Size="Size.Small" Color="Color.Primary" />
+                        <MudText Typo="Typo.subtitle1">@L[item.TitleKey]</MudText>
+                    </MudStack>
+                </TitleContent>
+                <ChildContent>
+                    <MudStack Spacing="2" Class="pa-2">
+                        <MudText Typo="Typo.body2" Style="white-space: pre-line">@L[item.ContentKey]</MudText>
+                        @if (item.TipKey is not null)
+                        {
+                            <MudAlert Severity="Severity.Info" Variant="Variant.Text" Dense="true" Class="mt-2">
+                                @L[item.TipKey]
+                            </MudAlert>
+                        }
+                    </MudStack>
+                </ChildContent>
+            </MudExpansionPanel>
+        </div>
+    }
+</MudExpansionPanels>
+
+@code {
+    private sealed record GuideSection(string Id, string Icon, string TitleKey, string ContentKey, string? TipKey = null);
+
+    private static readonly GuideSection[] _sections =
+    [
+        new("guide-routes", Icons.Material.Outlined.AltRoute, "Guide_Routes_Title", "Guide_Routes_Content", "Guide_Routes_Tip"),
+        new("guide-create-route", Icons.Material.Outlined.AddRoad, "Guide_CreateRoute_Title", "Guide_CreateRoute_Content", "Guide_CreateRoute_Tip"),
+        new("guide-route-options", Icons.Material.Outlined.Tune, "Guide_RouteOptions_Title", "Guide_RouteOptions_Content"),
+        new("guide-transform", Icons.Material.Outlined.SwapHoriz, "Guide_Transform_Title", "Guide_Transform_Content", "Guide_Transform_Tip"),
+        new("guide-global-config", Icons.Material.Outlined.SettingsApplications, "Guide_GlobalConfig_Title", "Guide_GlobalConfig_Content", "Guide_GlobalConfig_Tip"),
+        new("guide-dynamic-routes", Icons.Material.Outlined.DynamicFeed, "Guide_DynamicRoutes_Title", "Guide_DynamicRoutes_Content"),
+        new("guide-aggregates", Icons.Material.Outlined.CallMerge, "Guide_Aggregates_Title", "Guide_Aggregates_Content", "Guide_Aggregates_Tip"),
+        new("guide-tips", Icons.Material.Outlined.Lightbulb, "Guide_Tips_Title", "Guide_Tips_Content"),
+    ];
+
+    private bool _firstRender = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_firstRender)
+        {
+            _firstRender = false;
+            var uri = new Uri(Navigation.Uri);
+            if (!string.IsNullOrEmpty(uri.Fragment))
+            {
+                var id = uri.Fragment.TrimStart('#');
+                await JS.InvokeVoidAsync("eval", $"document.getElementById('{id}')?.scrollIntoView({{behavior:'smooth'}})");
+            }
+        }
+    }
+}

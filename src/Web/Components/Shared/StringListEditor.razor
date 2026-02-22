@@ -1,7 +1,10 @@
 @inject IStringLocalizer<SharedResource> L
 
 <MudPaper Class="pa-3" Outlined="true">
-    <MudText Typo="Typo.caption" Class="mb-2">@Label</MudText>
+    <MudText Typo="Typo.caption" Class="mb-2" Style="display:inline-flex;align-items:center;gap:4px;">
+        @Label
+        <HelpIcon Text="@HelpText" />
+    </MudText>
 
     @if (Items is not null && Items.Count > 0)
     {
@@ -42,6 +45,7 @@
     [Parameter] public EventCallback<List<string>?> ItemsChanged { get; set; }
     [Parameter] public string Label { get; set; } = string.Empty;
     [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public string? HelpText { get; set; }
 
     private string? _newItem;
 

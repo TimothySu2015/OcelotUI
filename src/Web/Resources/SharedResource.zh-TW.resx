@@ -24,30 +24,30 @@
 
   <!-- 共用 -->
   <data name="AppTitle" xml:space="preserve"><value>OcelotUI - 配置編輯器</value></data>
-  <data name="Nav_Routes" xml:space="preserve"><value>路由管理</value></data>
-  <data name="Nav_GlobalConfig" xml:space="preserve"><value>全域設定</value></data>
-  <data name="Nav_Aggregates" xml:space="preserve"><value>路由聚合</value></data>
-  <data name="Nav_DynamicRoutes" xml:space="preserve"><value>動態路由</value></data>
-  <data name="Nav_Guide" xml:space="preserve"><value>使用教學</value></data>
-  <data name="Btn_Save" xml:space="preserve"><value>儲存</value></data>
-  <data name="Btn_Cancel" xml:space="preserve"><value>取消</value></data>
-  <data name="Btn_Delete" xml:space="preserve"><value>刪除</value></data>
-  <data name="Btn_Add" xml:space="preserve"><value>新增</value></data>
-  <data name="Saving" xml:space="preserve"><value>儲存中...</value></data>
-  <data name="Confirm" xml:space="preserve"><value>確認</value></data>
+  <data name="Nav_Routes" xml:space="preserve"><value>路由管理 (Routes)</value></data>
+  <data name="Nav_GlobalConfig" xml:space="preserve"><value>全域設定 (Global Config)</value></data>
+  <data name="Nav_Aggregates" xml:space="preserve"><value>路由聚合 (Aggregates)</value></data>
+  <data name="Nav_DynamicRoutes" xml:space="preserve"><value>動態路由 (Dynamic Routes)</value></data>
+  <data name="Nav_Guide" xml:space="preserve"><value>使用教學 (Guide)</value></data>
+  <data name="Btn_Save" xml:space="preserve"><value>儲存 (Save)</value></data>
+  <data name="Btn_Cancel" xml:space="preserve"><value>取消 (Cancel)</value></data>
+  <data name="Btn_Delete" xml:space="preserve"><value>刪除 (Delete)</value></data>
+  <data name="Btn_Add" xml:space="preserve"><value>新增 (Add)</value></data>
+  <data name="Saving" xml:space="preserve"><value>儲存中... (Saving)</value></data>
+  <data name="Confirm" xml:space="preserve"><value>確認 (Confirm)</value></data>
 
   <!-- 路由列表 -->
   <data name="RouteList_Title" xml:space="preserve"><value>Ocelot 路由列表</value></data>
   <data name="RouteList_Search" xml:space="preserve"><value>依上游路徑搜尋...</value></data>
-  <data name="RouteList_AddRoute" xml:space="preserve"><value>新增路由</value></data>
+  <data name="RouteList_AddRoute" xml:space="preserve"><value>新增路由 (Add Route)</value></data>
   <data name="RouteList_Col_Upstream" xml:space="preserve"><value>上游</value></data>
   <data name="RouteList_Col_Downstream" xml:space="preserve"><value>下游</value></data>
   <data name="RouteList_Col_Key" xml:space="preserve"><value>鍵值</value></data>
   <data name="RouteList_Col_Actions" xml:space="preserve"><value>操作</value></data>
-  <data name="RouteList_DeleteConfirm" xml:space="preserve"><value>確定要刪除此路由嗎</value></data>
-  <data name="RouteList_DeleteSuccess" xml:space="preserve"><value>路由刪除成功。</value></data>
+  <data name="RouteList_DeleteConfirm" xml:space="preserve"><value>確定要刪除此路由嗎 (Delete this route?)</value></data>
+  <data name="RouteList_DeleteSuccess" xml:space="preserve"><value>路由刪除成功 (Route deleted)</value></data>
   <data name="RouteList_LoadFailed" xml:space="preserve"><value>載入路由失敗。</value></data>
-  <data name="RouteList_ConfirmDeleteTitle" xml:space="preserve"><value>確認刪除</value></data>
+  <data name="RouteList_ConfirmDeleteTitle" xml:space="preserve"><value>確認刪除 (Confirm Delete)</value></data>
 
   <!-- 路由編輯 -->
   <data name="RouteEdit_NewTitle" xml:space="preserve"><value>新增路由</value></data>
@@ -59,6 +59,7 @@
   <data name="RouteEdit_Host" xml:space="preserve"><value>主機（選填）</value></data>
   <data name="RouteEdit_Scheme" xml:space="preserve"><value>協議</value></data>
   <data name="RouteEdit_HttpVersion" xml:space="preserve"><value>HTTP 版本（選填）</value></data>
+  <data name="RouteEdit_DownstreamHttpMethod" xml:space="preserve"><value>下游 HTTP 方法（選填）</value></data>
   <data name="RouteEdit_HostAndPorts" xml:space="preserve"><value>下游主機與端口</value></data>
   <data name="RouteEdit_AddHost" xml:space="preserve"><value>新增主機</value></data>
   <data name="RouteEdit_Options" xml:space="preserve"><value>選項</value></data>
@@ -69,30 +70,35 @@
   <data name="RouteEdit_AcceptAnyCert" xml:space="preserve"><value>接受任何憑證</value></data>
   <data name="RouteEdit_Advanced" xml:space="preserve"><value>進階設定 (JSON)</value></data>
   <data name="RouteEdit_Required" xml:space="preserve"><value>{0} 為必填欄位</value></data>
-  <data name="RouteEdit_SaveSuccess" xml:space="preserve"><value>路由儲存成功。</value></data>
+  <data name="RouteEdit_SaveSuccess" xml:space="preserve"><value>路由儲存成功 (Route saved)</value></data>
   <data name="RouteEdit_NotFound" xml:space="preserve"><value>找不到路由。</value></data>
   <data name="RouteEdit_InvalidJson" xml:space="preserve"><value>JSON 格式無效。</value></data>
-  <data name="RouteEdit_ApplyTemplate" xml:space="preserve"><value>套用範例</value></data>
+  <data name="RouteEdit_ApplyTemplate" xml:space="preserve"><value>套用範例 (Apply Template)</value></data>
   <data name="RouteEdit_TemplateApplied" xml:space="preserve"><value>已套用範例「{0}」。</value></data>
-  <data name="RouteEdit_OverwriteConfirm" xml:space="preserve"><value>目前的資料將被覆蓋，是否繼續？</value></data>
+  <data name="RouteEdit_OverwriteConfirm" xml:space="preserve"><value>目前的資料將被覆蓋，是否繼續？ (Overwrite current data?)</value></data>
   <data name="RouteEdit_JsonHelper" xml:space="preserve"><value>輸入有效的 JSON 或留空</value></data>
   <data name="RouteEdit_Failed" xml:space="preserve"><value>失敗：{0}</value></data>
   <data name="RouteEdit_Port" xml:space="preserve"><value>端口</value></data>
-  <data name="RouteEdit_AuthenticationOptions" xml:space="preserve"><value>認證選項</value></data>
-  <data name="RouteEdit_RateLimitOptions" xml:space="preserve"><value>速率限制選項</value></data>
-  <data name="RouteEdit_LoadBalancerOptions" xml:space="preserve"><value>負載均衡選項</value></data>
-  <data name="RouteEdit_QoSOptions" xml:space="preserve"><value>服務品質選項</value></data>
-  <data name="RouteEdit_CacheOptions" xml:space="preserve"><value>快取選項</value></data>
-  <data name="RouteEdit_HttpHandlerOptions" xml:space="preserve"><value>HTTP 處理器選項</value></data>
-  <data name="RouteEdit_SecurityOptions" xml:space="preserve"><value>安全選項</value></data>
-  <data name="RouteEdit_Metadata" xml:space="preserve"><value>中繼資料</value></data>
-  <data name="RouteEdit_AddHeadersToRequest" xml:space="preserve"><value>新增標頭至請求</value></data>
-  <data name="RouteEdit_AddClaimsToRequest" xml:space="preserve"><value>新增 Claims 至請求</value></data>
-  <data name="RouteEdit_AddQueriesToRequest" xml:space="preserve"><value>新增查詢參數至請求</value></data>
-  <data name="RouteEdit_RouteClaimsRequirement" xml:space="preserve"><value>路由 Claims 需求</value></data>
-  <data name="RouteEdit_UpstreamHeaderTransform" xml:space="preserve"><value>上游標頭轉換</value></data>
-  <data name="RouteEdit_DownstreamHeaderTransform" xml:space="preserve"><value>下游標頭轉換</value></data>
-  <data name="RouteEdit_DelegatingHandlers" xml:space="preserve"><value>委派處理器</value></data>
+  <data name="RouteEdit_AuthenticationOptions" xml:space="preserve"><value>認證選項 (Authentication)</value></data>
+  <data name="RouteEdit_RateLimitOptions" xml:space="preserve"><value>速率限制選項 (Rate Limit)</value></data>
+  <data name="RouteEdit_LoadBalancerOptions" xml:space="preserve"><value>負載均衡選項 (Load Balancer)</value></data>
+  <data name="RouteEdit_QoSOptions" xml:space="preserve"><value>服務品質選項 (QoS)</value></data>
+  <data name="RouteEdit_CacheOptions" xml:space="preserve"><value>快取選項 (Cache)</value></data>
+  <data name="RouteEdit_HttpHandlerOptions" xml:space="preserve"><value>HTTP 處理器選項 (HTTP Handler)</value></data>
+  <data name="RouteEdit_SecurityOptions" xml:space="preserve"><value>安全選項 (Security)</value></data>
+  <data name="RouteEdit_Metadata" xml:space="preserve"><value>中繼資料 (Metadata)</value></data>
+  <data name="RouteEdit_AddHeadersToRequest" xml:space="preserve"><value>新增標頭至請求 (Add Headers To Request)</value></data>
+  <data name="RouteEdit_AddClaimsToRequest" xml:space="preserve"><value>新增 Claims 至請求 (Add Claims To Request)</value></data>
+  <data name="RouteEdit_AddQueriesToRequest" xml:space="preserve"><value>新增查詢參數至請求 (Add Queries To Request)</value></data>
+  <data name="RouteEdit_RouteClaimsRequirement" xml:space="preserve"><value>路由 Claims 需求 (Route Claims Requirement)</value></data>
+  <data name="RouteEdit_UpstreamHeaderTransform" xml:space="preserve"><value>上游標頭轉換 (Upstream Header Transform)</value></data>
+  <data name="RouteEdit_DownstreamHeaderTransform" xml:space="preserve"><value>下游標頭轉換 (Downstream Header Transform)</value></data>
+  <data name="RouteEdit_DelegatingHandlers" xml:space="preserve"><value>委派處理器 (Delegating Handlers)</value></data>
+  <data name="RouteEdit_ServiceName" xml:space="preserve"><value>服務名稱</value></data>
+  <data name="RouteEdit_ServiceNamespace" xml:space="preserve"><value>服務命名空間</value></data>
+  <data name="RouteEdit_RequestIdKey" xml:space="preserve"><value>請求 ID 鍵</value></data>
+  <data name="RouteEdit_UpstreamHeaderTemplates" xml:space="preserve"><value>上游標頭模板</value></data>
+  <data name="RouteEdit_ChangeDownstreamPath" xml:space="preserve"><value>變更下游路徑模板</value></data>
 
   <!-- 認證編輯器 -->
   <data name="Auth_AllowAnonymous" xml:space="preserve"><value>允許匿名存取</value></data>
@@ -164,6 +170,12 @@
   <data name="MetadataOpt_TrimChars" xml:space="preserve"><value>修剪字元</value></data>
   <data name="MetadataOpt_Metadata" xml:space="preserve"><value>中繼資料</value></data>
 
+  <!-- 全域子選項 -->
+  <data name="Global_RouteKeys" xml:space="preserve"><value>路由鍵（套用至特定路由）</value></data>
+
+  <!-- 聚合額外屬性 -->
+  <data name="Aggregate_UpstreamHeaderTemplates" xml:space="preserve"><value>上游標頭模板 (Upstream Header Templates)</value></data>
+
   <!-- 共用編輯器 -->
   <data name="ListEditor_Empty" xml:space="preserve"><value>尚未新增任何項目。</value></data>
   <data name="DictEditor_Empty" xml:space="preserve"><value>尚未新增任何項目。</value></data>
@@ -178,43 +190,95 @@
   <data name="GlobalConfig_HttpVersionPolicy" xml:space="preserve"><value>HTTP 版本策略</value></data>
   <data name="GlobalConfig_Timeout" xml:space="preserve"><value>逾時</value></data>
   <data name="GlobalConfig_RequestIdKey" xml:space="preserve"><value>請求 ID 鍵</value></data>
-  <data name="GlobalConfig_ServiceDiscovery" xml:space="preserve"><value>服務發現</value></data>
-  <data name="GlobalConfig_MetadataOptions" xml:space="preserve"><value>中繼資料選項</value></data>
-  <data name="GlobalConfig_UpstreamHeaderTransform" xml:space="preserve"><value>上游標頭轉換</value></data>
-  <data name="GlobalConfig_DownstreamHeaderTransform" xml:space="preserve"><value>下游標頭轉換</value></data>
-  <data name="GlobalConfig_SaveSuccess" xml:space="preserve"><value>全域設定儲存成功。</value></data>
+  <data name="GlobalConfig_ServiceDiscovery" xml:space="preserve"><value>服務發現 (Service Discovery)</value></data>
+  <data name="GlobalConfig_MetadataOptions" xml:space="preserve"><value>中繼資料選項 (Metadata Options)</value></data>
+  <data name="GlobalConfig_UpstreamHeaderTransform" xml:space="preserve"><value>上游標頭轉換 (Upstream Header Transform)</value></data>
+  <data name="GlobalConfig_DownstreamHeaderTransform" xml:space="preserve"><value>下游標頭轉換 (Downstream Header Transform)</value></data>
+  <data name="GlobalConfig_SaveSuccess" xml:space="preserve"><value>全域設定儲存成功 (Global config saved)</value></data>
 
   <!-- 路由聚合 -->
   <data name="Aggregate_Title" xml:space="preserve"><value>路由聚合</value></data>
-  <data name="Aggregate_Add" xml:space="preserve"><value>新增聚合</value></data>
+  <data name="Aggregate_Add" xml:space="preserve"><value>新增聚合 (Add Aggregate)</value></data>
   <data name="Aggregate_NewTitle" xml:space="preserve"><value>新增聚合</value></data>
   <data name="Aggregate_EditTitle" xml:space="preserve"><value>編輯聚合 #{0}</value></data>
   <data name="Aggregate_UpstreamPath" xml:space="preserve"><value>上游路徑模板</value></data>
   <data name="Aggregate_RouteKeys" xml:space="preserve"><value>路由鍵清單</value></data>
   <data name="Aggregate_UpstreamHost" xml:space="preserve"><value>上游主機</value></data>
   <data name="Aggregate_Aggregator" xml:space="preserve"><value>聚合器</value></data>
-  <data name="Aggregate_RouteKeysConfig" xml:space="preserve"><value>路由鍵進階設定</value></data>
+  <data name="Aggregate_RouteKeysConfig" xml:space="preserve"><value>路由鍵進階設定 (Route Keys Config)</value></data>
   <data name="Aggregate_RouteKey" xml:space="preserve"><value>路由鍵</value></data>
   <data name="Aggregate_JsonPath" xml:space="preserve"><value>JSON 路徑</value></data>
   <data name="Aggregate_Parameter" xml:space="preserve"><value>參數</value></data>
-  <data name="Aggregate_DeleteConfirm" xml:space="preserve"><value>確定要刪除此聚合嗎</value></data>
-  <data name="Aggregate_DeleteSuccess" xml:space="preserve"><value>聚合刪除成功。</value></data>
-  <data name="Aggregate_SaveSuccess" xml:space="preserve"><value>聚合儲存成功。</value></data>
+  <data name="Aggregate_DeleteConfirm" xml:space="preserve"><value>確定要刪除此聚合嗎 (Delete this aggregate?)</value></data>
+  <data name="Aggregate_DeleteSuccess" xml:space="preserve"><value>聚合刪除成功 (Aggregate deleted)</value></data>
+  <data name="Aggregate_SaveSuccess" xml:space="preserve"><value>聚合儲存成功 (Aggregate saved)</value></data>
   <data name="Aggregate_NotFound" xml:space="preserve"><value>找不到聚合。</value></data>
   <data name="Aggregate_LoadFailed" xml:space="preserve"><value>載入聚合失敗。</value></data>
 
   <!-- 動態路由 -->
   <data name="DynamicRoute_Title" xml:space="preserve"><value>動態路由</value></data>
-  <data name="DynamicRoute_Add" xml:space="preserve"><value>新增動態路由</value></data>
+  <data name="DynamicRoute_Add" xml:space="preserve"><value>新增動態路由 (Add Dynamic Route)</value></data>
   <data name="DynamicRoute_NewTitle" xml:space="preserve"><value>新增動態路由</value></data>
   <data name="DynamicRoute_EditTitle" xml:space="preserve"><value>編輯動態路由 #{0}</value></data>
   <data name="DynamicRoute_ServiceName" xml:space="preserve"><value>服務名稱</value></data>
   <data name="DynamicRoute_ServiceNamespace" xml:space="preserve"><value>服務命名空間</value></data>
-  <data name="DynamicRoute_DeleteConfirm" xml:space="preserve"><value>確定要刪除此動態路由嗎</value></data>
-  <data name="DynamicRoute_DeleteSuccess" xml:space="preserve"><value>動態路由刪除成功。</value></data>
-  <data name="DynamicRoute_SaveSuccess" xml:space="preserve"><value>動態路由儲存成功。</value></data>
+  <data name="DynamicRoute_DeleteConfirm" xml:space="preserve"><value>確定要刪除此動態路由嗎 (Delete this route?)</value></data>
+  <data name="DynamicRoute_DeleteSuccess" xml:space="preserve"><value>動態路由刪除成功 (Route deleted)</value></data>
+  <data name="DynamicRoute_SaveSuccess" xml:space="preserve"><value>動態路由儲存成功 (Route saved)</value></data>
   <data name="DynamicRoute_NotFound" xml:space="preserve"><value>找不到動態路由。</value></data>
   <data name="DynamicRoute_LoadFailed" xml:space="preserve"><value>載入動態路由失敗。</value></data>
+
+  <!-- RouteEdit: HttpVersionPolicy 標籤 -->
+  <data name="RouteEdit_HttpVersionPolicy" xml:space="preserve"><value>HTTP 版本策略</value></data>
+
+  <!-- DescriptiveSelect：選項描述 -->
+  <!-- 負載均衡 Type -->
+  <data name="LB_RoundRobin_Desc" xml:space="preserve"><value>依序輪流分配請求至所有主機</value></data>
+  <data name="LB_LeastConnection_Desc" xml:space="preserve"><value>導向目前最少連線的主機</value></data>
+  <data name="LB_CookieStickySessions_Desc" xml:space="preserve"><value>使用 Cookie 維持同一客戶端導向同一主機</value></data>
+  <data name="LB_NoLoadBalancer_Desc" xml:space="preserve"><value>不進行負載均衡，使用第一個可用主機</value></data>
+
+  <!-- 服務發現 Type -->
+  <data name="SD_Consul_Desc" xml:space="preserve"><value>每次請求即時查詢 Consul</value></data>
+  <data name="SD_PollConsul_Desc" xml:space="preserve"><value>定期輪詢 Consul</value></data>
+  <data name="SD_Eureka_Desc" xml:space="preserve"><value>Netflix Eureka 服務註冊中心</value></data>
+  <data name="SD_Kube_Desc" xml:space="preserve"><value>每次請求即時查詢 Kubernetes API</value></data>
+  <data name="SD_PollKube_Desc" xml:space="preserve"><value>定期輪詢 Kubernetes API</value></data>
+  <data name="SD_WatchKube_Desc" xml:space="preserve"><value>使用 Kubernetes Watch API 監控變更</value></data>
+  <data name="SD_ServiceFabric_Desc" xml:space="preserve"><value>Azure Service Fabric 命名服務</value></data>
+
+  <!-- DownstreamHttpVersionPolicy -->
+  <data name="HttpVersionPolicy_RequestVersionExact_Desc" xml:space="preserve"><value>僅使用指定的 HTTP 版本</value></data>
+  <data name="HttpVersionPolicy_RequestVersionOrLower_Desc" xml:space="preserve"><value>使用指定版本或更低版本</value></data>
+  <data name="HttpVersionPolicy_RequestVersionOrHigher_Desc" xml:space="preserve"><value>使用指定版本或更高版本</value></data>
+
+  <!-- NumberStyle -->
+  <data name="NumberStyle_None_Desc" xml:space="preserve"><value>不允許任何特殊格式</value></data>
+  <data name="NumberStyle_Integer_Desc" xml:space="preserve"><value>整數（含正負號和空白）</value></data>
+  <data name="NumberStyle_HexNumber_Desc" xml:space="preserve"><value>十六進位數字</value></data>
+  <data name="NumberStyle_Number_Desc" xml:space="preserve"><value>數字（含群組分隔和小數點）</value></data>
+  <data name="NumberStyle_Float_Desc" xml:space="preserve"><value>浮點數（含小數和科學記號）</value></data>
+  <data name="NumberStyle_Currency_Desc" xml:space="preserve"><value>貨幣格式（含貨幣符號）</value></data>
+  <data name="NumberStyle_Any_Desc" xml:space="preserve"><value>所有數字格式</value></data>
+
+  <!-- StringSplitOption -->
+  <data name="StringSplitOption_None_Desc" xml:space="preserve"><value>結果包含空白項目</value></data>
+  <data name="StringSplitOption_RemoveEmptyEntries_Desc" xml:space="preserve"><value>排除空白項目</value></data>
+  <data name="StringSplitOption_TrimEntries_Desc" xml:space="preserve"><value>修剪每個項目的空白字元</value></data>
+
+  <!-- 匯入 / 匯出 -->
+  <data name="Export_Tooltip" xml:space="preserve"><value>匯出設定 (Export)</value></data>
+  <data name="Import_Tooltip" xml:space="preserve"><value>匯入設定 (Import)</value></data>
+  <data name="Import_Confirm_Title" xml:space="preserve"><value>確認匯入 (Confirm Import)</value></data>
+  <data name="Import_Confirm_Message" xml:space="preserve"><value>這將取代所有現有設定，確定要繼續嗎？ (This will replace all current settings.)</value></data>
+  <data name="Import_Success" xml:space="preserve"><value>設定匯入成功 (Import successful)</value></data>
+  <data name="Import_Failed" xml:space="preserve"><value>匯入失敗：JSON 格式無效 (Import failed: invalid JSON)</value></data>
+
+  <!-- JSON 預覽 -->
+  <data name="JsonPreview_Title" xml:space="preserve"><value>JSON 預覽</value></data>
+  <data name="JsonPreview_Toggle" xml:space="preserve"><value>切換 JSON 預覽 (JSON Preview)</value></data>
+  <data name="JsonPreview_Copied" xml:space="preserve"><value>已複製到剪貼簿 (Copied)</value></data>
+  <data name="JsonPreview_Refresh" xml:space="preserve"><value>重新載入 (Refresh)</value></data>
 
   <!-- Tooltips -->
   <data name="Tip_UpstreamPath" xml:space="preserve"><value>Ocelot 用來比對客戶端請求的 URL 模式。支援佔位符如 {id} 及萬用字元 {everything}。</value></data>
@@ -223,11 +287,15 @@
   <data name="Tip_DownstreamPath" xml:space="preserve"><value>Ocelot 將請求轉發至下游服務的 URL 路徑。使用與上游相同的佔位符。</value></data>
   <data name="Tip_Scheme" xml:space="preserve"><value>與下游服務通訊使用的協定：https、http、ws（WebSocket）或 wss（安全 WebSocket）。</value></data>
   <data name="Tip_HttpVersion" xml:space="preserve"><value>下游請求使用的 HTTP 版本。常用值：1.1、2.0。留空使用預設值。</value></data>
+  <data name="Tip_DownstreamHttpMethod" xml:space="preserve"><value>覆寫下游請求的 HTTP 方法。例如將上游 GET 轉為下游 POST。留空則使用與上游相同的方法。</value></data>
   <data name="Tip_HostAndPorts" xml:space="preserve"><value>目標伺服器位址。新增多個主機可實現負載均衡。每筆需填主機名稱與連接埠。</value></data>
   <data name="Tip_Key" xml:space="preserve"><value>此路由的唯一識別碼。使用服務發現或路由聚合時為必填。</value></data>
   <data name="Tip_Priority" xml:space="preserve"><value>路由比對優先順序。數字越小優先權越高。當多條路由可能匹配同一請求時使用。</value></data>
   <data name="Tip_Timeout" xml:space="preserve"><value>等待下游回應的最長時間（秒）。超過此時間將逾時中斷。</value></data>
   <data name="Tip_CaseSensitive" xml:space="preserve"><value>URL 路徑比對是否區分大小寫。預設為否（不區分大小寫）。</value></data>
+  <data name="Tip_ServiceName" xml:space="preserve"><value>服務發現用的服務名稱。搭配全域設定中的 ServiceDiscoveryProvider 使用。</value></data>
+  <data name="Tip_ServiceNamespace" xml:space="preserve"><value>服務的 Kubernetes 命名空間。僅用於 Kube 系列服務發現。</value></data>
+  <data name="Tip_RequestIdKey" xml:space="preserve"><value>請求關聯 ID 的 Header 名稱。覆蓋此路由的全域 RequestIdKey。</value></data>
   <data name="Tip_AcceptAnyCert" xml:space="preserve"><value>接受下游的任何 SSL/TLS 憑證，包括自簽憑證。僅建議在開發環境使用。</value></data>
   <data name="Tip_AuthenticationOptions" xml:space="preserve"><value>設定此路由的驗證提供者與允許的範圍 (Scopes)。</value></data>
   <data name="Tip_AuthorizationOptions" xml:space="preserve"><value>定義存取此路由所需的 Claims 與允許值。</value></data>
@@ -254,20 +322,243 @@
   <data name="Template_LoadBalanced" xml:space="preserve"><value>負載均衡</value></data>
   <data name="Template_LoadBalanced_Desc" xml:space="preserve"><value>多目標主機負載均衡</value></data>
 
-  <!-- 使用教學 -->
+  <!-- 使用教學：標題 -->
   <data name="Guide_Title" xml:space="preserve"><value>使用教學</value></data>
-  <data name="Guide_Step1_Title" xml:space="preserve"><value>什麼是 Ocelot？</value></data>
-  <data name="Guide_Step1_Content" xml:space="preserve"><value>Ocelot 是 .NET 的 API Gateway 框架。它使用 ocelot.json 來定義路由規則，將客戶端的請求映射到下游服務。</value></data>
-  <data name="Guide_Step2_Title" xml:space="preserve"><value>設定檔案路徑</value></data>
-  <data name="Guide_Step2_Content" xml:space="preserve"><value>在 appsettings.json 中設定 OcelotConfig.FilePath，指向你的 ocelot.json 檔案位置。預設路徑為應用程式目錄下的 "ocelot.json"。</value></data>
-  <data name="Guide_Step3_Title" xml:space="preserve"><value>路由基礎</value></data>
-  <data name="Guide_Step3_Content" xml:space="preserve"><value>每條路由將上游路徑（客戶端請求）映射到下游路徑（目標服務）。例如，/api/users/* 可以路由到內部的 user-service。</value></data>
-  <data name="Guide_Step4_Title" xml:space="preserve"><value>管理路由</value></data>
-  <data name="Guide_Step4_Content" xml:space="preserve"><value>使用路由列表頁面檢視所有已設定的路由。點擊編輯圖示修改路由，或點擊刪除圖示移除路由。</value></data>
-  <data name="Guide_Step5_Title" xml:space="preserve"><value>建立路由</value></data>
-  <data name="Guide_Step5_Content" xml:space="preserve"><value>點擊「新增路由」建立新的路由。填寫上游和下游設定，或使用「套用範例」快速從預定義的範例開始。</value></data>
-  <data name="Guide_Step6_Title" xml:space="preserve"><value>進階設定</value></data>
-  <data name="Guide_Step6_Content" xml:space="preserve"><value>展開「選項」和「進階設定」區塊，可以使用原始 JSON 設定認證、限流、負載均衡、快取、QoS 和安全選項。</value></data>
-  <data name="Guide_Step7_Title" xml:space="preserve"><value>儲存變更</value></data>
-  <data name="Guide_Step7_Content" xml:space="preserve"><value>點擊儲存，變更會直接寫回 ocelot.json 檔案。檔案使用原子寫入方式，避免資料損毀。</value></data>
+  <data name="Guide_Subtitle" xml:space="preserve"><value>OcelotUI 是 Ocelot API Gateway 配置檔（ocelot.json）的視覺化編輯器。Ocelot 依據 URL 模式、HTTP 方法和標頭，將客戶端請求轉發至下游服務。</value></data>
+  <data name="Guide_QuickStart" xml:space="preserve"><value>快速開始</value></data>
+  <data name="Guide_Reference" xml:space="preserve"><value>功能參考</value></data>
+
+  <!-- 使用教學：快速開始 -->
+  <data name="Guide_QS1_Title" xml:space="preserve"><value>設定配置檔路徑</value></data>
+  <data name="Guide_QS1_Content" xml:space="preserve"><value>在 appsettings.json 中設定 "OcelotConfig": { "FilePath": "ocelot.json 的路徑" }。預設路徑為應用程式目錄下的 "ocelot.json"。OcelotUI 會直接讀寫這個檔案。</value></data>
+  <data name="Guide_QS2_Title" xml:space="preserve"><value>建立第一條路由</value></data>
+  <data name="Guide_QS2_Content" xml:space="preserve"><value>前往「路由管理」頁面，點擊「新增路由」。填入上游路徑（例如 /api/users/{everything}）和下游路徑（例如 /users/{everything}），選擇協議（https），並新增下游主機與端口，然後點擊儲存。</value></data>
+  <data name="Guide_QS3_Title" xml:space="preserve"><value>驗證並調整</value></data>
+  <data name="Guide_QS3_Content" xml:space="preserve"><value>所有變更都會透過原子寫入直接儲存至 ocelot.json 檔案，防止資料損毀。重新載入 Ocelot 閘道器以套用新配置。之後可持續調整路由、新增選項或設定全域預設值。</value></data>
+
+  <!-- 使用教學：路由 -->
+  <data name="Guide_Routes_Title" xml:space="preserve"><value>路由</value></data>
+  <data name="Guide_Routes_Content" xml:space="preserve"><value>路由是 Ocelot 的核心。每條路由定義了客戶端請求（上游）如何映射到後端服務（下游）。
+
+上游設定 — 決定要匹配什麼：
+  - 路徑模板：URL 模式，支援佔位符如 {id} 或萬用字元 {everything}
+  - HTTP 方法：接受哪些動詞（GET、POST 等）。留空表示匹配所有方法
+  - 主機：選填的 Host 標頭篩選
+
+下游設定 — 決定轉發到哪裡：
+  - 路徑模板：目標 URL 路徑（使用與上游相同的佔位符）
+  - 協議：通訊協定（https、http、ws、wss）
+  - 主機與端口：一個或多個目標伺服器位址
+  - HTTP 版本：1.1 或 2.0（選填）
+
+其他欄位：
+  - 鍵值（Key）：此路由的唯一識別碼（使用聚合或引用速率限制時必填）
+  - 優先級：數字越大越先匹配，當多條路由可能匹配同一請求時使用
+  - 逾時：等待下游回應的最長時間（秒）
+  - 服務名稱 / 命名空間：用於服務發現整合</value></data>
+  <data name="Guide_Routes_Tip" xml:space="preserve"><value>使用 {everything} 作為萬用佔位符來代理完整路徑。範例：上游 /api/{everything} 搭配下游 /{everything} 可轉發所有子路徑。</value></data>
+
+  <!-- 使用教學：建立路由 -->
+  <data name="Guide_CreateRoute_Title" xml:space="preserve"><value>建立與管理路由</value></data>
+  <data name="Guide_CreateRoute_Content" xml:space="preserve"><value>路由管理頁面列出所有已設定的路由，您可以：
+  - 點擊「新增路由」從零開始建立
+  - 點擊任一路由的編輯圖示進行修改
+  - 點擊刪除圖示移除路由
+
+建立新路由時，可使用「套用範例」快速填入常見模式：
+  - 基本 REST API：GET/POST/PUT/DELETE 代理
+  - WebSocket：wss 即時連線代理
+  - 萬用路徑：使用 {everything} 轉發整個服務路徑
+  - 限流 API：預設速率限制的 API 代理
+  - 認證 API：含認證設定的路由
+  - 負載均衡：多目標主機負載均衡
+
+範例會預填表單，儲存前您可自由修改任何欄位。</value></data>
+  <data name="Guide_CreateRoute_Tip" xml:space="preserve"><value>套用範例會覆蓋現有表單資料。如果您已開始編輯，系統會先顯示確認提示。</value></data>
+
+  <!-- 使用教學：路由選項 -->
+  <data name="Guide_RouteOptions_Title" xml:space="preserve"><value>路由選項（子屬性）</value></data>
+  <data name="Guide_RouteOptions_Content" xml:space="preserve"><value>每條路由可設定選用的子屬性來控制進階行為。在路由編輯器中展開對應面板即可設定：
+
+認證選項（Authentication Options）
+  指定認證方案（如 Bearer、JWT）。多個金鑰依序嘗試。設定 AllowedScopes 可依 OAuth 範圍限制存取。
+
+速率限制選項（Rate Limit Options）
+  控制請求頻率：設定限制次數（Limit）和週期（Period，如 1m、1h）。新增客戶端白名單可豁免特定客戶端。ClientIdHeader（預設 Oc-Client）用於識別請求來源。
+
+負載均衡選項（Load Balancer Options）
+  將請求分散至多個下游主機：輪詢（RoundRobin）、最少連線（LeastConnection）、Cookie 黏著（CookieStickySessions）或不啟用（NoLoadBalancer）。
+
+服務品質選項（QoS Options）
+  設定斷路器：當 FailureRatio 在 SamplingDuration 內被超過時，斷路器開啟 BreakDuration。Timeout 設定每次請求的毫秒級期限。
+
+快取選項（Cache Options）
+  快取下游回應。TtlSeconds 控制快取存活時間。設定 Region 名稱可群組化快取清除。EnableContentHashing 將請求本體納入快取鍵（適用於 POST）。
+
+HTTP 處理器選項（HTTP Handler Options）
+  微調 HTTP 客戶端：允許自動重導向、啟用 Cookie 容器、使用代理、啟用分散式追蹤，以及設定連線池限制。
+
+安全選項（Security Options）
+  依客戶端 IP 限制存取。設定 IP 允許清單和/或封鎖清單，支援單一 IP 或 CIDR 格式（如 10.0.0.0/24）。ExcludeAllowedFromBlocked 可從封鎖清單中排除已允許的 IP。</value></data>
+
+  <!-- 使用教學：轉換 -->
+  <data name="Guide_Transform_Title" xml:space="preserve"><value>標頭與 Claims 轉換</value></data>
+  <data name="Guide_Transform_Content" xml:space="preserve"><value>路由支援多個字典欄位來轉換請求和回應：
+
+上游標頭轉換（Upstream Header Transform）
+  在轉發至下游前修改標頭。可用佔位符：{RemoteIpAddress}、{TraceId}、{UpstreamHost}、{BaseUrl}、{DownstreamBaseUrl}。
+  範例：X-Forwarded-For = {RemoteIpAddress}
+
+下游標頭轉換（Downstream Header Transform）
+  收到下游回應後修改標頭再回傳給客戶端。支援查找替換。
+  範例：Location = "http://internal/, http://public/" 會替換 Location 標頭中的內部網址。
+
+上游標頭模板（Upstream Header Templates）
+  依特定標頭值匹配路由。只有帶有匹配標頭的請求才會使用此路由。
+
+路由 Claims 需求（Route Claims Requirement）
+  要求特定的 JWT Claims 才能存取。Key = Claim 類型、Value = 必要值。不符合時回傳 403 Forbidden。
+
+新增 Claims / 標頭 / 查詢參數至請求
+  從 JWT Claims 提取值，注入為新的 Claims、HTTP 標頭或查詢參數。
+  語法：Claims[ClaimType] > value[index] > delimiter
+  範例：UserId = Claims[sub] > value[1] > |
+
+變更下游路徑模板（Change Downstream Path Template）
+  將從 JWT Claims 提取的值替換至下游路徑中的佔位符。</value></data>
+  <data name="Guide_Transform_Tip" xml:space="preserve"><value>Claims 轉換在認證之後執行。使用 Claims 相關功能前，請先確認路由已設定認證選項。</value></data>
+
+  <!-- 使用教學：全域設定 -->
+  <data name="Guide_GlobalConfig_Title" xml:space="preserve"><value>全域設定</value></data>
+  <data name="Guide_GlobalConfig_Content" xml:space="preserve"><value>全域設定為所有路由提供預設值。路由層級的設定永遠會覆蓋全域預設值。
+
+基本設定：BaseUrl（閘道器的外部 URL）、預設下游協議、HTTP 版本、逾時和 RequestIdKey。
+
+子屬性預設值：可設定認證、速率限制、負載均衡、QoS、快取、HTTP 處理器和安全的全域預設。每個子屬性支援「路由鍵」欄位，限定哪些路由繼承該設定。
+
+服務發現：設定提供者（Consul、Eureka、Kube 等），讓路由可依服務名稱引用，而非寫死主機和端口。依需求設定 Host、Port、Scheme、Token 和 PollingInterval。
+
+中繼資料選項：設定中繼資料字串值解析為型別值的方式 — Culture、NumberStyle、Separators、StringSplitOption 和 TrimChars。
+
+標頭轉換：全域的上游/下游標頭轉換套用至所有靜態路由。
+
+中繼資料：全域鍵值對，可在自訂中介軟體中存取。路由層級的中繼資料會覆蓋相同鍵值。</value></data>
+  <data name="Guide_GlobalConfig_Tip" xml:space="preserve"><value>在全域子屬性上使用「路由鍵」可限定只套用到特定路由。留空路由鍵則套用至所有路由。</value></data>
+
+  <!-- 使用教學：動態路由 -->
+  <data name="Guide_DynamicRoutes_Title" xml:space="preserve"><value>動態路由</value></data>
+  <data name="Guide_DynamicRoutes_Content" xml:space="preserve"><value>動態路由搭配服務發現運作，無需預定義路徑模板。您只需註冊一個 ServiceName，Ocelot 會在執行期間自動解析目標主機和端口。
+
+適合使用的情境：
+  - 服務會動態註冊和註銷（例如在 Kubernetes 或 Consul 中）
+  - 不想為每個微服務維護靜態路由
+  - 主機位址經常變動
+
+動態路由支援：認證、速率限制、負載均衡、QoS、快取、HTTP 處理器選項和中繼資料 — 與靜態路由相同的子屬性（安全選項除外）。
+
+使用方式：先在全域設定中配置 ServiceDiscoveryProvider，再新增動態路由並指定目標 ServiceName。</value></data>
+
+  <!-- 使用教學：聚合 -->
+  <data name="Guide_Aggregates_Title" xml:space="preserve"><value>路由聚合</value></data>
+  <data name="Guide_Aggregates_Content" xml:space="preserve"><value>聚合將多條路由的回應合併為單一 JSON 回應，減少客戶端的往返次數，一次取得多個後端服務的資料。
+
+設定步驟：
+  1. 確保每條來源路由都有唯一的 Key（在路由編輯器中設定）
+  2. 建立聚合，設定唯一的上游路徑模板（UpstreamPathTemplate）
+  3. 將那些路由的 Key 加入路由鍵清單（RouteKeys）
+
+路由鍵進階設定（RouteKeysConfig，選填）可實現鏈式請求 — 前一個路由的回應輸出作為下一個路由的輸入。設定 JsonPath 從第一個回應中提取值，Parameter 將其注入第二個路由的路徑。
+
+範例：先取得留言列表，再用每則留言的 authorId 取得使用者資訊。JsonPath "$[*].authorId" 提取 ID，Parameter "userId" 映射至第二個路由 {userId} 佔位符。</value></data>
+  <data name="Guide_Aggregates_Tip" xml:space="preserve"><value>聚合僅支援 GET 請求。回應的 Content-Type 固定為 application/json，且各路由的回應標頭不會被保留。</value></data>
+
+  <!-- 使用教學：秘訣 -->
+  <data name="Guide_Tips_Title" xml:space="preserve"><value>秘訣與最佳實踐</value></data>
+  <data name="Guide_Tips_Content" xml:space="preserve"><value>儲存：所有變更透過原子檔案操作直接寫入 ocelot.json。Ocelot 閘道器需要重新啟動或設定檔案監視才能載入編輯後的配置。
+
+優先級：當多條路由可能匹配同一請求時，使用 Priority 控制匹配順序。數字越大越優先。萬用路由應設為 Priority 0（預設值）。
+
+佔位符：在路徑模板中使用 {placeholder} 擷取路徑片段。上游和下游模板必須使用相同的佔位符名稱。使用 {everything} 匹配剩餘的完整路徑。
+
+逾時優先順序：QoS Timeout（毫秒）最優先，其次是 Route Timeout（秒），再來是 Global Timeout（秒），最後是預設的 90 秒。
+
+委派處理器：在 DelegatingHandlers 清單中新增自訂 HttpMessageHandler 類別名稱。處理器會依序為每個通過此路由的請求執行。
+
+未知屬性：編輯器會保留它不認識的 JSON 屬性。這確保了向前相容性 — 自訂或較新版本的屬性在儲存時不會遺失。</value></data>
+
+  <!-- 屬性描述 Tooltips -->
+  <!-- CacheOptions -->
+  <data name="Cache_TtlSeconds_Desc" xml:space="preserve"><value>快取存活時間（秒）。從加入快取起計算的絕對過期時間。0 = 停用。</value></data>
+  <data name="Cache_Region_Desc" xml:space="preserve"><value>快取區域名稱，供管理 API 清除快取使用。</value></data>
+  <data name="Cache_Header_Desc" xml:space="preserve"><value>Ocelot 快取控制 Header 名稱。不同的值會產生不同的快取鍵。</value></data>
+  <data name="Cache_EnableContentHashing_Desc" xml:space="preserve"><value>將請求 Body 雜湊納入快取鍵。建議用於 POST/PUT 路由。</value></data>
+
+  <!-- QoSOptions -->
+  <data name="QoS_BreakDuration_Desc" xml:space="preserve"><value>熔斷器開啟後持續時間，之後重置（500–86,400,000 ms）。</value></data>
+  <data name="QoS_MinimumThroughput_Desc" xml:space="preserve"><value>取樣期間內最少請求量才觸發熔斷判斷（≥ 2）。</value></data>
+  <data name="QoS_FailureRatio_Desc" xml:space="preserve"><value>失敗/成功比率達此值即觸發熔斷（0.0 &lt; x ≤ 1.0）。</value></data>
+  <data name="QoS_SamplingDuration_Desc" xml:space="preserve"><value>失敗率取樣視窗（500–86,400,000 ms）。</value></data>
+  <data name="QoS_Timeout_Desc" xml:space="preserve"><value>預設請求逾時，單位毫秒（10–86,400,000 ms）。</value></data>
+
+  <!-- LoadBalancerOptions -->
+  <data name="LoadBalancer_Type_Desc" xml:space="preserve"><value>負載平衡類型。必填欄位。</value></data>
+  <data name="LoadBalancer_Key_Desc" xml:space="preserve"><value>Sticky session 的 Cookie 名稱。僅用於 CookieStickySessions。</value></data>
+  <data name="LoadBalancer_Expiry_Desc" xml:space="preserve"><value>Session 黏著持續時間（毫秒）。每次請求時重新計算。預設：1,200,000（20 分鐘）。</value></data>
+
+  <!-- RateLimitOptions -->
+  <data name="RateLimit_Enable_Desc" xml:space="preserve"><value>控制此路由是否啟用速率限制。</value></data>
+  <data name="RateLimit_Limit_Desc" xml:space="preserve"><value>在指定 Period 內允許的最大請求數。</value></data>
+  <data name="RateLimit_Period_Desc" xml:space="preserve"><value>請求計數的時間視窗。格式：數字 + 單位（ms/s/m/h/d）。</value></data>
+  <data name="RateLimit_Wait_Desc" xml:space="preserve"><value>配額用盡後封鎖請求的持續時間。格式同 Period。</value></data>
+  <data name="RateLimit_ClientIdHeader_Desc" xml:space="preserve"><value>包含客戶端識別碼的 HTTP Header。預設："Oc-Client"。</value></data>
+  <data name="RateLimit_ClientWhitelist_Desc" xml:space="preserve"><value>免受速率限制的客戶端識別碼清單。</value></data>
+  <data name="RateLimit_EnableHeaders_Desc" xml:space="preserve"><value>是否在回應中包含 X-RateLimit-* 和 Retry-After Header。</value></data>
+  <data name="RateLimit_StatusCode_Desc" xml:space="preserve"><value>超出限額時的 HTTP 狀態碼。預設：429。</value></data>
+  <data name="RateLimit_QuotaMessage_Desc" xml:space="preserve"><value>超出配額時的自訂訊息。支援 {0}（請求數）和 {1}（Period）。</value></data>
+  <data name="RateLimit_KeyPrefix_Desc" xml:space="preserve"><value>速率限制計數器的快取鍵前綴。預設："Ocelot.RateLimiting"。</value></data>
+
+  <!-- AuthenticationOptions -->
+  <data name="Auth_AllowAnonymous_Desc" xml:space="preserve"><value>設為 true 時，此路由排除在全域驗證之外。</value></data>
+  <data name="Auth_ProviderKeys_Desc" xml:space="preserve"><value>驗證提供者 Scheme 陣列。依序嘗試，先成功者生效。</value></data>
+  <data name="Auth_ProviderKey_Desc" xml:space="preserve"><value>已於 v24.1 棄用。請改用 Authentication Provider Keys。</value></data>
+  <data name="Auth_AllowedScopes_Desc" xml:space="preserve"><value>Token 的 scope claim 中至少需匹配一個指定的範圍。</value></data>
+
+  <!-- HttpHandlerOptions -->
+  <data name="HttpHandler_AllowAutoRedirect_Desc" xml:space="preserve"><value>自動跟隨 HTTP 3xx 重導向。</value></data>
+  <data name="HttpHandler_UseCookieContainer_Desc" xml:space="preserve"><value>啟用下游請求的 Cookie 持久化。</value></data>
+  <data name="HttpHandler_UseProxy_Desc" xml:space="preserve"><value>使用系統代理設定進行下游請求。</value></data>
+  <data name="HttpHandler_UseTracing_Desc" xml:space="preserve"><value>啟用分散式追蹤處理程式整合。</value></data>
+  <data name="HttpHandler_MaxConnections_Desc" xml:space="preserve"><value>每個下游伺服器的最大並行連線數。</value></data>
+  <data name="HttpHandler_PooledLifetime_Desc" xml:space="preserve"><value>連線池連線重用時間（秒）。預設：120。</value></data>
+
+  <!-- ServiceDiscoveryProvider -->
+  <data name="ServiceDiscovery_Type_Desc" xml:space="preserve"><value>服務發現提供者實作類型。</value></data>
+  <data name="ServiceDiscovery_Host_Desc" xml:space="preserve"><value>服務發現伺服器主機名稱或 IP 位址。</value></data>
+  <data name="ServiceDiscovery_Port_Desc" xml:space="preserve"><value>服務發現伺服器埠號。預設：8500（Consul）。</value></data>
+  <data name="ServiceDiscovery_Scheme_Desc" xml:space="preserve"><value>連線至服務發現提供者的協定（http/https）。</value></data>
+  <data name="ServiceDiscovery_Token_Desc" xml:space="preserve"><value>ACL 保護的 Consul 實體的驗證 Token。</value></data>
+  <data name="ServiceDiscovery_ConfigurationKey_Desc" xml:space="preserve"><value>Consul KV Store 中儲存/讀取配置的鍵。</value></data>
+  <data name="ServiceDiscovery_PollingInterval_Desc" xml:space="preserve"><value>PollConsul/PollKube 提供者的輪詢頻率（毫秒）。</value></data>
+  <data name="ServiceDiscovery_Namespace_Desc" xml:space="preserve"><value>Kubernetes 命名空間。Consul 不支援。</value></data>
+
+  <!-- 範例面板 -->
+  <data name="Example_Show" xml:space="preserve"><value>顯示範例</value></data>
+  <data name="Example_Hide" xml:space="preserve"><value>隱藏範例</value></data>
+
+  <!-- 分類標籤 -->
+  <data name="Tag_Common" xml:space="preserve"><value>常用</value></data>
+  <data name="Tag_Advanced" xml:space="preserve"><value>進階</value></data>
+
+  <!-- 驗證警告 -->
+  <data name="Warn_NoDownstreamHost" xml:space="preserve"><value>未設定下游主機或服務名稱，路由將無法轉發請求。</value></data>
+  <data name="Warn_NoHttpMethod" xml:space="preserve"><value>未指定 HTTP 方法，此路由將匹配所有方法。</value></data>
+  <data name="Warn_RateLimitIncomplete" xml:space="preserve"><value>已啟用限流但未設定 Period 或 Limit。</value></data>
+  <data name="Warn_AuthNoProvider" xml:space="preserve"><value>已設定認證但未指定認證提供者。</value></data>
+
+  <!-- MetadataOptions -->
+  <data name="MetadataOpt_CurrentCulture_Desc" xml:space="preserve"><value>用於解析 Metadata 值的文化資訊（CultureInfo）。</value></data>
+  <data name="MetadataOpt_NumberStyle_Desc" xml:space="preserve"><value>數值型 Metadata 解析的數字格式（NumberStyles）。</value></data>
+  <data name="MetadataOpt_Separators_Desc" xml:space="preserve"><value>分割 Metadata 值的分隔符號。預設：逗號。</value></data>
+  <data name="MetadataOpt_StringSplitOption_Desc" xml:space="preserve"><value>Metadata 值分割的 StringSplitOptions。</value></data>
+  <data name="MetadataOpt_TrimChars_Desc" xml:space="preserve"><value>從解析的 Metadata 值中修剪的字元。預設：空白。</value></data>
 </root>

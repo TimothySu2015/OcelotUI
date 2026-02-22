@@ -1,0 +1,12 @@
+@if (!string.IsNullOrEmpty(Text))
+{
+    <MudTooltip Text="@Text" Placement="Placement.Top" Arrow="true">
+        <MudIcon Icon="@Icons.Material.Outlined.Info"
+                 Size="Size.Small"
+                 Class="mud-warning-text"
+                 Style="cursor:help;flex-shrink:0;" />
+    </MudTooltip>
+}
+@code {
+    [Parameter] public string? Text { get; set; }
+}

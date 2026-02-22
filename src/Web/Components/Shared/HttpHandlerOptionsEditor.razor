@@ -4,54 +4,88 @@
 <MudStack Spacing="3" Class="pa-2">
     <MudGrid>
         <MudItem xs="6">
-            <MudCheckBox T="bool?"
-                         Label="@L["HttpHandler_AllowAutoRedirect"]"
-                         Value="Value?.AllowAutoRedirect"
-                         ValueChanged="v => Update(o => o.AllowAutoRedirect = v)" />
+            <div class="d-flex align-start">
+                <MudCheckBox T="bool?"
+                             Label="@L["HttpHandler_AllowAutoRedirect"]"
+                             Value="Value?.AllowAutoRedirect"
+                             ValueChanged="v => Update(o => o.AllowAutoRedirect = v)" />
+                <HelpIcon Text="@L["HttpHandler_AllowAutoRedirect_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="6">
-            <MudCheckBox T="bool?"
-                         Label="@L["HttpHandler_UseCookieContainer"]"
-                         Value="Value?.UseCookieContainer"
-                         ValueChanged="v => Update(o => o.UseCookieContainer = v)" />
+            <div class="d-flex align-start">
+                <MudCheckBox T="bool?"
+                             Label="@L["HttpHandler_UseCookieContainer"]"
+                             Value="Value?.UseCookieContainer"
+                             ValueChanged="v => Update(o => o.UseCookieContainer = v)" />
+                <HelpIcon Text="@L["HttpHandler_UseCookieContainer_Desc"]" />
+            </div>
         </MudItem>
     </MudGrid>
     <MudGrid>
         <MudItem xs="6">
-            <MudCheckBox T="bool?"
-                         Label="@L["HttpHandler_UseProxy"]"
-                         Value="Value?.UseProxy"
-                         ValueChanged="v => Update(o => o.UseProxy = v)" />
+            <div class="d-flex align-start">
+                <MudCheckBox T="bool?"
+                             Label="@L["HttpHandler_UseProxy"]"
+                             Value="Value?.UseProxy"
+                             ValueChanged="v => Update(o => o.UseProxy = v)" />
+                <HelpIcon Text="@L["HttpHandler_UseProxy_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="6">
-            <MudCheckBox T="bool?"
-                         Label="@L["HttpHandler_UseTracing"]"
-                         Value="Value?.UseTracing"
-                         ValueChanged="v => Update(o => o.UseTracing = v)" />
+            <div class="d-flex align-start">
+                <MudCheckBox T="bool?"
+                             Label="@L["HttpHandler_UseTracing"]"
+                             Value="Value?.UseTracing"
+                             ValueChanged="v => Update(o => o.UseTracing = v)" />
+                <HelpIcon Text="@L["HttpHandler_UseTracing_Desc"]" />
+            </div>
         </MudItem>
     </MudGrid>
     <MudGrid>
         <MudItem xs="6">
-            <MudNumericField T="int?"
-                             Label="@L["HttpHandler_MaxConnections"]"
-                             Value="Value?.MaxConnectionsPerServer"
-                             ValueChanged="v => Update(o => o.MaxConnectionsPerServer = v)"
-                             Variant="Variant.Outlined" />
+            <div class="d-flex align-start gap-1">
+                <MudNumericField T="int?"
+                                 Label="@L["HttpHandler_MaxConnections"]"
+                                 Value="Value?.MaxConnectionsPerServer"
+                                 ValueChanged="v => Update(o => o.MaxConnectionsPerServer = v)"
+                                 Variant="Variant.Outlined"
+                                 Style="flex:1" />
+                <HelpIcon Text="@L["HttpHandler_MaxConnections_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="6">
-            <MudNumericField T="int?"
-                             Label="@L["HttpHandler_PooledLifetime"]"
-                             Value="Value?.PooledConnectionLifetimeSeconds"
-                             ValueChanged="v => Update(o => o.PooledConnectionLifetimeSeconds = v)"
-                             Variant="Variant.Outlined"
-                             HelperText="sec" />
+            <div class="d-flex align-start gap-1">
+                <MudNumericField T="int?"
+                                 Label="@L["HttpHandler_PooledLifetime"]"
+                                 Value="Value?.PooledConnectionLifetimeSeconds"
+                                 ValueChanged="v => Update(o => o.PooledConnectionLifetimeSeconds = v)"
+                                 Variant="Variant.Outlined"
+                                 HelperText="sec"
+                                 Style="flex:1" />
+                <HelpIcon Text="@L["HttpHandler_PooledLifetime_Desc"]" />
+            </div>
         </MudItem>
     </MudGrid>
+
+    @if (ShowRouteKeys)
+    {
+        <StringListEditor @bind-Items="_routeKeys"
+                          Label="@L["Global_RouteKeys"]"
+                          Placeholder="e.g. route-key" />
+    }
 </MudStack>
 
 @code {
     [Parameter] public HttpHandlerOptions? Value { get; set; }
     [Parameter] public EventCallback<HttpHandlerOptions?> ValueChanged { get; set; }
+    [Parameter] public bool ShowRouteKeys { get; set; }
+
+    private List<string>? _routeKeys
+    {
+        get => Value?.RouteKeys;
+        set => Update(o => o.RouteKeys = value);
+    }
 
     private void Update(Action<HttpHandlerOptions> apply)
     {
@@ -65,5 +99,6 @@
         o.AllowAutoRedirect is null && o.UseCookieContainer is null
         && o.UseProxy is null && o.UseTracing is null
         && o.MaxConnectionsPerServer is null && o.PooledConnectionLifetimeSeconds is null
+        && (o.RouteKeys is null || o.RouteKeys.Count == 0)
         && o.ExtensionData is null;
 }

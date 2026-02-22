@@ -4,81 +4,120 @@
 <MudStack Spacing="3" Class="pa-2">
     <MudGrid>
         <MudItem xs="4">
-            <MudSelect T="string"
-                       Label="@L["ServiceDiscovery_Type"]"
-                       Value="@(Value?.Type ?? string.Empty)"
-                       ValueChanged="v => Update(o => o.Type = string.IsNullOrEmpty(v) ? null : v)"
-                       Variant="Variant.Outlined">
-                <MudSelectItem T="string" Value="@string.Empty">(@L["LoadBalancer_None"])</MudSelectItem>
-                <MudSelectItem T="string" Value="@("Consul")">Consul</MudSelectItem>
-                <MudSelectItem T="string" Value="@("PollConsul")">PollConsul</MudSelectItem>
-                <MudSelectItem T="string" Value="@("Eureka")">Eureka</MudSelectItem>
-            </MudSelect>
+            <div class="d-flex align-start gap-1">
+                <div style="flex:1">
+                    <DescriptiveSelect Label="@L["ServiceDiscovery_Type"]"
+                                       Value="@(Value?.Type)"
+                                       ValueChanged="v => Update(o => o.Type = v)"
+                                       Options="_sdOptions"
+                                       EmptyText="@($"({L["LoadBalancer_None"]})")" />
+                </div>
+                <HelpIcon Text="@L["ServiceDiscovery_Type_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="4">
-            <MudTextField T="string"
-                          Label="@L["ServiceDiscovery_Host"]"
-                          Value="@(Value?.Host)"
-                          ValueChanged="v => Update(o => o.Host = string.IsNullOrWhiteSpace(v) ? null : v)"
-                          Variant="Variant.Outlined" />
+            <div class="d-flex align-start gap-1">
+                <MudTextField T="string"
+                              Label="@L["ServiceDiscovery_Host"]"
+                              Value="@(Value?.Host)"
+                              ValueChanged="v => Update(o => o.Host = string.IsNullOrWhiteSpace(v) ? null : v)"
+                              Variant="Variant.Outlined"
+                              Style="flex:1" />
+                <HelpIcon Text="@L["ServiceDiscovery_Host_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="2">
-            <MudNumericField T="int?"
-                             Label="@L["ServiceDiscovery_Port"]"
-                             Value="Value?.Port"
-                             ValueChanged="v => Update(o => o.Port = v)"
-                             Variant="Variant.Outlined" />
+            <div class="d-flex align-start gap-1">
+                <MudNumericField T="int?"
+                                 Label="@L["ServiceDiscovery_Port"]"
+                                 Value="Value?.Port"
+                                 ValueChanged="v => Update(o => o.Port = v)"
+                                 Variant="Variant.Outlined"
+                                 Style="flex:1" />
+                <HelpIcon Text="@L["ServiceDiscovery_Port_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="2">
-            <MudSelect T="string"
-                       Label="@L["ServiceDiscovery_Scheme"]"
-                       Value="@(Value?.Scheme ?? string.Empty)"
-                       ValueChanged="v => Update(o => o.Scheme = string.IsNullOrEmpty(v) ? null : v)"
-                       Variant="Variant.Outlined">
-                <MudSelectItem T="string" Value="@string.Empty">—</MudSelectItem>
-                <MudSelectItem T="string" Value="@("http")">http</MudSelectItem>
-                <MudSelectItem T="string" Value="@("https")">https</MudSelectItem>
-            </MudSelect>
+            <div class="d-flex align-start gap-1">
+                <MudSelect T="string"
+                           Label="@L["ServiceDiscovery_Scheme"]"
+                           Value="@(Value?.Scheme ?? string.Empty)"
+                           ValueChanged="v => Update(o => o.Scheme = string.IsNullOrEmpty(v) ? null : v)"
+                           Variant="Variant.Outlined"
+                           Style="flex:1">
+                    <MudSelectItem T="string" Value="@string.Empty">—</MudSelectItem>
+                    <MudSelectItem T="string" Value="@("http")">http</MudSelectItem>
+                    <MudSelectItem T="string" Value="@("https")">https</MudSelectItem>
+                </MudSelect>
+                <HelpIcon Text="@L["ServiceDiscovery_Scheme_Desc"]" />
+            </div>
         </MudItem>
     </MudGrid>
 
     <MudGrid>
         <MudItem xs="6">
-            <MudTextField T="string"
-                          Label="@L["ServiceDiscovery_Token"]"
-                          Value="@(Value?.Token)"
-                          ValueChanged="v => Update(o => o.Token = string.IsNullOrWhiteSpace(v) ? null : v)"
-                          Variant="Variant.Outlined" />
+            <div class="d-flex align-start gap-1">
+                <MudTextField T="string"
+                              Label="@L["ServiceDiscovery_Token"]"
+                              Value="@(Value?.Token)"
+                              ValueChanged="v => Update(o => o.Token = string.IsNullOrWhiteSpace(v) ? null : v)"
+                              Variant="Variant.Outlined"
+                              Style="flex:1" />
+                <HelpIcon Text="@L["ServiceDiscovery_Token_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="6">
-            <MudTextField T="string"
-                          Label="@L["ServiceDiscovery_ConfigurationKey"]"
-                          Value="@(Value?.ConfigurationKey)"
-                          ValueChanged="v => Update(o => o.ConfigurationKey = string.IsNullOrWhiteSpace(v) ? null : v)"
-                          Variant="Variant.Outlined" />
+            <div class="d-flex align-start gap-1">
+                <MudTextField T="string"
+                              Label="@L["ServiceDiscovery_ConfigurationKey"]"
+                              Value="@(Value?.ConfigurationKey)"
+                              ValueChanged="v => Update(o => o.ConfigurationKey = string.IsNullOrWhiteSpace(v) ? null : v)"
+                              Variant="Variant.Outlined"
+                              Style="flex:1" />
+                <HelpIcon Text="@L["ServiceDiscovery_ConfigurationKey_Desc"]" />
+            </div>
         </MudItem>
     </MudGrid>
 
     <MudGrid>
         <MudItem xs="6">
-            <MudNumericField T="int?"
-                             Label="@L["ServiceDiscovery_PollingInterval"]"
-                             Value="Value?.PollingInterval"
-                             ValueChanged="v => Update(o => o.PollingInterval = v)"
-                             Variant="Variant.Outlined"
-                             HelperText="ms" />
+            <div class="d-flex align-start gap-1">
+                <MudNumericField T="int?"
+                                 Label="@L["ServiceDiscovery_PollingInterval"]"
+                                 Value="Value?.PollingInterval"
+                                 ValueChanged="v => Update(o => o.PollingInterval = v)"
+                                 Variant="Variant.Outlined"
+                                 HelperText="ms"
+                                 Style="flex:1" />
+                <HelpIcon Text="@L["ServiceDiscovery_PollingInterval_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="6">
-            <MudTextField T="string"
-                          Label="@L["ServiceDiscovery_Namespace"]"
-                          Value="@(Value?.Namespace)"
-                          ValueChanged="v => Update(o => o.Namespace = string.IsNullOrWhiteSpace(v) ? null : v)"
-                          Variant="Variant.Outlined" />
+            <div class="d-flex align-start gap-1">
+                <MudTextField T="string"
+                              Label="@L["ServiceDiscovery_Namespace"]"
+                              Value="@(Value?.Namespace)"
+                              ValueChanged="v => Update(o => o.Namespace = string.IsNullOrWhiteSpace(v) ? null : v)"
+                              Variant="Variant.Outlined"
+                              Style="flex:1" />
+                <HelpIcon Text="@L["ServiceDiscovery_Namespace_Desc"]" />
+            </div>
         </MudItem>
     </MudGrid>
 </MudStack>
 
 @code {
+    private IReadOnlyList<DescriptiveSelect.SelectOption> _sdOptions =>
+    [
+        new("Consul", L["SD_Consul_Desc"]),
+        new("PollConsul", L["SD_PollConsul_Desc"]),
+        new("Eureka", L["SD_Eureka_Desc"]),
+        new("Kube", L["SD_Kube_Desc"]),
+        new("PollKube", L["SD_PollKube_Desc"]),
+        new("WatchKube", L["SD_WatchKube_Desc"]),
+        new("ServiceFabric", L["SD_ServiceFabric_Desc"]),
+    ];
+
     [Parameter] public ServiceDiscoveryProvider? Value { get; set; }
     [Parameter] public EventCallback<ServiceDiscoveryProvider?> ValueChanged { get; set; }
 

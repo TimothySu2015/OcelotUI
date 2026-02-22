@@ -2,79 +2,128 @@
 @inject IStringLocalizer<SharedResource> L
 
 <MudStack Spacing="3" Class="pa-2">
-    <MudCheckBox T="bool?"
-                 Label="@L["RateLimit_Enable"]"
-                 Value="Value?.EnableRateLimiting"
-                 ValueChanged="v => Update(o => o.EnableRateLimiting = v)" />
+    <div class="d-flex align-start">
+        <MudCheckBox T="bool?"
+                     Label="@L["RateLimit_Enable"]"
+                     Value="Value?.EnableRateLimiting"
+                     ValueChanged="v => Update(o => o.EnableRateLimiting = v)" />
+        <HelpIcon Text="@L["RateLimit_Enable_Desc"]" />
+    </div>
 
     <MudGrid>
         <MudItem xs="4">
-            <MudNumericField T="int?"
-                             Label="@L["RateLimit_Limit"]"
-                             Value="Value?.Limit"
-                             ValueChanged="v => Update(o => o.Limit = v)"
-                             Variant="Variant.Outlined" />
+            <div class="d-flex align-start gap-1">
+                <MudNumericField T="long?"
+                                 Label="@L["RateLimit_Limit"]"
+                                 Value="Value?.Limit"
+                                 ValueChanged="v => Update(o => o.Limit = v)"
+                                 Variant="Variant.Outlined"
+                                 Style="flex:1" />
+                <HelpIcon Text="@L["RateLimit_Limit_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="4">
-            <MudTextField T="string"
-                          Label="@L["RateLimit_Period"]"
-                          Value="@(Value?.Period)"
-                          ValueChanged="v => Update(o => o.Period = string.IsNullOrWhiteSpace(v) ? null : v)"
-                          Variant="Variant.Outlined"
-                          HelperText="1s, 5m, 1h, 1d" />
+            <div class="d-flex align-start gap-1">
+                <MudTextField T="string"
+                              Label="@L["RateLimit_Period"]"
+                              Value="@(Value?.Period)"
+                              ValueChanged="v => Update(o => o.Period = string.IsNullOrWhiteSpace(v) ? null : v)"
+                              Variant="Variant.Outlined"
+                              HelperText="1s, 5m, 1h, 1d"
+                              Style="flex:1" />
+                <HelpIcon Text="@L["RateLimit_Period_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="4">
-            <MudTextField T="string"
-                          Label="@L["RateLimit_Wait"]"
-                          Value="@(Value?.Wait)"
-                          ValueChanged="v => Update(o => o.Wait = string.IsNullOrWhiteSpace(v) ? null : v)"
-                          Variant="Variant.Outlined"
-                          HelperText="1s, 5m, 1h, 1d" />
+            <div class="d-flex align-start gap-1">
+                <MudTextField T="string"
+                              Label="@L["RateLimit_Wait"]"
+                              Value="@(Value?.Wait)"
+                              ValueChanged="v => Update(o => o.Wait = string.IsNullOrWhiteSpace(v) ? null : v)"
+                              Variant="Variant.Outlined"
+                              HelperText="1s, 5m, 1h, 1d"
+                              Style="flex:1" />
+                <HelpIcon Text="@L["RateLimit_Wait_Desc"]" />
+            </div>
         </MudItem>
     </MudGrid>
 
-    <MudTextField T="string"
-                  Label="@L["RateLimit_ClientIdHeader"]"
-                  Value="@(Value?.ClientIdHeader)"
-                  ValueChanged="v => Update(o => o.ClientIdHeader = string.IsNullOrWhiteSpace(v) ? null : v)"
-                  Variant="Variant.Outlined" />
+    <div class="d-flex align-start gap-1">
+        <MudTextField T="string"
+                      Label="@L["RateLimit_ClientIdHeader"]"
+                      Value="@(Value?.ClientIdHeader)"
+                      ValueChanged="v => Update(o => o.ClientIdHeader = string.IsNullOrWhiteSpace(v) ? null : v)"
+                      Variant="Variant.Outlined"
+                      Style="flex:1" />
+        <HelpIcon Text="@L["RateLimit_ClientIdHeader_Desc"]" />
+    </div>
 
     <StringListEditor @bind-Items="_clientWhitelist"
                       Label="@L["RateLimit_ClientWhitelist"]"
-                      Placeholder="e.g. trusted-client" />
+                      Placeholder="e.g. trusted-client"
+                      HelpText="@L["RateLimit_ClientWhitelist_Desc"]" />
 
-    <MudCheckBox T="bool?"
-                 Label="@L["RateLimit_EnableHeaders"]"
-                 Value="Value?.EnableHeaders"
-                 ValueChanged="v => Update(o => o.EnableHeaders = v)" />
+    <div class="d-flex align-start">
+        <MudCheckBox T="bool?"
+                     Label="@L["RateLimit_EnableHeaders"]"
+                     Value="Value?.EnableHeaders"
+                     ValueChanged="v => Update(o => o.EnableHeaders = v)" />
+        <HelpIcon Text="@L["RateLimit_EnableHeaders_Desc"]" />
+    </div>
 
     <MudGrid>
         <MudItem xs="4">
-            <MudNumericField T="int?"
-                             Label="@L["RateLimit_StatusCode"]"
-                             Value="Value?.StatusCode"
-                             ValueChanged="v => Update(o => o.StatusCode = v)"
-                             Variant="Variant.Outlined" />
+            <div class="d-flex align-start gap-1">
+                <MudNumericField T="int?"
+                                 Label="@L["RateLimit_StatusCode"]"
+                                 Value="Value?.StatusCode"
+                                 ValueChanged="v => Update(o => o.StatusCode = v)"
+                                 Variant="Variant.Outlined"
+                                 Style="flex:1" />
+                <HelpIcon Text="@L["RateLimit_StatusCode_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="8">
-            <MudTextField T="string"
-                          Label="@L["RateLimit_QuotaMessage"]"
-                          Value="@(Value?.QuotaMessage)"
-                          ValueChanged="v => Update(o => o.QuotaMessage = string.IsNullOrWhiteSpace(v) ? null : v)"
-                          Variant="Variant.Outlined" />
+            <div class="d-flex align-start gap-1">
+                <MudTextField T="string"
+                              Label="@L["RateLimit_QuotaMessage"]"
+                              Value="@(Value?.QuotaMessage)"
+                              ValueChanged="v => Update(o => o.QuotaMessage = string.IsNullOrWhiteSpace(v) ? null : v)"
+                              Variant="Variant.Outlined"
+                              Style="flex:1" />
+                <HelpIcon Text="@L["RateLimit_QuotaMessage_Desc"]" />
+            </div>
         </MudItem>
     </MudGrid>
 
-    <MudTextField T="string"
-                  Label="@L["RateLimit_KeyPrefix"]"
-                  Value="@(Value?.KeyPrefix)"
-                  ValueChanged="v => Update(o => o.KeyPrefix = string.IsNullOrWhiteSpace(v) ? null : v)"
-                  Variant="Variant.Outlined" />
+    <div class="d-flex align-start gap-1">
+        <MudTextField T="string"
+                      Label="@L["RateLimit_KeyPrefix"]"
+                      Value="@(Value?.KeyPrefix)"
+                      ValueChanged="v => Update(o => o.KeyPrefix = string.IsNullOrWhiteSpace(v) ? null : v)"
+                      Variant="Variant.Outlined"
+                      Style="flex:1" />
+        <HelpIcon Text="@L["RateLimit_KeyPrefix_Desc"]" />
+    </div>
+
+    @if (ShowRouteKeys)
+    {
+        <StringListEditor @bind-Items="_routeKeys"
+                          Label="@L["Global_RouteKeys"]"
+                          Placeholder="e.g. route-key" />
+    }
 </MudStack>
 
 @code {
     [Parameter] public RateLimitOptions? Value { get; set; }
     [Parameter] public EventCallback<RateLimitOptions?> ValueChanged { get; set; }
+    [Parameter] public bool ShowRouteKeys { get; set; }
+
+    private List<string>? _routeKeys
+    {
+        get => Value?.RouteKeys;
+        set => Update(o => o.RouteKeys = value);
+    }
 
     private List<string>? _clientWhitelist
     {
@@ -95,5 +144,6 @@
         && o.Wait is null && o.ClientIdHeader is null && o.EnableHeaders is null
         && o.StatusCode is null && o.QuotaMessage is null && o.KeyPrefix is null
         && (o.ClientWhitelist is null || o.ClientWhitelist.Count == 0)
+        && (o.RouteKeys is null || o.RouteKeys.Count == 0)
         && o.ExtensionData is null;
 }

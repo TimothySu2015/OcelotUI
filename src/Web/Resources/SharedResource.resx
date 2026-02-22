@@ -59,6 +59,7 @@
   <data name="RouteEdit_Host" xml:space="preserve"><value>Host (optional)</value></data>
   <data name="RouteEdit_Scheme" xml:space="preserve"><value>Scheme</value></data>
   <data name="RouteEdit_HttpVersion" xml:space="preserve"><value>HTTP Version (optional)</value></data>
+  <data name="RouteEdit_DownstreamHttpMethod" xml:space="preserve"><value>Downstream HTTP Method (optional)</value></data>
   <data name="RouteEdit_HostAndPorts" xml:space="preserve"><value>Downstream Host &amp; Ports</value></data>
   <data name="RouteEdit_AddHost" xml:space="preserve"><value>Add Host</value></data>
   <data name="RouteEdit_Options" xml:space="preserve"><value>Options</value></data>
@@ -93,6 +94,11 @@
   <data name="RouteEdit_UpstreamHeaderTransform" xml:space="preserve"><value>Upstream Header Transform</value></data>
   <data name="RouteEdit_DownstreamHeaderTransform" xml:space="preserve"><value>Downstream Header Transform</value></data>
   <data name="RouteEdit_DelegatingHandlers" xml:space="preserve"><value>Delegating Handlers</value></data>
+  <data name="RouteEdit_ServiceName" xml:space="preserve"><value>Service Name</value></data>
+  <data name="RouteEdit_ServiceNamespace" xml:space="preserve"><value>Service Namespace</value></data>
+  <data name="RouteEdit_RequestIdKey" xml:space="preserve"><value>Request ID Key</value></data>
+  <data name="RouteEdit_UpstreamHeaderTemplates" xml:space="preserve"><value>Upstream Header Templates</value></data>
+  <data name="RouteEdit_ChangeDownstreamPath" xml:space="preserve"><value>Change Downstream Path</value></data>
 
   <!-- Authentication Editor -->
   <data name="Auth_AllowAnonymous" xml:space="preserve"><value>Allow Anonymous</value></data>
@@ -164,6 +170,12 @@
   <data name="MetadataOpt_TrimChars" xml:space="preserve"><value>Trim Characters</value></data>
   <data name="MetadataOpt_Metadata" xml:space="preserve"><value>Metadata</value></data>
 
+  <!-- Global sub-option -->
+  <data name="Global_RouteKeys" xml:space="preserve"><value>Route Keys (apply to specific routes)</value></data>
+
+  <!-- Aggregates extra -->
+  <data name="Aggregate_UpstreamHeaderTemplates" xml:space="preserve"><value>Upstream Header Templates</value></data>
+
   <!-- Shared Editors -->
   <data name="ListEditor_Empty" xml:space="preserve"><value>No items added yet.</value></data>
   <data name="DictEditor_Empty" xml:space="preserve"><value>No entries added yet.</value></data>
@@ -216,6 +228,58 @@
   <data name="DynamicRoute_NotFound" xml:space="preserve"><value>Dynamic route not found.</value></data>
   <data name="DynamicRoute_LoadFailed" xml:space="preserve"><value>Failed to load dynamic routes.</value></data>
 
+  <!-- RouteEdit: HttpVersionPolicy label -->
+  <data name="RouteEdit_HttpVersionPolicy" xml:space="preserve"><value>HTTP Version Policy</value></data>
+
+  <!-- DescriptiveSelect: Option Descriptions -->
+  <!-- LoadBalancer Type -->
+  <data name="LB_RoundRobin_Desc" xml:space="preserve"><value>Distribute requests evenly across all hosts in turn</value></data>
+  <data name="LB_LeastConnection_Desc" xml:space="preserve"><value>Route to the host with fewest active connections</value></data>
+  <data name="LB_CookieStickySessions_Desc" xml:space="preserve"><value>Use cookie to keep same client on same host</value></data>
+  <data name="LB_NoLoadBalancer_Desc" xml:space="preserve"><value>Always use the first available host</value></data>
+
+  <!-- ServiceDiscovery Type -->
+  <data name="SD_Consul_Desc" xml:space="preserve"><value>Query HashiCorp Consul on each request</value></data>
+  <data name="SD_PollConsul_Desc" xml:space="preserve"><value>Poll Consul at a fixed interval</value></data>
+  <data name="SD_Eureka_Desc" xml:space="preserve"><value>Netflix Eureka service registry</value></data>
+  <data name="SD_Kube_Desc" xml:space="preserve"><value>Query Kubernetes API on each request</value></data>
+  <data name="SD_PollKube_Desc" xml:space="preserve"><value>Poll Kubernetes API at a fixed interval</value></data>
+  <data name="SD_WatchKube_Desc" xml:space="preserve"><value>Watch Kubernetes API for changes</value></data>
+  <data name="SD_ServiceFabric_Desc" xml:space="preserve"><value>Azure Service Fabric naming service</value></data>
+
+  <!-- DownstreamHttpVersionPolicy -->
+  <data name="HttpVersionPolicy_RequestVersionExact_Desc" xml:space="preserve"><value>Use only the specified HTTP version</value></data>
+  <data name="HttpVersionPolicy_RequestVersionOrLower_Desc" xml:space="preserve"><value>Use specified version or lower</value></data>
+  <data name="HttpVersionPolicy_RequestVersionOrHigher_Desc" xml:space="preserve"><value>Use specified version or higher</value></data>
+
+  <!-- NumberStyle -->
+  <data name="NumberStyle_None_Desc" xml:space="preserve"><value>No special formatting allowed</value></data>
+  <data name="NumberStyle_Integer_Desc" xml:space="preserve"><value>Digits, leading sign, trailing sign, leading/trailing whitespace</value></data>
+  <data name="NumberStyle_HexNumber_Desc" xml:space="preserve"><value>Hex digits and hex specifier</value></data>
+  <data name="NumberStyle_Number_Desc" xml:space="preserve"><value>Digits, group separators, decimal point, signs</value></data>
+  <data name="NumberStyle_Float_Desc" xml:space="preserve"><value>Digits, decimal point, exponent, signs</value></data>
+  <data name="NumberStyle_Currency_Desc" xml:space="preserve"><value>All numeric styles including currency symbol</value></data>
+  <data name="NumberStyle_Any_Desc" xml:space="preserve"><value>All numeric styles</value></data>
+
+  <!-- StringSplitOption -->
+  <data name="StringSplitOption_None_Desc" xml:space="preserve"><value>Include empty entries in result</value></data>
+  <data name="StringSplitOption_RemoveEmptyEntries_Desc" xml:space="preserve"><value>Exclude empty entries from result</value></data>
+  <data name="StringSplitOption_TrimEntries_Desc" xml:space="preserve"><value>Trim whitespace from each entry</value></data>
+
+  <!-- Import / Export -->
+  <data name="Export_Tooltip" xml:space="preserve"><value>Export Configuration</value></data>
+  <data name="Import_Tooltip" xml:space="preserve"><value>Import Configuration</value></data>
+  <data name="Import_Confirm_Title" xml:space="preserve"><value>Confirm Import</value></data>
+  <data name="Import_Confirm_Message" xml:space="preserve"><value>This will replace all current settings. Continue?</value></data>
+  <data name="Import_Success" xml:space="preserve"><value>Configuration imported successfully</value></data>
+  <data name="Import_Failed" xml:space="preserve"><value>Import failed: invalid JSON format</value></data>
+
+  <!-- JSON Preview -->
+  <data name="JsonPreview_Title" xml:space="preserve"><value>JSON Preview</value></data>
+  <data name="JsonPreview_Toggle" xml:space="preserve"><value>Toggle JSON Preview</value></data>
+  <data name="JsonPreview_Copied" xml:space="preserve"><value>Copied to clipboard</value></data>
+  <data name="JsonPreview_Refresh" xml:space="preserve"><value>Refresh</value></data>
+
   <!-- Tooltips -->
   <data name="Tip_UpstreamPath" xml:space="preserve"><value>The URL pattern that Ocelot matches against incoming client requests. Supports placeholders like {id} and catch-all {everything}.</value></data>
   <data name="Tip_HttpMethods" xml:space="preserve"><value>Select which HTTP methods this route will match. Leave empty to match all methods.</value></data>
@@ -223,11 +287,15 @@
   <data name="Tip_DownstreamPath" xml:space="preserve"><value>The URL path that Ocelot forwards the request to on the downstream service. Use matching placeholders from upstream.</value></data>
   <data name="Tip_Scheme" xml:space="preserve"><value>The protocol used to communicate with the downstream service: https, http, ws (WebSocket), or wss (secure WebSocket).</value></data>
   <data name="Tip_HttpVersion" xml:space="preserve"><value>The HTTP version used for downstream requests. Common values: 1.1, 2.0. Leave empty for default.</value></data>
+  <data name="Tip_DownstreamHttpMethod" xml:space="preserve"><value>Override the HTTP method for the downstream request. For example, convert an upstream GET to a downstream POST. Leave empty to use the same method as upstream.</value></data>
   <data name="Tip_HostAndPorts" xml:space="preserve"><value>The target server addresses. Add multiple hosts for load balancing. Each entry needs a hostname and port.</value></data>
   <data name="Tip_Key" xml:space="preserve"><value>A unique identifier for this route. Required when using service discovery or route aggregation.</value></data>
   <data name="Tip_Priority" xml:space="preserve"><value>Route matching priority. Lower numbers are matched first. Use when multiple routes could match the same request.</value></data>
   <data name="Tip_Timeout" xml:space="preserve"><value>Maximum time (in seconds) to wait for a downstream response before timing out.</value></data>
   <data name="Tip_CaseSensitive" xml:space="preserve"><value>Whether URL path matching is case-sensitive. Default is false (case-insensitive).</value></data>
+  <data name="Tip_ServiceName" xml:space="preserve"><value>Service name for service discovery. Used with ServiceDiscoveryProvider in Global Config.</value></data>
+  <data name="Tip_ServiceNamespace" xml:space="preserve"><value>Kubernetes namespace for the service. Only used with Kube-based service discovery.</value></data>
+  <data name="Tip_RequestIdKey" xml:space="preserve"><value>Header name for request correlation ID. Overrides the global RequestIdKey for this route.</value></data>
   <data name="Tip_AcceptAnyCert" xml:space="preserve"><value>Accept any SSL/TLS certificate from downstream, including self-signed. Use only for development.</value></data>
   <data name="Tip_AuthenticationOptions" xml:space="preserve"><value>Configure authentication provider and allowed scopes for this route.</value></data>
   <data name="Tip_AuthorizationOptions" xml:space="preserve"><value>Define required claims and allowed values for route access control.</value></data>
@@ -254,20 +322,243 @@
   <data name="Template_LoadBalanced" xml:space="preserve"><value>Load Balanced</value></data>
   <data name="Template_LoadBalanced_Desc" xml:space="preserve"><value>Multi-target host load balancing</value></data>
 
-  <!-- Guide -->
+  <!-- Guide: Header -->
   <data name="Guide_Title" xml:space="preserve"><value>User Guide</value></data>
-  <data name="Guide_Step1_Title" xml:space="preserve"><value>What is Ocelot?</value></data>
-  <data name="Guide_Step1_Content" xml:space="preserve"><value>Ocelot is an API Gateway framework for .NET. It uses ocelot.json to define routing rules that map client requests to downstream services.</value></data>
-  <data name="Guide_Step2_Title" xml:space="preserve"><value>Configure File Path</value></data>
-  <data name="Guide_Step2_Content" xml:space="preserve"><value>Set OcelotConfig.FilePath in appsettings.json to point to your ocelot.json location. The default path is "ocelot.json" in the application directory.</value></data>
-  <data name="Guide_Step3_Title" xml:space="preserve"><value>Route Basics</value></data>
-  <data name="Guide_Step3_Content" xml:space="preserve"><value>Each route maps an Upstream path (client request) to a Downstream path (target service). For example, /api/users/* can be routed to an internal user-service.</value></data>
-  <data name="Guide_Step4_Title" xml:space="preserve"><value>Managing Routes</value></data>
-  <data name="Guide_Step4_Content" xml:space="preserve"><value>Use the Routes page to view all configured routes. Click the edit icon to modify a route, or the delete icon to remove it.</value></data>
-  <data name="Guide_Step5_Title" xml:space="preserve"><value>Creating a Route</value></data>
-  <data name="Guide_Step5_Content" xml:space="preserve"><value>Click "Add Route" to create a new route. Fill in the Upstream and Downstream settings, or use "Apply Template" to quickly start from a predefined example.</value></data>
-  <data name="Guide_Step6_Title" xml:space="preserve"><value>Advanced Settings</value></data>
-  <data name="Guide_Step6_Content" xml:space="preserve"><value>Expand the Options and Advanced sections to configure authentication, rate limiting, load balancing, caching, QoS, and security options using raw JSON.</value></data>
-  <data name="Guide_Step7_Title" xml:space="preserve"><value>Saving Changes</value></data>
-  <data name="Guide_Step7_Content" xml:space="preserve"><value>Click Save to write your changes directly to the ocelot.json file. The file is written atomically to prevent corruption.</value></data>
+  <data name="Guide_Subtitle" xml:space="preserve"><value>OcelotUI is a visual editor for Ocelot API Gateway configuration (ocelot.json). Ocelot routes client requests to downstream services based on URL patterns, HTTP methods, and headers.</value></data>
+  <data name="Guide_QuickStart" xml:space="preserve"><value>Quick Start</value></data>
+  <data name="Guide_Reference" xml:space="preserve"><value>Feature Reference</value></data>
+
+  <!-- Guide: Quick Start -->
+  <data name="Guide_QS1_Title" xml:space="preserve"><value>Set the configuration file path</value></data>
+  <data name="Guide_QS1_Content" xml:space="preserve"><value>In appsettings.json, set "OcelotConfig": { "FilePath": "path/to/ocelot.json" }. The default is "ocelot.json" in the application directory. OcelotUI reads and writes this file directly.</value></data>
+  <data name="Guide_QS2_Title" xml:space="preserve"><value>Create your first route</value></data>
+  <data name="Guide_QS2_Content" xml:space="preserve"><value>Go to Routes and click "Add Route". Fill in the Upstream Path (e.g. /api/users/{everything}) and Downstream Path (e.g. /users/{everything}), select a scheme (https), and add a downstream host and port. Click Save.</value></data>
+  <data name="Guide_QS3_Title" xml:space="preserve"><value>Verify and iterate</value></data>
+  <data name="Guide_QS3_Content" xml:space="preserve"><value>All changes are saved directly to the ocelot.json file using atomic writes to prevent corruption. Reload your Ocelot gateway to pick up the new configuration. You can then refine routes, add options, or configure global defaults.</value></data>
+
+  <!-- Guide: Routes -->
+  <data name="Guide_Routes_Title" xml:space="preserve"><value>Routes</value></data>
+  <data name="Guide_Routes_Content" xml:space="preserve"><value>Routes are the core of Ocelot. Each route defines how a client request (Upstream) maps to a backend service (Downstream).
+
+Upstream settings determine what to match:
+  - Path Template: URL pattern with placeholders like {id} or catch-all {everything}
+  - HTTP Methods: Which verbs to accept (GET, POST, etc.). Leave empty for all methods
+  - Host: Optional Host header filter
+
+Downstream settings determine where to forward:
+  - Path Template: Target URL path (use same placeholders as upstream)
+  - Scheme: Protocol (https, http, ws, wss)
+  - Host &amp; Ports: One or more target server addresses
+  - HTTP Version: 1.1 or 2.0 (optional)
+
+Additional fields:
+  - Key: A unique ID for this route (required for Aggregates and some Rate Limit references)
+  - Priority: Higher numbers match first when multiple routes could match
+  - Timeout: Maximum wait time in seconds for a downstream response
+  - ServiceName / ServiceNamespace: For service discovery integration</value></data>
+  <data name="Guide_Routes_Tip" xml:space="preserve"><value>Use {everything} as a catch-all placeholder to proxy entire path segments. Example: Upstream /api/{everything} with Downstream /{everything} forwards all sub-paths.</value></data>
+
+  <!-- Guide: Creating Routes -->
+  <data name="Guide_CreateRoute_Title" xml:space="preserve"><value>Creating &amp; Managing Routes</value></data>
+  <data name="Guide_CreateRoute_Content" xml:space="preserve"><value>The Routes page lists all configured routes. From here you can:
+  - Click "Add Route" to create a new route from scratch
+  - Click the edit icon on any existing route to modify it
+  - Click the delete icon to remove a route
+
+When creating a new route, you can use "Apply Template" to quickly fill in common patterns:
+  - Basic REST API: GET/POST/PUT/DELETE proxy
+  - WebSocket: wss proxy for real-time connections
+  - Catch-All: Forward an entire service path using {everything}
+  - Rate Limited: API proxy with rate limiting pre-configured
+  - Authenticated: Route with authentication settings
+  - Load Balanced: Multi-target host with load balancing
+
+Templates pre-fill the form but you can modify any field before saving.</value></data>
+  <data name="Guide_CreateRoute_Tip" xml:space="preserve"><value>Templates overwrite existing form data. If you've already started editing, you'll see a confirmation prompt before the template is applied.</value></data>
+
+  <!-- Guide: Route Options -->
+  <data name="Guide_RouteOptions_Title" xml:space="preserve"><value>Route Options (Sub-Properties)</value></data>
+  <data name="Guide_RouteOptions_Content" xml:space="preserve"><value>Each route can have optional sub-property sections to control advanced behavior. Expand the corresponding panel in the route editor to configure them:
+
+Authentication Options
+  Assign authentication schemes (e.g. Bearer, JWT). Multiple keys are tried in order. Set AllowedScopes to restrict access by OAuth scope.
+
+Rate Limit Options
+  Control request frequency: set a Limit (max requests) and Period (e.g. 1m, 1h). Add a ClientWhitelist for exempt clients. The ClientIdHeader (default: Oc-Client) identifies who is making requests.
+
+Load Balancer Options
+  Distribute requests across multiple downstream hosts: RoundRobin, LeastConnection, CookieStickySessions, or NoLoadBalancer.
+
+QoS Options (Quality of Service)
+  Configure a circuit breaker: when FailureRatio is exceeded within SamplingDuration, the circuit opens for BreakDuration. Timeout sets the per-request deadline in milliseconds.
+
+Cache Options
+  Cache downstream responses. TtlSeconds controls how long responses are cached. Set a Region name for grouped cache invalidation. EnableContentHashing includes the request body in the cache key (useful for POST).
+
+HTTP Handler Options
+  Fine-tune the HTTP client: allow auto-redirects, enable cookie containers, use proxy, enable distributed tracing, and set connection pool limits.
+
+Security Options
+  Restrict access by client IP. Set IPAllowedList and/or IPBlockedList using individual IPs or CIDR notation (e.g. 10.0.0.0/24). ExcludeAllowedFromBlocked removes allowed IPs from the block list.</value></data>
+
+  <!-- Guide: Transformations -->
+  <data name="Guide_Transform_Title" xml:space="preserve"><value>Header &amp; Claims Transformation</value></data>
+  <data name="Guide_Transform_Content" xml:space="preserve"><value>Routes support several Dictionary fields for transforming requests and responses:
+
+Upstream Header Transform
+  Modify headers before sending to downstream. Use placeholders: {RemoteIpAddress}, {TraceId}, {UpstreamHost}, {BaseUrl}, {DownstreamBaseUrl}.
+  Example: X-Forwarded-For = {RemoteIpAddress}
+
+Downstream Header Transform
+  Modify response headers from downstream before returning to client. Supports find-and-replace.
+  Example: Location = "http://internal/, http://public/" replaces the internal URL in Location headers.
+
+Upstream Header Templates
+  Match routes based on specific header values. Only requests with matching headers will use this route.
+
+Route Claims Requirement
+  Require specific JWT claims for access. Key = Claim Type, Value = Required Value. Returns 403 Forbidden if not met.
+
+Add Claims / Headers / Queries to Request
+  Extract values from JWT claims and inject them as new claims, HTTP headers, or query parameters.
+  Syntax: Claims[ClaimType] > value[index] > delimiter
+  Example: UserId = Claims[sub] > value[1] > |
+
+Change Downstream Path Template
+  Replace placeholders in the downstream path with values extracted from JWT claims.</value></data>
+  <data name="Guide_Transform_Tip" xml:space="preserve"><value>Claims transformation runs after authentication. Make sure AuthenticationOptions is configured on the route before using claims-based features.</value></data>
+
+  <!-- Guide: Global Configuration -->
+  <data name="Guide_GlobalConfig_Title" xml:space="preserve"><value>Global Configuration</value></data>
+  <data name="Guide_GlobalConfig_Content" xml:space="preserve"><value>Global Configuration sets default values that apply to all routes. Route-level settings always override global defaults.
+
+Basic settings: BaseUrl (your gateway's external URL), default DownstreamScheme, HTTP Version, Timeout, and RequestIdKey.
+
+Sub-property defaults: You can set global defaults for Authentication, Rate Limit, Load Balancer, QoS, Cache, HTTP Handler, and Security. Each supports a "Route Keys" field to limit which routes inherit the setting.
+
+Service Discovery: Configure a provider (Consul, Eureka, Kube, etc.) so routes can reference services by name instead of hardcoded host/port. Set Host, Port, Scheme, Token, and PollingInterval as needed.
+
+Metadata Options: Configure how metadata string values are parsed into typed values — Culture, NumberStyle, Separators, StringSplitOption, and TrimChars.
+
+Header Transforms: Global upstream/downstream header transforms apply to all static routes.
+
+Metadata: Global key-value pairs accessible in custom middleware. Route-level Metadata overrides matching keys.</value></data>
+  <data name="Guide_GlobalConfig_Tip" xml:space="preserve"><value>Use Route Keys on global sub-options to apply settings to specific routes only. Leave Route Keys empty to apply to all routes.</value></data>
+
+  <!-- Guide: Dynamic Routes -->
+  <data name="Guide_DynamicRoutes_Title" xml:space="preserve"><value>Dynamic Routes</value></data>
+  <data name="Guide_DynamicRoutes_Content" xml:space="preserve"><value>Dynamic Routes work with Service Discovery to route requests without predefined path templates. Instead of mapping specific paths, you register a ServiceName and Ocelot resolves the target host/port at runtime.
+
+This is useful when:
+  - Services register and deregister dynamically (e.g. in Kubernetes or Consul)
+  - You don't want to maintain a static route for every microservice
+  - Host addresses change frequently
+
+Dynamic routes support: Authentication, Rate Limiting, Load Balancing, QoS, Cache, HTTP Handler options, and Metadata — the same sub-properties as static routes (except Security).
+
+To use dynamic routes, first configure a ServiceDiscoveryProvider in Global Configuration, then add a Dynamic Route with the target ServiceName.</value></data>
+
+  <!-- Guide: Aggregates -->
+  <data name="Guide_Aggregates_Title" xml:space="preserve"><value>Aggregates</value></data>
+  <data name="Guide_Aggregates_Content" xml:space="preserve"><value>Aggregates combine responses from multiple routes into a single JSON response. This reduces client round-trips by merging data from several backend services.
+
+Setup:
+  1. Ensure each source route has a unique Key (set in the route editor)
+  2. Create an Aggregate with a unique UpstreamPathTemplate
+  3. Add those route Keys to the RouteKeys list
+
+Route Keys Config (optional) enables chained requests where the output of one route feeds into another. Set JsonPath to extract a value from the first response, and Parameter to inject it into the second route's path.
+
+Example: Fetch comments, then use the authorId from each comment to fetch user details. JsonPath "$[*].authorId" extracts the ID, and Parameter "userId" maps it to the {userId} placeholder in the second route.</value></data>
+  <data name="Guide_Aggregates_Tip" xml:space="preserve"><value>Aggregates only support GET requests. The response Content-Type is always application/json, and individual response headers are not preserved.</value></data>
+
+  <!-- Guide: Tips -->
+  <data name="Guide_Tips_Title" xml:space="preserve"><value>Tips &amp; Best Practices</value></data>
+  <data name="Guide_Tips_Content" xml:space="preserve"><value>Saving: All changes write directly to ocelot.json using atomic file operations. Your Ocelot gateway needs to be restarted or configured to watch for file changes to pick up edits.
+
+Priority: When multiple routes could match the same request, use Priority to control which one wins. Higher numbers match first. Catch-all routes should have Priority 0 (the default).
+
+Placeholders: Use {placeholder} in path templates to capture path segments. The same placeholder name must appear in both Upstream and Downstream templates. Use {everything} to match the entire remaining path.
+
+Timeout hierarchy: QoS Timeout (ms) takes highest priority, then Route Timeout (sec), then Global Timeout (sec), then the default of 90 seconds.
+
+Delegating Handlers: Add custom HttpMessageHandler class names to the DelegatingHandlers list. These are executed in order for each request through the route.
+
+Unknown properties: The editor preserves any JSON properties it doesn't recognize. This ensures forward compatibility with newer Ocelot versions — custom or new properties won't be lost when you save.</value></data>
+
+  <!-- Property Description Tooltips -->
+  <!-- CacheOptions -->
+  <data name="Cache_TtlSeconds_Desc" xml:space="preserve"><value>Time-To-Live in seconds. Absolute expiration from when added to cache. 0 = disabled.</value></data>
+  <data name="Cache_Region_Desc" xml:space="preserve"><value>Cache region name for clearing via Administration API.</value></data>
+  <data name="Cache_Header_Desc" xml:space="preserve"><value>Header name for Ocelot caching control. Varying values create different cache keys.</value></data>
+  <data name="Cache_EnableContentHashing_Desc" xml:space="preserve"><value>Include request body hash in cache key. Recommended for POST/PUT routes.</value></data>
+
+  <!-- QoSOptions -->
+  <data name="QoS_BreakDuration_Desc" xml:space="preserve"><value>Duration the circuit stays open before resetting (500–86,400,000 ms).</value></data>
+  <data name="QoS_MinimumThroughput_Desc" xml:space="preserve"><value>Minimum actions in sampling window before circuit breaker engages (≥ 2).</value></data>
+  <data name="QoS_FailureRatio_Desc" xml:space="preserve"><value>Failure-to-success ratio to trigger circuit break (0.0 &lt; x ≤ 1.0).</value></data>
+  <data name="QoS_SamplingDuration_Desc" xml:space="preserve"><value>Sampling window for failure ratio assessment (500–86,400,000 ms).</value></data>
+  <data name="QoS_Timeout_Desc" xml:space="preserve"><value>Default request timeout in milliseconds (10–86,400,000 ms).</value></data>
+
+  <!-- LoadBalancerOptions -->
+  <data name="LoadBalancer_Type_Desc" xml:space="preserve"><value>Load balancer type. Required field.</value></data>
+  <data name="LoadBalancer_Key_Desc" xml:space="preserve"><value>Cookie name for sticky sessions. Only for CookieStickySessions.</value></data>
+  <data name="LoadBalancer_Expiry_Desc" xml:space="preserve"><value>Session stickiness duration in ms. Refreshes on each request. Default: 1,200,000 (20 min).</value></data>
+
+  <!-- RateLimitOptions -->
+  <data name="RateLimit_Enable_Desc" xml:space="preserve"><value>Controls whether rate limiting applies to this route.</value></data>
+  <data name="RateLimit_Limit_Desc" xml:space="preserve"><value>Maximum requests allowed within the specified Period.</value></data>
+  <data name="RateLimit_Period_Desc" xml:space="preserve"><value>Time window for counting requests. Format: number + unit (ms/s/m/h/d).</value></data>
+  <data name="RateLimit_Wait_Desc" xml:space="preserve"><value>Duration to block requests after quota exhaustion. Same format as Period.</value></data>
+  <data name="RateLimit_ClientIdHeader_Desc" xml:space="preserve"><value>HTTP header that contains the client identifier. Default: "Oc-Client".</value></data>
+  <data name="RateLimit_ClientWhitelist_Desc" xml:space="preserve"><value>Client identifiers exempted from rate limiting.</value></data>
+  <data name="RateLimit_EnableHeaders_Desc" xml:space="preserve"><value>Include X-RateLimit-* and Retry-After headers in responses.</value></data>
+  <data name="RateLimit_StatusCode_Desc" xml:space="preserve"><value>HTTP status code for rate limit rejections. Default: 429.</value></data>
+  <data name="RateLimit_QuotaMessage_Desc" xml:space="preserve"><value>Custom message when quota exceeded. Supports {0} (count) and {1} (period).</value></data>
+  <data name="RateLimit_KeyPrefix_Desc" xml:space="preserve"><value>Cache key prefix for rate limit counters. Default: "Ocelot.RateLimiting".</value></data>
+
+  <!-- AuthenticationOptions -->
+  <data name="Auth_AllowAnonymous_Desc" xml:space="preserve"><value>Exclude this route from global authentication when true.</value></data>
+  <data name="Auth_ProviderKeys_Desc" xml:space="preserve"><value>Authentication provider schemes. First One Wins strategy by array order.</value></data>
+  <data name="Auth_ProviderKey_Desc" xml:space="preserve"><value>Deprecated in v24.1. Use Authentication Provider Keys instead.</value></data>
+  <data name="Auth_AllowedScopes_Desc" xml:space="preserve"><value>Required scopes from the token's scope claim. At least one must match.</value></data>
+
+  <!-- HttpHandlerOptions -->
+  <data name="HttpHandler_AllowAutoRedirect_Desc" xml:space="preserve"><value>Automatically follow HTTP 3xx redirects.</value></data>
+  <data name="HttpHandler_UseCookieContainer_Desc" xml:space="preserve"><value>Enable cookie persistence for downstream requests.</value></data>
+  <data name="HttpHandler_UseProxy_Desc" xml:space="preserve"><value>Use system proxy settings for downstream requests.</value></data>
+  <data name="HttpHandler_UseTracing_Desc" xml:space="preserve"><value>Enable distributed tracing handler integration.</value></data>
+  <data name="HttpHandler_MaxConnections_Desc" xml:space="preserve"><value>Maximum concurrent connections per downstream server.</value></data>
+  <data name="HttpHandler_PooledLifetime_Desc" xml:space="preserve"><value>Connection pool reuse duration in seconds. Default: 120.</value></data>
+
+  <!-- ServiceDiscoveryProvider -->
+  <data name="ServiceDiscovery_Type_Desc" xml:space="preserve"><value>Service discovery provider implementation type.</value></data>
+  <data name="ServiceDiscovery_Host_Desc" xml:space="preserve"><value>Service discovery server hostname or IP address.</value></data>
+  <data name="ServiceDiscovery_Port_Desc" xml:space="preserve"><value>Service discovery server port. Default: 8500 (Consul).</value></data>
+  <data name="ServiceDiscovery_Scheme_Desc" xml:space="preserve"><value>Protocol for connecting to the discovery provider (http/https).</value></data>
+  <data name="ServiceDiscovery_Token_Desc" xml:space="preserve"><value>Authentication token for ACL-protected Consul instances.</value></data>
+  <data name="ServiceDiscovery_ConfigurationKey_Desc" xml:space="preserve"><value>Key for storing/retrieving config in Consul KV store.</value></data>
+  <data name="ServiceDiscovery_PollingInterval_Desc" xml:space="preserve"><value>Polling frequency in ms for PollConsul/PollKube providers.</value></data>
+  <data name="ServiceDiscovery_Namespace_Desc" xml:space="preserve"><value>Kubernetes namespace. Not supported for Consul.</value></data>
+
+  <!-- ExampleBox -->
+  <data name="Example_Show" xml:space="preserve"><value>Show examples</value></data>
+  <data name="Example_Hide" xml:space="preserve"><value>Hide examples</value></data>
+
+  <!-- Tags -->
+  <data name="Tag_Common" xml:space="preserve"><value>Common</value></data>
+  <data name="Tag_Advanced" xml:space="preserve"><value>Advanced</value></data>
+
+  <!-- Warnings -->
+  <data name="Warn_NoDownstreamHost" xml:space="preserve"><value>No downstream host or service name configured. This route won't be able to forward requests.</value></data>
+  <data name="Warn_NoHttpMethod" xml:space="preserve"><value>No HTTP methods specified. This route will match all methods.</value></data>
+  <data name="Warn_RateLimitIncomplete" xml:space="preserve"><value>Rate limiting is enabled but Period or Limit is not set.</value></data>
+  <data name="Warn_AuthNoProvider" xml:space="preserve"><value>Authentication is configured but no provider key is specified.</value></data>
+
+  <!-- MetadataOptions -->
+  <data name="MetadataOpt_CurrentCulture_Desc" xml:space="preserve"><value>CultureInfo used for metadata value parsing.</value></data>
+  <data name="MetadataOpt_NumberStyle_Desc" xml:space="preserve"><value>NumberStyles for numeric metadata parsing.</value></data>
+  <data name="MetadataOpt_Separators_Desc" xml:space="preserve"><value>Delimiter strings used to split metadata values. Default: comma.</value></data>
+  <data name="MetadataOpt_StringSplitOption_Desc" xml:space="preserve"><value>StringSplitOptions for metadata value splitting.</value></data>
+  <data name="MetadataOpt_TrimChars_Desc" xml:space="preserve"><value>Characters to trim from parsed metadata values. Default: space.</value></data>
 </root>

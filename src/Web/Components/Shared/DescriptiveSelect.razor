@@ -1,0 +1,47 @@
+<MudSelect T="string"
+           Label="@Label"
+           Value="@(Value ?? string.Empty)"
+           ValueChanged="OnValueChanged"
+           Variant="Variant.Outlined"
+           HelperText="@GetHelperText()"
+           ToStringFunc="@(v => string.IsNullOrEmpty(v) ? EmptyText : v)">
+    @if (AllowEmpty)
+    {
+        <MudSelectItem T="string" Value="@string.Empty">@EmptyText</MudSelectItem>
+    }
+    @foreach (var option in Options)
+    {
+        <MudSelectItem T="string" Value="@option.Value">
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.body1"><b>@option.Value</b></MudText>
+                @if (!string.IsNullOrEmpty(option.Description))
+                {
+                    <MudText Typo="Typo.caption" Class="mud-text-secondary">@option.Description</MudText>
+                }
+            </MudStack>
+        </MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    public sealed record SelectOption(string Value, string? Description = null);
+
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+    [Parameter] public IReadOnlyList<SelectOption> Options { get; set; } = [];
+    [Parameter] public bool AllowEmpty { get; set; } = true;
+    [Parameter] public string EmptyText { get; set; } = "\u2014";
+
+    private Task OnValueChanged(string v)
+    {
+        var result = string.IsNullOrEmpty(v) ? null : v;
+        return ValueChanged.InvokeAsync(result);
+    }
+
+    private string? GetHelperText()
+    {
+        if (string.IsNullOrEmpty(Value)) return null;
+        return Options.FirstOrDefault(o => o.Value == Value)?.Description;
+    }
+}

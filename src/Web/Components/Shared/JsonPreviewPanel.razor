@@ -1,0 +1,102 @@
+@using OcelotUI.Application.Interfaces
+@inject IStringLocalizer<SharedResource> L
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
+@inject IOcelotConfigurationRepository Repository
+@inject JsonPreviewState PreviewState
+@implements IDisposable
+
+<MudPaper Class="pa-3" Elevation="1" Style="position: sticky; top: 80px; height: calc(100vh - 96px); display: flex; flex-direction: column; overflow: hidden; background: #1e1e1e; color: #fff;">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-2">
+        <MudText Typo="Typo.subtitle1" Style="color: #fff;"><b>@L["JsonPreview_Title"]</b></MudText>
+        <MudStack Row="true" Spacing="0">
+            <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                           Size="Size.Small"
+                           Color="Color.Inherit"
+                           OnClick="ReloadAsync"
+                           title="@L["JsonPreview_Refresh"]" />
+            <MudIconButton Icon="@Icons.Material.Filled.ContentCopy"
+                           Size="Size.Small"
+                           Color="Color.Inherit"
+                           OnClick="CopyToClipboard"
+                           title="@L["JsonPreview_Copied"]" />
+        </MudStack>
+    </MudStack>
+    <div style="flex: 1; min-height: 0; overflow: hidden;">
+        <StandaloneCodeEditor @ref="_editor"
+                              ConstructionOptions="EditorConstructionOptions"
+                              OnDidInit="OnEditorInit" />
+    </div>
+</MudPaper>
+
+@code {
+    private string _json = "";
+    private StandaloneCodeEditor _editor = null!;
+    private bool _editorReady;
+
+    private static readonly System.Text.Json.JsonSerializerOptions JsonOptions = new()
+    {
+        WriteIndented = true,
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+    };
+
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+        {
+            Language = "json",
+            Theme = "vs-dark",
+            Value = _json,
+            ReadOnly = true,
+            AutomaticLayout = true,
+            Folding = true,
+            LineNumbers = "on",
+            Minimap = new EditorMinimapOptions { Enabled = false },
+            ScrollBeyondLastLine = false,
+            RenderLineHighlight = "none",
+            FontSize = 13,
+        };
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        PreviewState.OnChange += OnConfigChanged;
+        var config = await Repository.LoadAsync();
+        _json = System.Text.Json.JsonSerializer.Serialize(config, JsonOptions);
+    }
+
+    private async void OnConfigChanged()
+    {
+        await InvokeAsync(ReloadAsync);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private Task OnEditorInit()
+    {
+        _editorReady = true;
+        return Task.CompletedTask;
+    }
+
+    private async Task ReloadAsync()
+    {
+        var config = await Repository.LoadAsync();
+        _json = System.Text.Json.JsonSerializer.Serialize(config, JsonOptions);
+
+        if (_editorReady)
+        {
+            await _editor.SetValue(_json);
+        }
+    }
+
+    private async Task CopyToClipboard()
+    {
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", _json);
+        Snackbar.Add(L["JsonPreview_Copied"], Severity.Success);
+    }
+
+    public void Dispose()
+    {
+        PreviewState.OnChange -= OnConfigChanged;
+    }
+}

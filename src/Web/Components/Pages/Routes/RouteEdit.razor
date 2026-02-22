@@ -6,12 +6,12 @@
 @using OcelotUI.Application.Routes.Commands.UpdateRoute
 @using OcelotUI.Domain.Entities
 @using OcelotUI.Web.Components.Shared
-@using OcelotUI.Web.Services
 @inject IMediator Mediator
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject IStringLocalizer<SharedResource> L
+@inject IJSRuntime JS
 
 <MudText Typo="Typo.h5" Class="mb-4">
     @(IsNew ? L["RouteEdit_NewTitle"] : string.Format(L["RouteEdit_EditTitle"], Index))
@@ -25,6 +25,12 @@ else
 {
     <EditForm Model="_route" OnValidSubmit="Save">
         <MudStack Spacing="4">
+            @* Validation Warnings *@
+            @foreach (var warn in Warnings)
+            {
+                <MudAlert Severity="@warn.Severity" Dense="true" Class="mb-0">@warn.Message</MudAlert>
+            }
+
             @* Toolbar *@
             <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2">
                 <MudMenu Label="@L["RouteEdit_ApplyTemplate"]"
@@ -91,7 +97,7 @@ else
                                       Variant="Variant.Outlined" />
                     </MudTooltip>
                     <MudGrid>
-                        <MudItem xs="6">
+                        <MudItem xs="4">
                             <MudTooltip Text="@L["Tip_Scheme"]" Arrow="true" Placement="Placement.Top">
                                 <MudSelect T="string"
                                            Label="@L["RouteEdit_Scheme"]"
@@ -104,7 +110,7 @@ else
                                 </MudSelect>
                             </MudTooltip>
                         </MudItem>
-                        <MudItem xs="6">
+                        <MudItem xs="4">
                             <MudTooltip Text="@L["Tip_HttpVersion"]" Arrow="true" Placement="Placement.Top">
                                 <MudTextField T="string"
                                               Label="@L["RouteEdit_HttpVersion"]"
@@ -113,7 +119,20 @@ else
                                               Variant="Variant.Outlined" />
                             </MudTooltip>
                         </MudItem>
+                        <MudItem xs="4">
+                            <DescriptiveSelect Label="@L["RouteEdit_HttpVersionPolicy"]"
+                                               Value="@(_route.DownstreamHttpVersionPolicy)"
+                                               ValueChanged="v => _route.DownstreamHttpVersionPolicy = v"
+                                               Options="_httpVersionPolicyOptions" />
+                        </MudItem>
                     </MudGrid>
+                    <MudTooltip Text="@L["Tip_DownstreamHttpMethod"]" Arrow="true" Placement="Placement.Top">
+                        <MudTextField T="string"
+                                      Label="@L["RouteEdit_DownstreamHttpMethod"]"
+                                      @bind-Value="_route.DownstreamHttpMethod"
+                                      Placeholder="e.g. POST"
+                                      Variant="Variant.Outlined" />
+                    </MudTooltip>
                     <MudTooltip Text="@L["Tip_HostAndPorts"]" Arrow="true" Placement="Placement.Top">
                         <DownstreamHostEditor @bind-Hosts="_route.DownstreamHostAndPorts" />
                     </MudTooltip>
@@ -122,134 +141,221 @@ else
 
             @* Options & Sub-object Sections *@
             <MudExpansionPanels>
-                <MudExpansionPanel Text="@L["RouteEdit_Options"]">
-                    <MudStack Spacing="3" Class="pa-2">
-                        <MudGrid>
-                            <MudItem xs="4">
-                                <MudTooltip Text="@L["Tip_Key"]" Arrow="true" Placement="Placement.Top">
-                                    <MudTextField T="string"
-                                                  Label="@L["RouteEdit_Key"]"
-                                                  @bind-Value="_route.Key"
-                                                  Variant="Variant.Outlined" />
-                                </MudTooltip>
-                            </MudItem>
-                            <MudItem xs="4">
-                                <MudTooltip Text="@L["Tip_Priority"]" Arrow="true" Placement="Placement.Top">
-                                    <MudNumericField T="int?"
-                                                     Label="@L["RouteEdit_Priority"]"
-                                                     @bind-Value="_route.Priority"
-                                                     Variant="Variant.Outlined" />
-                                </MudTooltip>
-                            </MudItem>
-                            <MudItem xs="4">
-                                <MudTooltip Text="@L["Tip_Timeout"]" Arrow="true" Placement="Placement.Top">
-                                    <MudNumericField T="int?"
-                                                     Label="@L["RouteEdit_Timeout"]"
-                                                     @bind-Value="_route.Timeout"
-                                                     Variant="Variant.Outlined" />
-                                </MudTooltip>
-                            </MudItem>
-                        </MudGrid>
-                        <MudGrid>
-                            <MudItem xs="6">
-                                <MudTooltip Text="@L["Tip_CaseSensitive"]" Arrow="true" Placement="Placement.Top">
-                                    <MudCheckBox T="bool?"
-                                                 Label="@L["RouteEdit_CaseSensitive"]"
-                                                 @bind-Value="_route.RouteIsCaseSensitive" />
-                                </MudTooltip>
-                            </MudItem>
-                            <MudItem xs="6">
-                                <MudTooltip Text="@L["Tip_AcceptAnyCert"]" Arrow="true" Placement="Placement.Top">
-                                    <MudCheckBox T="bool?"
-                                                 Label="@L["RouteEdit_AcceptAnyCert"]"
-                                                 @bind-Value="_route.DangerousAcceptAnyServerCertificateValidator" />
-                                </MudTooltip>
-                            </MudItem>
-                        </MudGrid>
-                    </MudStack>
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_Options"], HasOptions, docUrl: OcelotDocs + "routing.html")</TitleContent>
+                    <ChildContent>
+                        <MudStack Spacing="3" Class="pa-2">
+                            <MudGrid>
+                                <MudItem xs="4">
+                                    <MudTooltip Text="@L["Tip_Key"]" Arrow="true" Placement="Placement.Top">
+                                        <MudTextField T="string"
+                                                      Label="@L["RouteEdit_Key"]"
+                                                      @bind-Value="_route.Key"
+                                                      Variant="Variant.Outlined" />
+                                    </MudTooltip>
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudTooltip Text="@L["Tip_Priority"]" Arrow="true" Placement="Placement.Top">
+                                        <MudNumericField T="int?"
+                                                         Label="@L["RouteEdit_Priority"]"
+                                                         @bind-Value="_route.Priority"
+                                                         Variant="Variant.Outlined" />
+                                    </MudTooltip>
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudTooltip Text="@L["Tip_Timeout"]" Arrow="true" Placement="Placement.Top">
+                                        <MudNumericField T="int?"
+                                                         Label="@L["RouteEdit_Timeout"]"
+                                                         @bind-Value="_route.Timeout"
+                                                         Variant="Variant.Outlined" />
+                                    </MudTooltip>
+                                </MudItem>
+                            </MudGrid>
+                            <MudGrid>
+                                <MudItem xs="4">
+                                    <MudTooltip Text="@L["Tip_ServiceName"]" Arrow="true" Placement="Placement.Top">
+                                        <MudTextField T="string"
+                                                      Label="@L["RouteEdit_ServiceName"]"
+                                                      @bind-Value="_route.ServiceName"
+                                                      Variant="Variant.Outlined" />
+                                    </MudTooltip>
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudTooltip Text="@L["Tip_ServiceNamespace"]" Arrow="true" Placement="Placement.Top">
+                                        <MudTextField T="string"
+                                                      Label="@L["RouteEdit_ServiceNamespace"]"
+                                                      @bind-Value="_route.ServiceNamespace"
+                                                      Variant="Variant.Outlined" />
+                                    </MudTooltip>
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudTooltip Text="@L["Tip_RequestIdKey"]" Arrow="true" Placement="Placement.Top">
+                                        <MudTextField T="string"
+                                                      Label="@L["RouteEdit_RequestIdKey"]"
+                                                      @bind-Value="_route.RequestIdKey"
+                                                      Variant="Variant.Outlined" />
+                                    </MudTooltip>
+                                </MudItem>
+                            </MudGrid>
+                            <MudGrid>
+                                <MudItem xs="6">
+                                    <MudTooltip Text="@L["Tip_CaseSensitive"]" Arrow="true" Placement="Placement.Top">
+                                        <MudCheckBox T="bool?"
+                                                     Label="@L["RouteEdit_CaseSensitive"]"
+                                                     @bind-Value="_route.RouteIsCaseSensitive" />
+                                    </MudTooltip>
+                                </MudItem>
+                                <MudItem xs="6">
+                                    <MudTooltip Text="@L["Tip_AcceptAnyCert"]" Arrow="true" Placement="Placement.Top">
+                                        <MudCheckBox T="bool?"
+                                                     Label="@L["RouteEdit_AcceptAnyCert"]"
+                                                     @bind-Value="_route.DangerousAcceptAnyServerCertificateValidator" />
+                                    </MudTooltip>
+                                </MudItem>
+                            </MudGrid>
+                        </MudStack>
+                    </ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_AuthenticationOptions"]">
-                    <AuthenticationOptionsEditor @bind-Value="_route.AuthenticationOptions" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_AuthenticationOptions"], _route.AuthenticationOptions is not null, tag: L["Tag_Common"], docUrl: OcelotDocs + "authentication.html")</TitleContent>
+                    <ChildContent><AuthenticationOptionsEditor @bind-Value="_route.AuthenticationOptions" /></ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_RateLimitOptions"]">
-                    <RateLimitOptionsEditor @bind-Value="_route.RateLimitOptions" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_RateLimitOptions"], _route.RateLimitOptions is not null, tag: L["Tag_Common"], docUrl: OcelotDocs + "ratelimiting.html")</TitleContent>
+                    <ChildContent><RateLimitOptionsEditor @bind-Value="_route.RateLimitOptions" /></ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_LoadBalancerOptions"]">
-                    <LoadBalancerOptionsEditor @bind-Value="_route.LoadBalancerOptions" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_LoadBalancerOptions"], _route.LoadBalancerOptions is not null, tag: L["Tag_Common"], docUrl: OcelotDocs + "loadbalancer.html")</TitleContent>
+                    <ChildContent><LoadBalancerOptionsEditor @bind-Value="_route.LoadBalancerOptions" /></ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_QoSOptions"]">
-                    <QoSOptionsEditor @bind-Value="_route.QoSOptions" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_QoSOptions"], _route.QoSOptions is not null, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "qualityofservice.html")</TitleContent>
+                    <ChildContent><QoSOptionsEditor @bind-Value="_route.QoSOptions" /></ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_CacheOptions"]">
-                    <CacheOptionsEditor @bind-Value="_route.CacheOptions" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_CacheOptions"], _route.CacheOptions is not null, tag: L["Tag_Common"], docUrl: OcelotDocs + "caching.html")</TitleContent>
+                    <ChildContent><CacheOptionsEditor @bind-Value="_route.CacheOptions" /></ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_HttpHandlerOptions"]">
-                    <HttpHandlerOptionsEditor @bind-Value="_route.HttpHandlerOptions" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_HttpHandlerOptions"], _route.HttpHandlerOptions is not null, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "configuration.html")</TitleContent>
+                    <ChildContent><HttpHandlerOptionsEditor @bind-Value="_route.HttpHandlerOptions" /></ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_SecurityOptions"]">
-                    <SecurityOptionsEditor @bind-Value="_route.SecurityOptions" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_SecurityOptions"], _route.SecurityOptions is not null, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "routing.html")</TitleContent>
+                    <ChildContent><SecurityOptionsEditor @bind-Value="_route.SecurityOptions" /></ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_Metadata"]">
-                    <DictionaryEditor @bind-Items="_route.Metadata"
-                                      Label="@L["RouteEdit_Metadata"]"
-                                      KeyPlaceholder="e.g. project"
-                                      ValuePlaceholder="e.g. ocelot-ui" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_Metadata"], _route.Metadata is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "metadata.html")</TitleContent>
+                    <ChildContent>
+                        <DictionaryEditor @bind-Items="_route.Metadata"
+                                          Label="@L["RouteEdit_Metadata"]"
+                                          KeyPlaceholder="e.g. project"
+                                          ValuePlaceholder="e.g. ocelot-ui" />
+                    </ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_AddHeadersToRequest"]">
-                    <DictionaryEditor @bind-Items="_route.AddHeadersToRequest"
-                                      Label="@L["RouteEdit_AddHeadersToRequest"]"
-                                      KeyPlaceholder="Header"
-                                      ValuePlaceholder="Value" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_AddHeadersToRequest"], _route.AddHeadersToRequest is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "claimstransformation.html")</TitleContent>
+                    <ChildContent>
+                        <ExampleBox Items="_addHeadersExamples" />
+                        <DictionaryEditor @bind-Items="_route.AddHeadersToRequest"
+                                          Label="@L["RouteEdit_AddHeadersToRequest"]"
+                                          KeyPlaceholder="Header"
+                                          ValuePlaceholder="Value" />
+                    </ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_AddClaimsToRequest"]">
-                    <DictionaryEditor @bind-Items="_route.AddClaimsToRequest"
-                                      Label="@L["RouteEdit_AddClaimsToRequest"]"
-                                      KeyPlaceholder="Claim"
-                                      ValuePlaceholder="Value" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_AddClaimsToRequest"], _route.AddClaimsToRequest is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "claimstransformation.html")</TitleContent>
+                    <ChildContent>
+                        <ExampleBox Items="_addClaimsExamples" />
+                        <DictionaryEditor @bind-Items="_route.AddClaimsToRequest"
+                                          Label="@L["RouteEdit_AddClaimsToRequest"]"
+                                          KeyPlaceholder="Claim"
+                                          ValuePlaceholder="Value" />
+                    </ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_AddQueriesToRequest"]">
-                    <DictionaryEditor @bind-Items="_route.AddQueriesToRequest"
-                                      Label="@L["RouteEdit_AddQueriesToRequest"]"
-                                      KeyPlaceholder="Query"
-                                      ValuePlaceholder="Value" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_AddQueriesToRequest"], _route.AddQueriesToRequest is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "claimstransformation.html")</TitleContent>
+                    <ChildContent>
+                        <ExampleBox Items="_addQueriesToRequestExamples" />
+                        <DictionaryEditor @bind-Items="_route.AddQueriesToRequest"
+                                          Label="@L["RouteEdit_AddQueriesToRequest"]"
+                                          KeyPlaceholder="Query"
+                                          ValuePlaceholder="Value" />
+                    </ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_RouteClaimsRequirement"]">
-                    <DictionaryEditor @bind-Items="_route.RouteClaimsRequirement"
-                                      Label="@L["RouteEdit_RouteClaimsRequirement"]"
-                                      KeyPlaceholder="Claim"
-                                      ValuePlaceholder="Required Value" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_RouteClaimsRequirement"], _route.RouteClaimsRequirement is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "authorization.html")</TitleContent>
+                    <ChildContent>
+                        <ExampleBox Items="_routeClaimsExamples" />
+                        <DictionaryEditor @bind-Items="_route.RouteClaimsRequirement"
+                                          Label="@L["RouteEdit_RouteClaimsRequirement"]"
+                                          KeyPlaceholder="Claim"
+                                          ValuePlaceholder="Required Value" />
+                    </ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_UpstreamHeaderTransform"]">
-                    <DictionaryEditor @bind-Items="_route.UpstreamHeaderTransform"
-                                      Label="@L["RouteEdit_UpstreamHeaderTransform"]"
-                                      KeyPlaceholder="Header"
-                                      ValuePlaceholder="Transform" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_UpstreamHeaderTemplates"], _route.UpstreamHeaderTemplates is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "routing.html")</TitleContent>
+                    <ChildContent>
+                        <DictionaryEditor @bind-Items="_route.UpstreamHeaderTemplates"
+                                          Label="@L["RouteEdit_UpstreamHeaderTemplates"]"
+                                          KeyPlaceholder="Header"
+                                          ValuePlaceholder="Pattern" />
+                    </ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_DownstreamHeaderTransform"]">
-                    <DictionaryEditor @bind-Items="_route.DownstreamHeaderTransform"
-                                      Label="@L["RouteEdit_DownstreamHeaderTransform"]"
-                                      KeyPlaceholder="Header"
-                                      ValuePlaceholder="Transform" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_UpstreamHeaderTransform"], _route.UpstreamHeaderTransform is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "headerstransformation.html")</TitleContent>
+                    <ChildContent>
+                        <ExampleBox Items="_upstreamHeaderTransformExamples" />
+                        <DictionaryEditor @bind-Items="_route.UpstreamHeaderTransform"
+                                          Label="@L["RouteEdit_UpstreamHeaderTransform"]"
+                                          KeyPlaceholder="Header"
+                                          ValuePlaceholder="Transform" />
+                    </ChildContent>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@L["RouteEdit_DelegatingHandlers"]">
-                    <StringListEditor @bind-Items="_route.DelegatingHandlers"
-                                      Label="@L["RouteEdit_DelegatingHandlers"]"
-                                      Placeholder="e.g. MyHandler" />
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_DownstreamHeaderTransform"], _route.DownstreamHeaderTransform is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "headerstransformation.html")</TitleContent>
+                    <ChildContent>
+                        <ExampleBox Items="_downstreamHeaderTransformExamples" />
+                        <DictionaryEditor @bind-Items="_route.DownstreamHeaderTransform"
+                                          Label="@L["RouteEdit_DownstreamHeaderTransform"]"
+                                          KeyPlaceholder="Header"
+                                          ValuePlaceholder="Transform" />
+                    </ChildContent>
+                </MudExpansionPanel>
+
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_ChangeDownstreamPath"], _route.ChangeDownstreamPathTemplate is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "claimstransformation.html")</TitleContent>
+                    <ChildContent>
+                        <ExampleBox Items="_changeDownstreamPathExamples" />
+                        <DictionaryEditor @bind-Items="_route.ChangeDownstreamPathTemplate"
+                                          Label="@L["RouteEdit_ChangeDownstreamPath"]"
+                                          KeyPlaceholder="Placeholder"
+                                          ValuePlaceholder="Claims[type] > value[index] > delimiter" />
+                    </ChildContent>
+                </MudExpansionPanel>
+
+                <MudExpansionPanel>
+                    <TitleContent>@PanelTitle(L["RouteEdit_DelegatingHandlers"], _route.DelegatingHandlers is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "delegatinghandlers.html")</TitleContent>
+                    <ChildContent>
+                        <StringListEditor @bind-Items="_route.DelegatingHandlers"
+                                          Label="@L["RouteEdit_DelegatingHandlers"]"
+                                          Placeholder="e.g. MyHandler" />
+                    </ChildContent>
                 </MudExpansionPanel>
             </MudExpansionPanels>
         </MudStack>
@@ -264,6 +370,13 @@ else
     private OcelotRoute _route = new();
     private bool _loading = true;
     private bool _saving;
+
+    private IReadOnlyList<DescriptiveSelect.SelectOption> _httpVersionPolicyOptions =>
+    [
+        new("RequestVersionExact", L["HttpVersionPolicy_RequestVersionExact_Desc"]),
+        new("RequestVersionOrLower", L["HttpVersionPolicy_RequestVersionOrLower_Desc"]),
+        new("RequestVersionOrHigher", L["HttpVersionPolicy_RequestVersionOrHigher_Desc"]),
+    ];
 
     protected override async Task OnInitializedAsync()
     {
@@ -375,4 +488,143 @@ else
     }
 
     private void Cancel() => Navigation.NavigateTo("/routes");
+
+    private bool HasOptions =>
+        !string.IsNullOrEmpty(_route.Key)
+        || _route.Priority is not null
+        || _route.Timeout is not null
+        || !string.IsNullOrEmpty(_route.ServiceName)
+        || !string.IsNullOrEmpty(_route.ServiceNamespace)
+        || !string.IsNullOrEmpty(_route.RequestIdKey)
+        || _route.RouteIsCaseSensitive is not null
+        || _route.DangerousAcceptAnyServerCertificateValidator is not null;
+
+    private const string OcelotDocs = "https://ocelot.readthedocs.io/en/latest/features/";
+
+    private RenderFragment PanelTitle(string label, bool configured, string? tag = null, string? docUrl = null) => builder =>
+    {
+        builder.OpenComponent<MudStack>(0);
+        builder.AddAttribute(1, "Row", true);
+        builder.AddAttribute(2, "AlignItems", AlignItems.Center);
+        builder.AddAttribute(3, "Spacing", 2);
+        builder.AddAttribute(4, "ChildContent", (RenderFragment)(inner =>
+        {
+            inner.OpenComponent<MudText>(0);
+            inner.AddAttribute(1, "ChildContent", (RenderFragment)(t => t.AddContent(0, label)));
+            inner.CloseComponent();
+            if (configured)
+            {
+                inner.OpenComponent<MudChip<string>>(2);
+                inner.AddAttribute(3, "Size", Size.Small);
+                inner.AddAttribute(4, "Color", Color.Info);
+                inner.AddAttribute(5, "Variant", Variant.Filled);
+                inner.AddAttribute(6, "ChildContent", (RenderFragment)(c => c.AddContent(0, "✔")));
+                inner.CloseComponent();
+            }
+            if (tag is not null)
+            {
+                inner.OpenComponent<MudChip<string>>(10);
+                inner.AddAttribute(11, "Size", Size.Small);
+                inner.AddAttribute(12, "Color", tag == L["Tag_Common"] ? Color.Primary : Color.Default);
+                inner.AddAttribute(13, "Variant", Variant.Outlined);
+                inner.AddAttribute(14, "ChildContent", (RenderFragment)(c => c.AddContent(0, tag)));
+                inner.CloseComponent();
+            }
+            if (docUrl is not null)
+            {
+                inner.OpenComponent<MudTooltip>(20);
+                inner.AddAttribute(21, "Text", L["Nav_Guide"].Value);
+                inner.AddAttribute(22, "ChildContent", (RenderFragment)(tip =>
+                {
+                    tip.OpenComponent<MudIconButton>(0);
+                    tip.AddAttribute(1, "Icon", Icons.Material.Outlined.HelpOutline);
+                    tip.AddAttribute(2, "Size", Size.Small);
+                    tip.AddAttribute(3, "Color", Color.Default);
+                    tip.AddAttribute(4, "OnClick", EventCallback.Factory.Create<MouseEventArgs>(this, () => JS.InvokeVoidAsync("open", docUrl, "_blank")));
+                    tip.CloseComponent();
+                }));
+                inner.CloseComponent();
+            }
+        }));
+        builder.CloseComponent();
+    };
+
+    // -- Warnings --
+    private sealed record ValidationMessage(string Message, Severity Severity);
+
+    private IReadOnlyList<ValidationMessage> Warnings
+    {
+        get
+        {
+            var list = new List<ValidationMessage>();
+
+            if (_route.DownstreamHostAndPorts is not { Count: > 0 }
+                && string.IsNullOrWhiteSpace(_route.ServiceName))
+            {
+                list.Add(new(L["Warn_NoDownstreamHost"], Severity.Warning));
+            }
+
+            if (_route.UpstreamHttpMethod is not { Count: > 0 })
+            {
+                list.Add(new(L["Warn_NoHttpMethod"], Severity.Info));
+            }
+
+            if (_route.RateLimitOptions is { EnableRateLimiting: true }
+                && (string.IsNullOrWhiteSpace(_route.RateLimitOptions.Period)
+                    || _route.RateLimitOptions.Limit is null or 0))
+            {
+                list.Add(new(L["Warn_RateLimitIncomplete"], Severity.Warning));
+            }
+
+            if (_route.AuthenticationOptions is not null
+                && _route.AuthenticationOptions.AuthenticationProviderKeys is not { Count: > 0 }
+                && string.IsNullOrWhiteSpace(_route.AuthenticationOptions.AuthenticationProviderKey))
+            {
+                list.Add(new(L["Warn_AuthNoProvider"], Severity.Warning));
+            }
+
+            return list;
+        }
+    }
+
+    // -- Example data --
+    private static readonly IReadOnlyList<ExampleBox.ExampleItem> _addHeadersExamples =
+    [
+        new("X-Forwarded-For", "{RemoteIpAddress}"),
+        new("X-Custom-UserId", "Claims[sub] > value[0] > |"),
+    ];
+
+    private static readonly IReadOnlyList<ExampleBox.ExampleItem> _addClaimsExamples =
+    [
+        new("sub", "Claims[sub] > value[0] > |"),
+        new("email", "Claims[email] > value[0] > |"),
+    ];
+
+    private static readonly IReadOnlyList<ExampleBox.ExampleItem> _addQueriesToRequestExamples =
+    [
+        new("userId", "Claims[sub] > value[0] > |"),
+    ];
+
+    private static readonly IReadOnlyList<ExampleBox.ExampleItem> _routeClaimsExamples =
+    [
+        new("role", "admin, superadmin"),
+        new("scope", "api.read"),
+    ];
+
+    private static readonly IReadOnlyList<ExampleBox.ExampleItem> _upstreamHeaderTransformExamples =
+    [
+        new("X-Custom", "old, new"),
+        new("X-Forwarded-For", "{RemoteIpAddress}"),
+    ];
+
+    private static readonly IReadOnlyList<ExampleBox.ExampleItem> _downstreamHeaderTransformExamples =
+    [
+        new("Location", "http://localhost, {BaseUrl}"),
+        new("X-Frame-Options", "DENY, SAMEORIGIN"),
+    ];
+
+    private static readonly IReadOnlyList<ExampleBox.ExampleItem> _changeDownstreamPathExamples =
+    [
+        new("{userId}", "Claims[sub] > value[0] > |"),
+    ];
 }

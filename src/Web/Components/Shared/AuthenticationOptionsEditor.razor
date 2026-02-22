@@ -2,31 +2,54 @@
 @inject IStringLocalizer<SharedResource> L
 
 <MudStack Spacing="3" Class="pa-2">
-    <MudCheckBox T="bool?"
-                 Label="@L["Auth_AllowAnonymous"]"
-                 Value="Value?.AllowAnonymous"
-                 ValueChanged="v => Update(o => o.AllowAnonymous = v)" />
+    <div class="d-flex align-start">
+        <MudCheckBox T="bool?"
+                     Label="@L["Auth_AllowAnonymous"]"
+                     Value="Value?.AllowAnonymous"
+                     ValueChanged="v => Update(o => o.AllowAnonymous = v)" />
+        <HelpIcon Text="@L["Auth_AllowAnonymous_Desc"]" />
+    </div>
 
     <StringListEditor @bind-Items="_providerKeys"
                       Label="@L["Auth_ProviderKeys"]"
-                      Placeholder="e.g. Bearer" />
+                      Placeholder="e.g. Bearer"
+                      HelpText="@L["Auth_ProviderKeys_Desc"]" />
 
-    <MudTextField T="string"
-                  Label="@L["Auth_ProviderKey"]"
-                  Value="@(Value?.AuthenticationProviderKey)"
-                  ValueChanged="v => Update(o => o.AuthenticationProviderKey = string.IsNullOrWhiteSpace(v) ? null : v)"
-                  Variant="Variant.Outlined"
-                  HelperText="@L["Auth_ProviderKey_Deprecated"]"
-                  Disabled="true" />
+    <div class="d-flex align-start gap-1">
+        <MudTextField T="string"
+                      Label="@L["Auth_ProviderKey"]"
+                      Value="@(Value?.AuthenticationProviderKey)"
+                      ValueChanged="v => Update(o => o.AuthenticationProviderKey = string.IsNullOrWhiteSpace(v) ? null : v)"
+                      Variant="Variant.Outlined"
+                      HelperText="@L["Auth_ProviderKey_Deprecated"]"
+                      Disabled="true"
+                      Style="flex:1" />
+        <HelpIcon Text="@L["Auth_ProviderKey_Desc"]" />
+    </div>
 
     <StringListEditor @bind-Items="_allowedScopes"
                       Label="@L["Auth_AllowedScopes"]"
-                      Placeholder="e.g. api.read" />
+                      Placeholder="e.g. api.read"
+                      HelpText="@L["Auth_AllowedScopes_Desc"]" />
+
+    @if (ShowRouteKeys)
+    {
+        <StringListEditor @bind-Items="_routeKeys"
+                          Label="@L["Global_RouteKeys"]"
+                          Placeholder="e.g. route-key" />
+    }
 </MudStack>
 
 @code {
     [Parameter] public AuthenticationOptions? Value { get; set; }
     [Parameter] public EventCallback<AuthenticationOptions?> ValueChanged { get; set; }
+    [Parameter] public bool ShowRouteKeys { get; set; }
+
+    private List<string>? _routeKeys
+    {
+        get => Value?.RouteKeys;
+        set => Update(o => o.RouteKeys = value);
+    }
 
     private List<string>? _providerKeys
     {
@@ -53,5 +76,6 @@
         && (o.AllowedScopes is null || o.AllowedScopes.Count == 0)
         && string.IsNullOrWhiteSpace(o.AuthenticationProviderKey)
         && (o.AuthenticationProviderKeys is null || o.AuthenticationProviderKeys.Count == 0)
+        && (o.RouteKeys is null || o.RouteKeys.Count == 0)
         && o.ExtensionData is null;
 }

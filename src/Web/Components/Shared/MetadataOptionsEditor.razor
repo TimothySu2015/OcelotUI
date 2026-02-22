@@ -4,42 +4,79 @@
 <MudStack Spacing="3" Class="pa-2">
     <MudGrid>
         <MudItem xs="6">
-            <MudTextField T="string"
-                          Label="@L["MetadataOpt_CurrentCulture"]"
-                          Value="@(Value?.CurrentCulture)"
-                          ValueChanged="v => Update(o => o.CurrentCulture = string.IsNullOrWhiteSpace(v) ? null : v)"
-                          Variant="Variant.Outlined" />
+            <div class="d-flex align-start gap-1">
+                <MudTextField T="string"
+                              Label="@L["MetadataOpt_CurrentCulture"]"
+                              Value="@(Value?.CurrentCulture)"
+                              ValueChanged="v => Update(o => o.CurrentCulture = string.IsNullOrWhiteSpace(v) ? null : v)"
+                              Variant="Variant.Outlined"
+                              Style="flex:1" />
+                <HelpIcon Text="@L["MetadataOpt_CurrentCulture_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="6">
-            <MudTextField T="string"
-                          Label="@L["MetadataOpt_NumberStyle"]"
-                          Value="@(Value?.NumberStyle)"
-                          ValueChanged="v => Update(o => o.NumberStyle = string.IsNullOrWhiteSpace(v) ? null : v)"
-                          Variant="Variant.Outlined" />
+            <div class="d-flex align-start gap-1">
+                <div style="flex:1">
+                    <DescriptiveSelect Label="@L["MetadataOpt_NumberStyle"]"
+                                       Value="@(Value?.NumberStyle)"
+                                       ValueChanged="v => Update(o => o.NumberStyle = v)"
+                                       Options="_numberStyleOptions" />
+                </div>
+                <HelpIcon Text="@L["MetadataOpt_NumberStyle_Desc"]" />
+            </div>
         </MudItem>
     </MudGrid>
 
-    <MudTextField T="string"
-                  Label="@L["MetadataOpt_StringSplitOption"]"
-                  Value="@(Value?.StringSplitOption)"
-                  ValueChanged="v => Update(o => o.StringSplitOption = string.IsNullOrWhiteSpace(v) ? null : v)"
-                  Variant="Variant.Outlined" />
+    <div class="d-flex align-start gap-1">
+        <div style="flex:1">
+            <DescriptiveSelect Label="@L["MetadataOpt_StringSplitOption"]"
+                               Value="@(Value?.StringSplitOption)"
+                               ValueChanged="v => Update(o => o.StringSplitOption = v)"
+                               Options="_stringSplitOptions" />
+        </div>
+        <HelpIcon Text="@L["MetadataOpt_StringSplitOption_Desc"]" />
+    </div>
 
     <StringListEditor @bind-Items="_separators"
                       Label="@L["MetadataOpt_Separators"]"
-                      Placeholder="e.g. ," />
+                      Placeholder="e.g. ,"
+                      HelpText="@L["MetadataOpt_Separators_Desc"]" />
 
     <StringListEditor @bind-Items="_trimChars"
                       Label="@L["MetadataOpt_TrimChars"]"
-                      Placeholder="e.g. (space)" />
-
-    <DictionaryEditor @bind-Items="_metadata"
-                      Label="@L["MetadataOpt_Metadata"]"
-                      KeyPlaceholder="key"
-                      ValuePlaceholder="value" />
+                      Placeholder="e.g. (space)"
+                      HelpText="@L["MetadataOpt_TrimChars_Desc"]" />
 </MudStack>
 
 @code {
+    private IReadOnlyList<DescriptiveSelect.SelectOption> _numberStyleOptions =>
+    [
+        new("None", L["NumberStyle_None_Desc"]),
+        new("Integer", L["NumberStyle_Integer_Desc"]),
+        new("HexNumber", L["NumberStyle_HexNumber_Desc"]),
+        new("Number", L["NumberStyle_Number_Desc"]),
+        new("Float", L["NumberStyle_Float_Desc"]),
+        new("Currency", L["NumberStyle_Currency_Desc"]),
+        new("Any", L["NumberStyle_Any_Desc"]),
+        new("AllowLeadingWhite"),
+        new("AllowTrailingWhite"),
+        new("AllowLeadingSign"),
+        new("AllowTrailingSign"),
+        new("AllowParentheses"),
+        new("AllowDecimalPoint"),
+        new("AllowThousands"),
+        new("AllowExponent"),
+        new("AllowCurrencySymbol"),
+        new("AllowHexSpecifier"),
+    ];
+
+    private IReadOnlyList<DescriptiveSelect.SelectOption> _stringSplitOptions =>
+    [
+        new("None", L["StringSplitOption_None_Desc"]),
+        new("RemoveEmptyEntries", L["StringSplitOption_RemoveEmptyEntries_Desc"]),
+        new("TrimEntries", L["StringSplitOption_TrimEntries_Desc"]),
+    ];
+
     [Parameter] public MetadataOptions? Value { get; set; }
     [Parameter] public EventCallback<MetadataOptions?> ValueChanged { get; set; }
 
@@ -55,12 +92,6 @@
         set => Update(o => o.TrimChars = value);
     }
 
-    private Dictionary<string, string>? _metadata
-    {
-        get => Value?.Metadata;
-        set => Update(o => o.Metadata = value);
-    }
-
     private void Update(Action<MetadataOptions> apply)
     {
         var v = Value ?? new MetadataOptions();
@@ -74,6 +105,5 @@
         && (o.Separators is null || o.Separators.Count == 0)
         && string.IsNullOrWhiteSpace(o.StringSplitOption)
         && (o.TrimChars is null || o.TrimChars.Count == 0)
-        && (o.Metadata is null || o.Metadata.Count == 0)
         && o.ExtensionData is null;
 }

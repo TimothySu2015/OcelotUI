@@ -1,24 +1,68 @@
 {
   "Routes": [
     {
-      "UpstreamPathTemplate": "/api/health",
+      "UpstreamPathTemplate": "/api/products/{everything}",
       "UpstreamHttpMethod": [
-        "GET"
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
       ],
-      "DownstreamPathTemplate": "/health",
+      "DownstreamPathTemplate": "/api/products/{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "backend-service",
+          "Host": "product-service-1",
+          "Port": 443
+        },
+        {
+          "Host": "product-service-2",
+          "Port": 443
+        },
+        {
+          "Host": "product-service-3",
           "Port": 443
         }
-      ]
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/api/secure/{everything}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "secure-service",
+          "Port": 443
+        }
+      ],
+      "AuthenticationOptions": {
+        "AllowAnonymous": false,
+        "AllowedScopes": []
+      }
     }
   ],
   "GlobalConfiguration": {
+    "DownstreamScheme": "https",
     "HttpHandlerOptions": {
       "UseCookieContainer": true,
       "UseTracing": true
+    },
+    "ServiceDiscoveryProvider": {
+      "Type": "Eureka",
+      "Port": 6,
+      "Scheme": "http"
+    },
+    "MetadataOptions": {
+      "NumberStyle": "None"
     }
   }
 }

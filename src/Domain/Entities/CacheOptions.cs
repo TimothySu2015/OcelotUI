@@ -9,6 +9,7 @@ public class CacheOptions
     public string? Region { get; set; }
     public string? Header { get; set; }
     public bool? EnableContentHashing { get; set; }
+    public List<string>? RouteKeys { get; set; }
 
     [JsonExtensionData]
     public Dictionary<string, JsonElement>? ExtensionData { get; set; }

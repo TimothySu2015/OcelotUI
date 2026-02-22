@@ -2,39 +2,68 @@
 @inject IStringLocalizer<SharedResource> L
 
 <MudStack Spacing="3" Class="pa-2">
-    <MudSelect T="string"
-               Label="@L["LoadBalancer_Type"]"
-               Value="@(Value?.Type ?? string.Empty)"
-               ValueChanged="v => Update(o => o.Type = string.IsNullOrEmpty(v) ? null : v)"
-               Variant="Variant.Outlined">
-        <MudSelectItem T="string" Value="@string.Empty">(@L["LoadBalancer_None"])</MudSelectItem>
-        <MudSelectItem T="string" Value="@("RoundRobin")">RoundRobin</MudSelectItem>
-        <MudSelectItem T="string" Value="@("LeastConnection")">LeastConnection</MudSelectItem>
-        <MudSelectItem T="string" Value="@("CookieStickySessions")">CookieStickySessions</MudSelectItem>
-        <MudSelectItem T="string" Value="@("NoLoadBalancer")">NoLoadBalancer</MudSelectItem>
-    </MudSelect>
+    <div class="d-flex align-start gap-1">
+        <div style="flex:1">
+            <DescriptiveSelect Label="@L["LoadBalancer_Type"]"
+                               Value="@(Value?.Type)"
+                               ValueChanged="v => Update(o => o.Type = v)"
+                               Options="_lbOptions"
+                               EmptyText="@($"({L["LoadBalancer_None"]})")" />
+        </div>
+        <HelpIcon Text="@L["LoadBalancer_Type_Desc"]" />
+    </div>
 
     @if (Value?.Type == "CookieStickySessions")
     {
-        <MudTextField T="string"
-                      Label="@L["LoadBalancer_Key"]"
-                      Value="@(Value?.Key)"
-                      ValueChanged="v => Update(o => o.Key = string.IsNullOrWhiteSpace(v) ? null : v)"
-                      Variant="Variant.Outlined"
-                      HelperText="@L["LoadBalancer_Key_Helper"]" />
+        <div class="d-flex align-start gap-1">
+            <MudTextField T="string"
+                          Label="@L["LoadBalancer_Key"]"
+                          Value="@(Value?.Key)"
+                          ValueChanged="v => Update(o => o.Key = string.IsNullOrWhiteSpace(v) ? null : v)"
+                          Variant="Variant.Outlined"
+                          HelperText="@L["LoadBalancer_Key_Helper"]"
+                          Style="flex:1" />
+            <HelpIcon Text="@L["LoadBalancer_Key_Desc"]" />
+        </div>
 
-        <MudNumericField T="int?"
-                         Label="@L["LoadBalancer_Expiry"]"
-                         Value="Value?.Expiry"
-                         ValueChanged="v => Update(o => o.Expiry = v)"
-                         Variant="Variant.Outlined"
-                         HelperText="ms" />
+        <div class="d-flex align-start gap-1">
+            <MudNumericField T="int?"
+                             Label="@L["LoadBalancer_Expiry"]"
+                             Value="Value?.Expiry"
+                             ValueChanged="v => Update(o => o.Expiry = v)"
+                             Variant="Variant.Outlined"
+                             HelperText="ms"
+                             Style="flex:1" />
+            <HelpIcon Text="@L["LoadBalancer_Expiry_Desc"]" />
+        </div>
+    }
+
+    @if (ShowRouteKeys)
+    {
+        <StringListEditor @bind-Items="_routeKeys"
+                          Label="@L["Global_RouteKeys"]"
+                          Placeholder="e.g. route-key" />
     }
 </MudStack>
 
 @code {
+    private IReadOnlyList<DescriptiveSelect.SelectOption> _lbOptions =>
+    [
+        new("RoundRobin", L["LB_RoundRobin_Desc"]),
+        new("LeastConnection", L["LB_LeastConnection_Desc"]),
+        new("CookieStickySessions", L["LB_CookieStickySessions_Desc"]),
+        new("NoLoadBalancer", L["LB_NoLoadBalancer_Desc"]),
+    ];
+
     [Parameter] public LoadBalancerOptions? Value { get; set; }
     [Parameter] public EventCallback<LoadBalancerOptions?> ValueChanged { get; set; }
+    [Parameter] public bool ShowRouteKeys { get; set; }
+
+    private List<string>? _routeKeys
+    {
+        get => Value?.RouteKeys;
+        set => Update(o => o.RouteKeys = value);
+    }
 
     private void Update(Action<LoadBalancerOptions> apply)
     {
@@ -46,5 +75,7 @@
 
     private static bool IsEmpty(LoadBalancerOptions o) =>
         string.IsNullOrWhiteSpace(o.Type) && string.IsNullOrWhiteSpace(o.Key)
-        && o.Expiry is null && o.ExtensionData is null;
+        && o.Expiry is null
+        && (o.RouteKeys is null || o.RouteKeys.Count == 0)
+        && o.ExtensionData is null;
 }

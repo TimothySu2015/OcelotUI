@@ -11,6 +11,7 @@ public class HttpHandlerOptions
     public bool? UseCookieContainer { get; set; }
     public bool? UseProxy { get; set; }
     public bool? UseTracing { get; set; }
+    public List<string>? RouteKeys { get; set; }
 
     [JsonExtensionData]
     public Dictionary<string, JsonElement>? ExtensionData { get; set; }

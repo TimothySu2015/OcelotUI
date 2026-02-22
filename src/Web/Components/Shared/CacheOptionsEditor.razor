@@ -4,37 +4,66 @@
 <MudStack Spacing="3" Class="pa-2">
     <MudGrid>
         <MudItem xs="4">
-            <MudNumericField T="int?"
-                             Label="@L["Cache_TtlSeconds"]"
-                             Value="Value?.TtlSeconds"
-                             ValueChanged="v => Update(o => o.TtlSeconds = v)"
-                             Variant="Variant.Outlined"
-                             HelperText="0 = no cache" />
+            <div class="d-flex align-start gap-1">
+                <MudNumericField T="int?"
+                                 Label="@L["Cache_TtlSeconds"]"
+                                 Value="Value?.TtlSeconds"
+                                 ValueChanged="v => Update(o => o.TtlSeconds = v)"
+                                 Variant="Variant.Outlined"
+                                 HelperText="0 = no cache"
+                                 Style="flex:1" />
+                <HelpIcon Text="@L["Cache_TtlSeconds_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="4">
-            <MudTextField T="string"
-                          Label="@L["Cache_Region"]"
-                          Value="@(Value?.Region)"
-                          ValueChanged="v => Update(o => o.Region = string.IsNullOrWhiteSpace(v) ? null : v)"
-                          Variant="Variant.Outlined" />
+            <div class="d-flex align-start gap-1">
+                <MudTextField T="string"
+                              Label="@L["Cache_Region"]"
+                              Value="@(Value?.Region)"
+                              ValueChanged="v => Update(o => o.Region = string.IsNullOrWhiteSpace(v) ? null : v)"
+                              Variant="Variant.Outlined"
+                              Style="flex:1" />
+                <HelpIcon Text="@L["Cache_Region_Desc"]" />
+            </div>
         </MudItem>
         <MudItem xs="4">
-            <MudTextField T="string"
-                          Label="@L["Cache_Header"]"
-                          Value="@(Value?.Header)"
-                          ValueChanged="v => Update(o => o.Header = string.IsNullOrWhiteSpace(v) ? null : v)"
-                          Variant="Variant.Outlined" />
+            <div class="d-flex align-start gap-1">
+                <MudTextField T="string"
+                              Label="@L["Cache_Header"]"
+                              Value="@(Value?.Header)"
+                              ValueChanged="v => Update(o => o.Header = string.IsNullOrWhiteSpace(v) ? null : v)"
+                              Variant="Variant.Outlined"
+                              Style="flex:1" />
+                <HelpIcon Text="@L["Cache_Header_Desc"]" />
+            </div>
         </MudItem>
     </MudGrid>
-    <MudCheckBox T="bool?"
-                 Label="@L["Cache_EnableContentHashing"]"
-                 Value="Value?.EnableContentHashing"
-                 ValueChanged="v => Update(o => o.EnableContentHashing = v)" />
+    <div class="d-flex align-start">
+        <MudCheckBox T="bool?"
+                     Label="@L["Cache_EnableContentHashing"]"
+                     Value="Value?.EnableContentHashing"
+                     ValueChanged="v => Update(o => o.EnableContentHashing = v)" />
+        <HelpIcon Text="@L["Cache_EnableContentHashing_Desc"]" />
+    </div>
+
+    @if (ShowRouteKeys)
+    {
+        <StringListEditor @bind-Items="_routeKeys"
+                          Label="@L["Global_RouteKeys"]"
+                          Placeholder="e.g. route-key" />
+    }
 </MudStack>
 
 @code {
     [Parameter] public CacheOptions? Value { get; set; }
     [Parameter] public EventCallback<CacheOptions?> ValueChanged { get; set; }
+    [Parameter] public bool ShowRouteKeys { get; set; }
+
+    private List<string>? _routeKeys
+    {
+        get => Value?.RouteKeys;
+        set => Update(o => o.RouteKeys = value);
+    }
 
     private void Update(Action<CacheOptions> apply)
     {
@@ -47,5 +76,6 @@
     private static bool IsEmpty(CacheOptions o) =>
         o.TtlSeconds is null && string.IsNullOrWhiteSpace(o.Region)
         && string.IsNullOrWhiteSpace(o.Header) && o.EnableContentHashing is null
+        && (o.RouteKeys is null || o.RouteKeys.Count == 0)
         && o.ExtensionData is null;
 }

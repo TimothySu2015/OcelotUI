@@ -1,0 +1,40 @@
+@inject IStringLocalizer<SharedResource> L
+
+<div class="mb-2">
+    <MudButton Variant="Variant.Text"
+               Size="Size.Small"
+               StartIcon="@(_expanded ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"
+               OnClick="@(() => _expanded = !_expanded)"
+               Color="Color.Default"
+               Class="text-transform-none">
+        @(_expanded ? L["Example_Hide"] : L["Example_Show"])
+    </MudButton>
+    <MudCollapse Expanded="_expanded">
+        <MudSimpleTable Dense="true" Hover="true" Elevation="0" Class="mt-1" Style="background: transparent;">
+            <thead>
+                <tr>
+                    <th style="width:30%">Key</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Items)
+                {
+                    <tr>
+                        <td><code>@item.Key</code></td>
+                        <td><code>@item.Value</code></td>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+    </MudCollapse>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public IReadOnlyList<ExampleItem> Items { get; set; } = [];
+
+    private bool _expanded;
+
+    public sealed record ExampleItem(string Key, string Value);
+}

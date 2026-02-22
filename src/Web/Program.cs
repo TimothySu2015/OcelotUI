@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Localization;
 using MudBlazor.Services;
 using OcelotUI.Application.Routes.Queries.GetAllRoutes;
 using OcelotUI.Infrastructure;
+using OcelotUI.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddLocalization();
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(GetAllRoutesQuery).Assembly));
+
+builder.Services.AddScoped<JsonPreviewState>();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 

@@ -38,8 +38,9 @@
 
   <!-- RouteList -->
   <data name="RouteList_Title" xml:space="preserve"><value>Ocelot Routes</value></data>
-  <data name="RouteList_Search" xml:space="preserve"><value>Search by Upstream Path...</value></data>
+  <data name="RouteList_Search" xml:space="preserve"><value>Search by name or path...</value></data>
   <data name="RouteList_AddRoute" xml:space="preserve"><value>Add Route</value></data>
+  <data name="RouteList_Col_DisplayName" xml:space="preserve"><value>Name</value></data>
   <data name="RouteList_Col_Upstream" xml:space="preserve"><value>Upstream</value></data>
   <data name="RouteList_Col_Downstream" xml:space="preserve"><value>Downstream</value></data>
   <data name="RouteList_Col_Key" xml:space="preserve"><value>Key</value></data>
@@ -52,6 +53,8 @@
   <!-- RouteEdit -->
   <data name="RouteEdit_NewTitle" xml:space="preserve"><value>New Route</value></data>
   <data name="RouteEdit_EditTitle" xml:space="preserve"><value>Edit Route #{0}</value></data>
+  <data name="RouteEdit_DisplayName" xml:space="preserve"><value>Route Name</value></data>
+  <data name="RouteEdit_DisplayName_Desc" xml:space="preserve"><value>A display name for easy identification (stored in Metadata)</value></data>
   <data name="RouteEdit_Upstream" xml:space="preserve"><value>Upstream</value></data>
   <data name="RouteEdit_Downstream" xml:space="preserve"><value>Downstream</value></data>
   <data name="RouteEdit_PathTemplate" xml:space="preserve"><value>Path Template</value></data>

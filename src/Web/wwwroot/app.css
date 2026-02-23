@@ -19,3 +19,9 @@
 .resize-handle.dragging {
     background-color: var(--mud-palette-primary);
 }
+
+/* JSON preview: highlight focused route block */
+.monaco-editor .route-highlight {
+    background: rgba(255, 200, 50, 0.45) !important;
+    border-left: 4px solid #ffc832 !important;
+}

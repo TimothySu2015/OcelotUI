@@ -15,6 +15,7 @@ public class GetAllRoutesQueryHandler(IOcelotConfigurationRepository repository)
         var items = config.Routes
             .Select((route, index) => new RouteListItemDto(
                 Index: index,
+                DisplayName: route.Metadata is not null && route.Metadata.TryGetValue("_displayName", out var dn) ? dn : null,
                 UpstreamPathTemplate: route.UpstreamPathTemplate,
                 UpstreamHttpMethod: route.UpstreamHttpMethod,
                 DownstreamPathTemplate: route.DownstreamPathTemplate,

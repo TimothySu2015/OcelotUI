@@ -3,9 +3,9 @@
 <MudPaper Class="pa-3" Outlined="true">
     <MudText Typo="Typo.caption" Class="mb-2">@Label</MudText>
 
-    @if (Items is not null && Items.Count > 0)
+    @if (VisibleItems.Any())
     {
-        @foreach (var kvp in Items.ToList())
+        @foreach (var kvp in VisibleItems)
         {
             var key = kvp.Key;
             <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-1" Spacing="1">
@@ -58,6 +58,10 @@
     [Parameter] public string ValueLabel { get; set; } = "Value";
     [Parameter] public string? KeyPlaceholder { get; set; }
     [Parameter] public string? ValuePlaceholder { get; set; }
+    [Parameter] public IReadOnlySet<string>? HiddenKeys { get; set; }
+
+    private IEnumerable<KeyValuePair<string, string>> VisibleItems =>
+        Items?.Where(kvp => HiddenKeys is null || !HiddenKeys.Contains(kvp.Key)) ?? [];
 
     private string? _newKey;
     private string? _newValue;

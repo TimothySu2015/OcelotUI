@@ -9,6 +9,7 @@
 @inject IJSRuntime JS
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject NavigationManager Navigation
 @implements IDisposable
 
 <MudThemeProvider />
@@ -58,7 +59,7 @@
             @if (PreviewState.IsOpen)
             {
                 <div class="resize-handle" onmousedown="window.startPanelResize(event)"></div>
-                <div id="json-preview-panel" style="width: 480px; flex-shrink: 0;">
+                <div id="json-preview-panel" style="width: 480px; flex-shrink: 0; position: sticky; top: 80px; align-self: flex-start; height: calc(100vh - 96px);">
                     <JsonPreviewPanel />
                 </div>
             }
@@ -119,6 +120,7 @@
             await Repository.SaveAsync(config);
             Snackbar.Add(L["Import_Success"], Severity.Success);
             PreviewState.NotifyChanged();
+            Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
         }
         catch
         {

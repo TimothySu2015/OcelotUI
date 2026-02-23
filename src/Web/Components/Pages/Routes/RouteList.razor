@@ -8,6 +8,7 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject IStringLocalizer<SharedResource> L
+@inject JsonPreviewState PreviewState
 
 <MudText Typo="Typo.h5" Class="mb-4">@L["RouteList_Title"]</MudText>
 
@@ -46,6 +47,18 @@ else
                  Striped="true">
         <Columns>
             <PropertyColumn Property="x => x.Index" Title="#" />
+            <TemplateColumn Title="@L["RouteList_Col_DisplayName"]">
+                <CellTemplate>
+                    @if (!string.IsNullOrWhiteSpace(context.Item.DisplayName))
+                    {
+                        <MudText Typo="Typo.body2">@context.Item.DisplayName</MudText>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary">—</MudText>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
             <TemplateColumn Title="@L["RouteList_Col_Upstream"]">
                 <CellTemplate>
                     <MudStack Spacing="0">
@@ -91,7 +104,8 @@ else
         string.IsNullOrWhiteSpace(_searchText)
             ? _routes ?? []
             : (_routes ?? []).Where(r =>
-                r.UpstreamPathTemplate.Contains(_searchText, StringComparison.OrdinalIgnoreCase));
+                r.UpstreamPathTemplate.Contains(_searchText, StringComparison.OrdinalIgnoreCase)
+                || (r.DisplayName is not null && r.DisplayName.Contains(_searchText, StringComparison.OrdinalIgnoreCase)));
 
     protected override async Task OnInitializedAsync()
     {
@@ -128,6 +142,7 @@ else
         if (result.IsSuccess)
         {
             Snackbar.Add(L["RouteList_DeleteSuccess"], Severity.Success);
+            PreviewState.NotifyChanged();
             await LoadRoutes();
         }
         else

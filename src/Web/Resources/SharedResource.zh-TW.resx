@@ -38,8 +38,9 @@
 
   <!-- 路由列表 -->
   <data name="RouteList_Title" xml:space="preserve"><value>Ocelot 路由列表</value></data>
-  <data name="RouteList_Search" xml:space="preserve"><value>依上游路徑搜尋...</value></data>
+  <data name="RouteList_Search" xml:space="preserve"><value>依名稱或路徑搜尋...</value></data>
   <data name="RouteList_AddRoute" xml:space="preserve"><value>新增路由 (Add Route)</value></data>
+  <data name="RouteList_Col_DisplayName" xml:space="preserve"><value>名稱</value></data>
   <data name="RouteList_Col_Upstream" xml:space="preserve"><value>上游</value></data>
   <data name="RouteList_Col_Downstream" xml:space="preserve"><value>下游</value></data>
   <data name="RouteList_Col_Key" xml:space="preserve"><value>鍵值</value></data>
@@ -52,6 +53,8 @@
   <!-- 路由編輯 -->
   <data name="RouteEdit_NewTitle" xml:space="preserve"><value>新增路由</value></data>
   <data name="RouteEdit_EditTitle" xml:space="preserve"><value>編輯路由 #{0}</value></data>
+  <data name="RouteEdit_DisplayName" xml:space="preserve"><value>路由名稱</value></data>
+  <data name="RouteEdit_DisplayName_Desc" xml:space="preserve"><value>方便辨識的顯示名稱（儲存於 Metadata）</value></data>
   <data name="RouteEdit_Upstream" xml:space="preserve"><value>上游設定</value></data>
   <data name="RouteEdit_Downstream" xml:space="preserve"><value>下游設定</value></data>
   <data name="RouteEdit_PathTemplate" xml:space="preserve"><value>路徑模板</value></data>

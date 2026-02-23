@@ -6,7 +6,7 @@
 @inject JsonPreviewState PreviewState
 @implements IDisposable
 
-<MudPaper Class="pa-3" Elevation="1" Style="position: sticky; top: 80px; height: calc(100vh - 96px); display: flex; flex-direction: column; overflow: hidden; background: #1e1e1e; color: #fff;">
+<MudPaper Class="pa-3" Elevation="1" Style="height: 100%; display: flex; flex-direction: column; overflow: hidden; background: #1e1e1e; color: #fff;">
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-2">
         <MudText Typo="Typo.subtitle1" Style="color: #fff;"><b>@L["JsonPreview_Title"]</b></MudText>
         <MudStack Row="true" Spacing="0">
@@ -33,6 +33,7 @@
     private string _json = "";
     private StandaloneCodeEditor _editor = null!;
     private bool _editorReady;
+    private string[] _decorationIds = [];
 
     private static readonly System.Text.Json.JsonSerializerOptions JsonOptions = new()
     {
@@ -62,6 +63,7 @@
     protected override async Task OnInitializedAsync()
     {
         PreviewState.OnChange += OnConfigChanged;
+        PreviewState.OnFocusChange += OnFocusChanged;
         var config = await Repository.LoadAsync();
         _json = System.Text.Json.JsonSerializer.Serialize(config, JsonOptions);
     }
@@ -72,10 +74,161 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    private Task OnEditorInit()
+    private async void OnFocusChanged()
+    {
+        if (!_editorReady)
+            return;
+
+        if (PreviewState.FocusRouteIndex is { } index)
+        {
+            await InvokeAsync(async () => await ScrollToRouteAsync(index));
+        }
+        else
+        {
+            await InvokeAsync(ClearDecorationsAsync);
+        }
+    }
+
+    private async Task OnEditorInit()
     {
         _editorReady = true;
-        return Task.CompletedTask;
+
+        // Inject highlight CSS into the page (Monaco doesn't pick up external CSS reliably)
+        await JS.InvokeVoidAsync("eval", """
+            if (!document.getElementById('route-highlight-style')) {
+                var s = document.createElement('style');
+                s.id = 'route-highlight-style';
+                s.textContent = '.monaco-editor .route-highlight { background: rgba(255, 200, 50, 0.45) !important; border-left: 4px solid #ffc832 !important; }';
+                document.head.appendChild(s);
+            }
+        """);
+
+        if (PreviewState.FocusRouteIndex is { } index)
+        {
+            await ScrollToRouteAsync(index);
+        }
+    }
+
+    private async Task ScrollToRouteAsync(int routeIndex)
+    {
+        var range = FindRouteLineRange(_json, routeIndex);
+        if (range is not null)
+        {
+            // Clear previous decorations and add new highlight
+            _decorationIds = await _editor.DeltaDecorations(_decorationIds,
+            [
+                new ModelDeltaDecoration
+                {
+                    Range = new BlazorMonaco.Range(range.Value.Start, 1, range.Value.End, 1),
+                    Options = new ModelDecorationOptions
+                    {
+                        IsWholeLine = true,
+                        ClassName = "route-highlight",
+                        OverviewRuler = new ModelDecorationOverviewRulerOptions
+                        {
+                            Color = "rgba(255, 200, 50, 0.5)",
+                            Position = OverviewRulerLane.Full,
+                        },
+                    },
+                },
+            ]);
+            await _editor.RevealLineInCenter(range.Value.Start);
+        }
+    }
+
+    private async Task ClearDecorationsAsync()
+    {
+        if (_decorationIds.Length > 0)
+        {
+            _decorationIds = await _editor.DeltaDecorations(_decorationIds, []);
+        }
+    }
+
+    private static (int Start, int End)? FindRouteLineRange(string json, int routeIndex)
+    {
+        // Find the "Routes": [ marker
+        var routesArrayStart = json.IndexOf("\"Routes\"", StringComparison.Ordinal);
+        if (routesArrayStart < 0)
+            return null;
+
+        var bracketStart = json.IndexOf('[', routesArrayStart);
+        if (bracketStart < 0)
+            return null;
+
+        // Walk from the bracket, counting top-level '{' at depth 1 (inside the array)
+        var depth = 0;
+        var routeCount = 0;
+        var inString = false;
+        var escape = false;
+        var startOffset = -1;
+
+        for (var i = bracketStart + 1; i < json.Length; i++)
+        {
+            var c = json[i];
+
+            if (escape)
+            {
+                escape = false;
+                continue;
+            }
+
+            if (c == '\\' && inString)
+            {
+                escape = true;
+                continue;
+            }
+
+            if (c == '"')
+            {
+                inString = !inString;
+                continue;
+            }
+
+            if (inString)
+                continue;
+
+            if (c == '{')
+            {
+                depth++;
+                if (depth == 1)
+                {
+                    if (routeCount == routeIndex)
+                    {
+                        startOffset = i;
+                    }
+                    else if (routeCount > routeIndex)
+                    {
+                        break;
+                    }
+                    routeCount++;
+                }
+            }
+            else if (c == '}')
+            {
+                depth--;
+                if (depth == 0 && startOffset >= 0)
+                {
+                    return (CharOffsetToLine(json, startOffset), CharOffsetToLine(json, i));
+                }
+            }
+            else if (c == ']' && depth == 0)
+            {
+                break;
+            }
+        }
+
+        return null;
+    }
+
+    private static int CharOffsetToLine(string text, int offset)
+    {
+        var line = 1;
+        for (var i = 0; i < offset; i++)
+        {
+            if (text[i] == '\n')
+                line++;
+        }
+        return line;
     }
 
     private async Task ReloadAsync()
@@ -86,6 +239,11 @@
         if (_editorReady)
         {
             await _editor.SetValue(_json);
+            _decorationIds = [];
+            if (PreviewState.FocusRouteIndex is { } index)
+            {
+                await ScrollToRouteAsync(index);
+            }
         }
     }
 
@@ -98,5 +256,6 @@
     public void Dispose()
     {
         PreviewState.OnChange -= OnConfigChanged;
+        PreviewState.OnFocusChange -= OnFocusChanged;
     }
 }

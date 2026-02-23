@@ -12,6 +12,8 @@
 @inject IDialogService DialogService
 @inject IStringLocalizer<SharedResource> L
 @inject IJSRuntime JS
+@inject JsonPreviewState PreviewState
+@implements IDisposable
 
 <MudText Typo="Typo.h5" Class="mb-4">
     @(IsNew ? L["RouteEdit_NewTitle"] : string.Format(L["RouteEdit_EditTitle"], Index))
@@ -59,6 +61,15 @@ else
                     @(_saving ? L["Saving"] : L["Btn_Save"])
                 </MudButton>
             </MudStack>
+
+            @* Display Name *@
+            <MudTooltip Text="@L["RouteEdit_DisplayName_Desc"]" Arrow="true" Placement="Placement.Top">
+                <MudTextField T="string"
+                              Label="@L["RouteEdit_DisplayName"]"
+                              @bind-Value="_displayName"
+                              Placeholder="e.g. User Service API"
+                              Variant="Variant.Outlined" />
+            </MudTooltip>
 
             @* Upstream Section *@
             <MudPaper Class="pa-4" Elevation="1">
@@ -253,12 +264,13 @@ else
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_Metadata"], _route.Metadata is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "metadata.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_Metadata"], _route.Metadata is not null && _route.Metadata.Any(kvp => !_metadataHiddenKeys.Contains(kvp.Key)), tag: L["Tag_Advanced"], docUrl: OcelotDocs + "metadata.html")</TitleContent>
                     <ChildContent>
                         <DictionaryEditor @bind-Items="_route.Metadata"
                                           Label="@L["RouteEdit_Metadata"]"
                                           KeyPlaceholder="e.g. project"
-                                          ValuePlaceholder="e.g. ocelot-ui" />
+                                          ValuePlaceholder="e.g. ocelot-ui"
+                                          HiddenKeys="_metadataHiddenKeys" />
                     </ChildContent>
                 </MudExpansionPanel>
 
@@ -368,6 +380,7 @@ else
 
     private bool IsNew => Index is null;
     private OcelotRoute _route = new();
+    private string? _displayName;
     private bool _loading = true;
     private bool _saving;
 
@@ -386,6 +399,9 @@ else
             if (result.IsSuccess && result.Value is not null)
             {
                 _route = result.Value.Route;
+                if (_route.Metadata is not null && _route.Metadata.TryGetValue("_displayName", out var dn))
+                    _displayName = dn;
+                PreviewState.SetFocus(Index);
             }
             else
             {
@@ -396,6 +412,11 @@ else
         }
 
         _loading = false;
+    }
+
+    public void Dispose()
+    {
+        PreviewState.ClearFocus();
     }
 
     private async Task ApplyTemplate(RouteTemplate template)
@@ -452,6 +473,19 @@ else
 
         try
         {
+            // Write _displayName back to Metadata
+            if (!string.IsNullOrWhiteSpace(_displayName))
+            {
+                _route.Metadata ??= new Dictionary<string, string>();
+                _route.Metadata["_displayName"] = _displayName.Trim();
+            }
+            else
+            {
+                _route.Metadata?.Remove("_displayName");
+                if (_route.Metadata is { Count: 0 })
+                    _route.Metadata = null;
+            }
+
             var dto = new RouteDetailDto { Index = Index, Route = _route };
 
             if (IsNew)
@@ -460,7 +494,7 @@ else
                 if (result.IsSuccess)
                 {
                     Snackbar.Add(L["RouteEdit_SaveSuccess"], Severity.Success);
-                    Navigation.NavigateTo("/routes");
+                    Navigation.NavigateTo($"/routes/edit/{result.Value}");
                 }
                 else
                 {
@@ -473,7 +507,7 @@ else
                 if (result.IsSuccess)
                 {
                     Snackbar.Add(L["RouteEdit_SaveSuccess"], Severity.Success);
-                    Navigation.NavigateTo("/routes");
+                    PreviewState.NotifyChanged();
                 }
                 else
                 {
@@ -498,6 +532,8 @@ else
         || !string.IsNullOrEmpty(_route.RequestIdKey)
         || _route.RouteIsCaseSensitive is not null
         || _route.DangerousAcceptAnyServerCertificateValidator is not null;
+
+    private static readonly IReadOnlySet<string> _metadataHiddenKeys = new HashSet<string> { "_displayName" };
 
     private const string OcelotDocs = "https://ocelot.readthedocs.io/en/latest/features/";
 

@@ -6,7 +6,9 @@ using OcelotUI.Domain.Entities;
 
 namespace OcelotUI.Infrastructure.Persistence;
 
-public class OcelotFileConfigurationRepository(IOptions<OcelotConfigOptions> options)
+public class OcelotFileConfigurationRepository(
+    IOptions<OcelotConfigOptions> options,
+    ISnapshotRepository snapshotRepository)
     : IOcelotConfigurationRepository
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -32,8 +34,11 @@ public class OcelotFileConfigurationRepository(IOptions<OcelotConfigOptions> opt
                ?? new OcelotConfiguration();
     }
 
-    public async Task SaveAsync(OcelotConfiguration configuration, CancellationToken ct = default)
+    public async Task SaveAsync(OcelotConfiguration configuration, string? changeDescription = null, CancellationToken ct = default)
     {
+        if (File.Exists(_filePath))
+            await snapshotRepository.CreateSnapshotAsync(changeDescription ?? "Auto", ct);
+
         var json = JsonSerializer.Serialize(configuration, JsonOptions);
         var tmpPath = _filePath + ".tmp";
 

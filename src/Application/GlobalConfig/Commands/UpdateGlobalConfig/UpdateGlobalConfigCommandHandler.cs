@@ -12,7 +12,7 @@ public class UpdateGlobalConfigCommandHandler(IOcelotConfigurationRepository rep
     {
         var config = await repository.LoadAsync(cancellationToken);
         config.GlobalConfiguration = request.Config.Config;
-        await repository.SaveAsync(config, cancellationToken);
+        await repository.SaveAsync(config, "UpdateGlobalConfig", cancellationToken);
 
         return Result.Success();
     }

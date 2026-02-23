@@ -21,7 +21,7 @@ public class AddAggregateCommandHandler(IOcelotConfigurationRepository repositor
         var config = await repository.LoadAsync(cancellationToken);
         config.Aggregates ??= [];
         config.Aggregates.Add(agg);
-        await repository.SaveAsync(config, cancellationToken);
+        await repository.SaveAsync(config, "AddAggregate", cancellationToken);
 
         return Result.Success(config.Aggregates.Count - 1);
     }

@@ -17,7 +17,7 @@ public class UpdateDynamicRouteCommandHandler(IOcelotConfigurationRepository rep
             return Result.Failure($"DynamicRoute index {request.Index} is out of range.");
 
         dynamicRoutes[request.Index] = request.DynamicRoute.DynamicRoute;
-        await repository.SaveAsync(config, cancellationToken);
+        await repository.SaveAsync(config, "UpdateDynamicRoute", cancellationToken);
 
         return Result.Success();
     }

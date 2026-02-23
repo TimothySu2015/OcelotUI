@@ -23,7 +23,7 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
 
   <!-- Common -->
-  <data name="AppTitle" xml:space="preserve"><value>OcelotUI - Configuration Editor</value></data>
+  <data name="AppTitle" xml:space="preserve"><value>OcelotUI - Configuration Editor (Ocelot 24.1)</value></data>
   <data name="Nav_Routes" xml:space="preserve"><value>Routes</value></data>
   <data name="Nav_GlobalConfig" xml:space="preserve"><value>Global Config</value></data>
   <data name="Nav_Aggregates" xml:space="preserve"><value>Aggregates</value></data>
@@ -557,6 +557,31 @@ Unknown properties: The editor preserves any JSON properties it doesn't recogniz
   <data name="Warn_NoHttpMethod" xml:space="preserve"><value>No HTTP methods specified. This route will match all methods.</value></data>
   <data name="Warn_RateLimitIncomplete" xml:space="preserve"><value>Rate limiting is enabled but Period or Limit is not set.</value></data>
   <data name="Warn_AuthNoProvider" xml:space="preserve"><value>Authentication is configured but no provider key is specified.</value></data>
+
+  <!-- History / Snapshots -->
+  <data name="Nav_History" xml:space="preserve"><value>Version History</value></data>
+  <data name="History_Title" xml:space="preserve"><value>Version History</value></data>
+  <data name="History_Timestamp" xml:space="preserve"><value>Time</value></data>
+  <data name="History_Description" xml:space="preserve"><value>Description</value></data>
+  <data name="History_RouteCount" xml:space="preserve"><value>Routes</value></data>
+  <data name="History_FileSize" xml:space="preserve"><value>File Size</value></data>
+  <data name="History_Preview" xml:space="preserve"><value>Preview</value></data>
+  <data name="History_Restore" xml:space="preserve"><value>Restore</value></data>
+  <data name="History_Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="History_RestoreConfirm" xml:space="preserve"><value>Are you sure you want to restore to this version?</value></data>
+  <data name="History_RestoreConfirmDetail" xml:space="preserve"><value>Restore to the snapshot from {0}? This version contains {1} route(s). A backup of the current state will be created automatically.</value></data>
+  <data name="History_DeleteConfirm" xml:space="preserve"><value>Are you sure you want to delete this snapshot?</value></data>
+  <data name="History_RestoreSuccess" xml:space="preserve"><value>Restored successfully.</value></data>
+  <data name="History_Empty" xml:space="preserve"><value>No history snapshots yet.</value></data>
+  <data name="History_Compare" xml:space="preserve"><value>Compare</value></data>
+  <data name="History_SelectCount" xml:space="preserve"><value>{0} selected (select 2 to compare)</value></data>
+  <data name="History_Current" xml:space="preserve"><value>Current</value></data>
+  <data name="History_ManualSave" xml:space="preserve"><value>Create Snapshot</value></data>
+  <data name="History_ManualSavePlaceholder" xml:space="preserve"><value>e.g. Before major refactor</value></data>
+  <data name="History_ManualSaveSuccess" xml:space="preserve"><value>Snapshot created successfully.</value></data>
+  <data name="History_ClearAll" xml:space="preserve"><value>Clear All</value></data>
+  <data name="History_ClearAllConfirm" xml:space="preserve"><value>Are you sure you want to delete all snapshots? This cannot be undone.</value></data>
+  <data name="History_ClearAllSuccess" xml:space="preserve"><value>All snapshots cleared.</value></data>
 
   <!-- MetadataOptions -->
   <data name="MetadataOpt_CurrentCulture_Desc" xml:space="preserve"><value>CultureInfo used for metadata value parsing.</value></data>

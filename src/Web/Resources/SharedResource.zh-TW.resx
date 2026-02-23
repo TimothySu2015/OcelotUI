@@ -23,7 +23,7 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
 
   <!-- 共用 -->
-  <data name="AppTitle" xml:space="preserve"><value>OcelotUI - 配置編輯器</value></data>
+  <data name="AppTitle" xml:space="preserve"><value>OcelotUI - 配置編輯器 (Ocelot 24.1)</value></data>
   <data name="Nav_Routes" xml:space="preserve"><value>路由管理 (Routes)</value></data>
   <data name="Nav_GlobalConfig" xml:space="preserve"><value>全域設定 (Global Config)</value></data>
   <data name="Nav_Aggregates" xml:space="preserve"><value>路由聚合 (Aggregates)</value></data>
@@ -557,6 +557,31 @@ HTTP 處理器選項（HTTP Handler Options）
   <data name="Warn_NoHttpMethod" xml:space="preserve"><value>未指定 HTTP 方法，此路由將匹配所有方法。</value></data>
   <data name="Warn_RateLimitIncomplete" xml:space="preserve"><value>已啟用限流但未設定 Period 或 Limit。</value></data>
   <data name="Warn_AuthNoProvider" xml:space="preserve"><value>已設定認證但未指定認證提供者。</value></data>
+
+  <!-- 版本歷史 / 快照 -->
+  <data name="Nav_History" xml:space="preserve"><value>版本歷史 (History)</value></data>
+  <data name="History_Title" xml:space="preserve"><value>版本歷史</value></data>
+  <data name="History_Timestamp" xml:space="preserve"><value>時間</value></data>
+  <data name="History_Description" xml:space="preserve"><value>描述</value></data>
+  <data name="History_RouteCount" xml:space="preserve"><value>路由數</value></data>
+  <data name="History_FileSize" xml:space="preserve"><value>檔案大小</value></data>
+  <data name="History_Preview" xml:space="preserve"><value>預覽</value></data>
+  <data name="History_Restore" xml:space="preserve"><value>還原</value></data>
+  <data name="History_Delete" xml:space="preserve"><value>刪除</value></data>
+  <data name="History_RestoreConfirm" xml:space="preserve"><value>確定要還原到此版本嗎？</value></data>
+  <data name="History_RestoreConfirmDetail" xml:space="preserve"><value>確定要還原到 {0} 的快照嗎？此版本包含 {1} 條路由。系統會自動備份目前的狀態。</value></data>
+  <data name="History_DeleteConfirm" xml:space="preserve"><value>確定要刪除此快照嗎？</value></data>
+  <data name="History_RestoreSuccess" xml:space="preserve"><value>已還原成功 (Restored)</value></data>
+  <data name="History_Empty" xml:space="preserve"><value>尚無歷史快照。</value></data>
+  <data name="History_Compare" xml:space="preserve"><value>比較差異 (Compare)</value></data>
+  <data name="History_SelectCount" xml:space="preserve"><value>已選取 {0} 個（選取 2 個以比較）</value></data>
+  <data name="History_Current" xml:space="preserve"><value>目前版本 (Current)</value></data>
+  <data name="History_ManualSave" xml:space="preserve"><value>建立快照 (Create Snapshot)</value></data>
+  <data name="History_ManualSavePlaceholder" xml:space="preserve"><value>例如：大幅重構前</value></data>
+  <data name="History_ManualSaveSuccess" xml:space="preserve"><value>快照建立成功。</value></data>
+  <data name="History_ClearAll" xml:space="preserve"><value>清除全部 (Clear All)</value></data>
+  <data name="History_ClearAllConfirm" xml:space="preserve"><value>確定要刪除所有快照嗎？此操作無法復原。</value></data>
+  <data name="History_ClearAllSuccess" xml:space="preserve"><value>已清除所有快照。</value></data>
 
   <!-- MetadataOptions -->
   <data name="MetadataOpt_CurrentCulture_Desc" xml:space="preserve"><value>用於解析 Metadata 值的文化資訊（CultureInfo）。</value></data>

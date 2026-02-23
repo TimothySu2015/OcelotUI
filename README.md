@@ -15,6 +15,8 @@
 - **情境說明** — 每個欄位均有 tooltip 說明；每個區塊面板提供直連至 Ocelot 官方文件的連結
 - **多語系 (i18n)** — 支援英文與繁體中文介面切換
 - **原子寫入** — 透過暫存檔 + rename 的方式寫入設定，避免寫入中斷造成檔案損毀
+- **版本歷史** — 每次儲存自動建立快照，支援手動建立、預覽、還原、刪除，以及兩筆快照的 side-by-side JSON 差異比對
+- **匯出/匯入** — 匯出目前的 `ocelot.json` 或匯入外部配置檔
 
 ## 截圖
 
@@ -38,9 +40,25 @@
 
 ![全域設定](docs/screenshots/global-config.png)
 
+**聚合路由** — 管理回應聚合設定
+
+![聚合路由](docs/screenshots/aggregates.png)
+
+**動態路由** — 設定動態路由規則
+
+![動態路由](docs/screenshots/dynamic-routes.png)
+
 **使用教學** — 內建快速開始指引與功能參考
 
 ![使用教學](docs/screenshots/guide.png)
+
+**版本歷史** — 瀏覽快照列表，手動建立、預覽、還原、刪除
+
+![版本歷史](docs/screenshots/history.png)
+
+**差異比對** — 選取兩筆快照進行 side-by-side JSON 差異比較
+
+![差異比對](docs/screenshots/history-diff.png)
 
 ## 技術棧
 
@@ -100,7 +118,7 @@ OcelotUI/
 │   ├── Infrastructure/   # 檔案 I/O Repository
 │   └── Web/              # Blazor Server UI（MudBlazor）
 │       └── Components/
-│           ├── Pages/    # Routes、Aggregates、DynamicRoutes、GlobalConfig、Guide
+│           ├── Pages/    # Routes、Aggregates、DynamicRoutes、GlobalConfig、History、Guide
 │           └── Shared/   # 可重用的子屬性編輯器元件
 └── OcelotUI.slnx
 ```
@@ -117,6 +135,7 @@ OcelotUI/
 | `/aggregates/edit/{index}` | 編輯聚合路由 |
 | `/dynamic-routes` | 動態路由列表 |
 | `/global-config` | 編輯 Ocelot 全域設定 |
+| `/history` | 版本歷史（快照管理與差異比對） |
 | `/guide` | 內建使用說明 |
 
 ## 建置

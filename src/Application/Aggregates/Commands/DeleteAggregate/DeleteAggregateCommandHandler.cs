@@ -18,7 +18,7 @@ public class DeleteAggregateCommandHandler(IOcelotConfigurationRepository reposi
 
         aggregates.RemoveAt(request.Index);
         if (aggregates.Count == 0) config.Aggregates = null;
-        await repository.SaveAsync(config, cancellationToken);
+        await repository.SaveAsync(config, "DeleteAggregate", cancellationToken);
 
         return Result.Success();
     }

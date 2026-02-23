@@ -40,6 +40,10 @@
                        Color="@(PreviewState.IsOpen ? Color.Warning : Color.Inherit)"
                        OnClick="PreviewState.Toggle"
                        title="@L["JsonPreview_Toggle"]" />
+        <MudIconButton Icon="@Icons.Material.Filled.History"
+                       Color="Color.Inherit"
+                       Href="/history"
+                       title="@L["Nav_History"]" />
         <MudIconButton Icon="@Icons.Material.Filled.MenuBook"
                        Color="Color.Inherit"
                        Href="/guide"

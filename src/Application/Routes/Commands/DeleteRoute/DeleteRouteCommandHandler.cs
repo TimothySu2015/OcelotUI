@@ -16,7 +16,7 @@ public class DeleteRouteCommandHandler(IOcelotConfigurationRepository repository
             return Result.Failure($"Route index {request.Index} is out of range.");
 
         config.Routes.RemoveAt(request.Index);
-        await repository.SaveAsync(config, cancellationToken);
+        await repository.SaveAsync(config, "DeleteRoute", cancellationToken);
 
         return Result.Success();
     }

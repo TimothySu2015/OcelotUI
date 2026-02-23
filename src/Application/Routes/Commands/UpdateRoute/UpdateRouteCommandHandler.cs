@@ -21,7 +21,7 @@ public class UpdateRouteCommandHandler(IOcelotConfigurationRepository repository
             return Result.Failure($"Route index {request.Index} is out of range.");
 
         config.Routes[request.Index] = route;
-        await repository.SaveAsync(config, cancellationToken);
+        await repository.SaveAsync(config, "UpdateRoute", cancellationToken);
 
         return Result.Success();
     }

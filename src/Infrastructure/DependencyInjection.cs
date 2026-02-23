@@ -13,6 +13,7 @@ public static class DependencyInjection
         services.Configure<OcelotConfigOptions>(
             configuration.GetSection(OcelotConfigOptions.SectionName));
 
+        services.AddScoped<ISnapshotRepository, FileSnapshotRepository>();
         services.AddScoped<IOcelotConfigurationRepository, OcelotFileConfigurationRepository>();
 
         return services;

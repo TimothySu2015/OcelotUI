@@ -13,7 +13,7 @@ public class AddDynamicRouteCommandHandler(IOcelotConfigurationRepository reposi
         var config = await repository.LoadAsync(cancellationToken);
         config.DynamicRoutes ??= [];
         config.DynamicRoutes.Add(request.DynamicRoute.DynamicRoute);
-        await repository.SaveAsync(config, cancellationToken);
+        await repository.SaveAsync(config, "AddDynamicRoute", cancellationToken);
 
         return Result.Success(config.DynamicRoutes.Count - 1);
     }

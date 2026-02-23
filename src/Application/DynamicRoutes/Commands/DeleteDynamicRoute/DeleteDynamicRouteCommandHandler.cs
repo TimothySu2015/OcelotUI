@@ -18,7 +18,7 @@ public class DeleteDynamicRouteCommandHandler(IOcelotConfigurationRepository rep
 
         dynamicRoutes.RemoveAt(request.Index);
         if (dynamicRoutes.Count == 0) config.DynamicRoutes = null;
-        await repository.SaveAsync(config, cancellationToken);
+        await repository.SaveAsync(config, "DeleteDynamicRoute", cancellationToken);
 
         return Result.Success();
     }

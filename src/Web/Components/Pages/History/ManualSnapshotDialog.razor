@@ -1,0 +1,45 @@
+@inject IStringLocalizer<SharedResource> L
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField T="string"
+                      @bind-Value="_description"
+                      Label="@L["History_Description"]"
+                      Placeholder="@L["History_ManualSavePlaceholder"]"
+                      Variant="Variant.Outlined"
+                      AutoFocus="true"
+                      OnKeyDown="OnKeyDown" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@L["Btn_Cancel"]</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   Disabled="@string.IsNullOrWhiteSpace(_description)"
+                   OnClick="Submit">
+            @L["Btn_Save"]
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public string DefaultDescription { get; set; } = "";
+
+    private string _description = "";
+
+    protected override void OnInitialized()
+    {
+        _description = DefaultDescription;
+    }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(_description.Trim()));
+    private void Cancel() => MudDialog.Cancel();
+
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(_description))
+            Submit();
+    }
+}

@@ -1,0 +1,63 @@
+@using BlazorMonaco.Editor
+@inject IStringLocalizer<SharedResource> L
+@inject IJSRuntime JS
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mb-2">
+            <MudText Typo="Typo.subtitle2">@OriginalLabel</MudText>
+            <MudText Typo="Typo.subtitle2">@ModifiedLabel</MudText>
+        </MudStack>
+        <div style="height: 70vh; overflow: hidden;">
+            <StandaloneDiffEditor @ref="_diffEditor"
+                                  ConstructionOptions="DiffEditorConstructionOptions"
+                                  OnDidInit="OnEditorInit" />
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close">@L["Btn_Cancel"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public string OriginalContent { get; set; } = "";
+    [Parameter] public string ModifiedContent { get; set; } = "";
+    [Parameter] public string OriginalLabel { get; set; } = "";
+    [Parameter] public string ModifiedLabel { get; set; } = "";
+
+    private StandaloneDiffEditor _diffEditor = null!;
+
+    private StandaloneDiffEditorConstructionOptions DiffEditorConstructionOptions(StandaloneDiffEditor editor)
+    {
+        return new StandaloneDiffEditorConstructionOptions
+        {
+            Theme = "vs-dark",
+            AutomaticLayout = true,
+            ReadOnly = true,
+            OriginalEditable = false,
+            RenderSideBySide = true,
+            Folding = true,
+            ScrollBeyondLastLine = false,
+            FontSize = 13,
+        };
+    }
+
+    private async Task OnEditorInit()
+    {
+        var originalModel = await BlazorMonaco.Editor.Global.CreateModel(
+            JS, OriginalContent, "json", null);
+        var modifiedModel = await BlazorMonaco.Editor.Global.CreateModel(
+            JS, ModifiedContent, "json", null);
+
+        await _diffEditor.SetModel(new DiffEditorModel
+        {
+            Original = originalModel,
+            Modified = modifiedModel
+        });
+    }
+
+    private void Close() => MudDialog.Close();
+}

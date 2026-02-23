@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 專案概述
 
-OcelotUI 是一個 Blazor Server 應用程式，用於視覺化編輯 Ocelot API Gateway 的 `ocelot.json` 配置文件。無資料庫，純檔案 I/O 搭配原子寫入。
+OcelotUI 是一個 Blazor Server 應用程式，用於視覺化編輯 Ocelot API Gateway 的 `ocelot.json` 配置文件。無資料庫，純檔案 I/O 搭配原子寫入。內建版本歷史功能，每次儲存自動建立快照。
 
 ## 建置與執行
 
@@ -39,7 +39,7 @@ Web (Blazor UI) → Application (CQRS) → Domain (Entities)
 
 **Application** — MediatR 處理器，遵循命名慣例：`Get*Query`、`Add*Command`、`Update*Command`、`Delete*Command`。所有操作回傳 `Result<T>` 處理錯誤。驗證邏輯在 Command Handler 中。
 
-**Infrastructure** — `OcelotFileConfigurationRepository` 負責讀寫 ocelot.json。使用原子寫入（暫存檔 + `File.Move`）。JSON 選項：`WriteIndented = true`、`DefaultIgnoreCondition = WhenWritingNull`、`UnsafeRelaxedJsonEscaping`。
+**Infrastructure** — `OcelotFileConfigurationRepository` 負責讀寫 ocelot.json。使用原子寫入（暫存檔 + `File.Move`）。JSON 選項：`WriteIndented = true`、`DefaultIgnoreCondition = WhenWritingNull`、`UnsafeRelaxedJsonEscaping`。每次 `SaveAsync` 自動透過 `ISnapshotRepository` 建立快照。`FileSnapshotRepository` 將快照存放於 `.ocelot-history/` 目錄，上限 50 筆，超過自動刪除最舊的。
 
 **Web** — Blazor Server 頁面直接將 Domain 實體綁定到 MudBlazor 表單元件。子屬性編輯器（Cache、QoS、Auth 等）使用 `Value`/`ValueChanged` 雙向綁定模式，搭配「空值即 null」語意。
 
@@ -68,6 +68,15 @@ private void Update(Action<CacheOptions> apply) {
 }
 ```
 
+### 快照/版本歷史
+每次儲存 ocelot.json 自動建立快照，也可手動建立。歷史頁面 (`/history`) 支援：
+- 列表瀏覽（時間、描述、路由數、檔案大小）
+- 單筆預覽、還原、刪除
+- 勾選兩筆進行 side-by-side JSON 差異比對（BlazorMonaco `StandaloneDiffEditor`）
+- 清除全部歷史
+
+快照以檔案形式存於 `.ocelot-history/` 目錄（與 ocelot.json 同層），`snapshots.json` 為索引檔。ID 格式：`yyyy-MM-ddTHHmmss_random2bytes`。還原前會自動建立備份快照。
+
 ### 國際化 (i18n)
 - 資源檔：`src/Web/Resources/SharedResource.resx`（英文）與 `SharedResource.zh-TW.resx`（繁中）
 - 使用方式：`@inject IStringLocalizer<SharedResource> L`，然後 `L["KeyName"]`
@@ -86,10 +95,15 @@ private void Update(Action<CacheOptions> apply) {
 | 共用建置設定 | `Directory.Build.props` |
 | DI 註冊 | `src/Web/Program.cs`、`src/Infrastructure/DependencyInjection.cs` |
 | Repository 實作 | `src/Infrastructure/Persistence/OcelotFileConfigurationRepository.cs` |
+| 快照 Repository | `src/Infrastructure/Persistence/FileSnapshotRepository.cs` |
+| 快照實體 | `src/Domain/Entities/ConfigSnapshot.cs` |
+| 快照 CQRS 處理器 | `src/Application/Snapshots/` |
+| 歷史頁面 | `src/Web/Components/Pages/History/` |
+| 快照存放目錄 | `.ocelot-history/`（與 ocelot.json 同層，不進版控） |
 | 全域 Razor imports | `src/Web/Components/_Imports.razor` |
 | 共用元件 | `src/Web/Components/Shared/` |
 | 領域實體 | `src/Domain/Entities/` |
-| CQRS 處理器 | `src/Application/Routes/`、`src/Application/Aggregates/` 等 |
+| CQRS 處理器 | `src/Application/Routes/`、`src/Application/Aggregates/`、`src/Application/Snapshots/` 等 |
 | 配置檔路徑 | 透過 `appsettings.json` → `OcelotConfig:FilePath` 設定（預設：`ocelot.json`） |
 
 ## 功能規格索引
@@ -99,3 +113,4 @@ private void Update(Action<CacheOptions> apply) {
 | 路由編輯器 | `.ai_docs/history/2026-02-13_SPEC_OcelotRouteEditor.md` | ✅ 已完成 |
 | i18n + 範例 + 教學 | `.ai_docs/history/2026-02-13_SPEC_AUG_I18nTemplatesGuide.md` | ✅ 已完成 |
 | 強型別子屬性編輯器 | `.ai_docs/features/SPEC_AUG_TypedSubPropertyEditors.md` | ✅ 已完成 |
+| 版本歷史（快照） | — | ✅ 已完成 |

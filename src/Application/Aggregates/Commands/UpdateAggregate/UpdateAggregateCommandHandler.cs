@@ -17,7 +17,7 @@ public class UpdateAggregateCommandHandler(IOcelotConfigurationRepository reposi
             return Result.Failure($"Aggregate index {request.Index} is out of range.");
 
         aggregates[request.Index] = request.Aggregate.Aggregate;
-        await repository.SaveAsync(config, cancellationToken);
+        await repository.SaveAsync(config, "UpdateAggregate", cancellationToken);
 
         return Result.Success();
     }

@@ -20,7 +20,7 @@ public class AddRouteCommandHandler(IOcelotConfigurationRepository repository)
 
         var config = await repository.LoadAsync(cancellationToken);
         config.Routes.Add(route);
-        await repository.SaveAsync(config, cancellationToken);
+        await repository.SaveAsync(config, "AddRoute", cancellationToken);
 
         return Result.Success(config.Routes.Count - 1);
     }

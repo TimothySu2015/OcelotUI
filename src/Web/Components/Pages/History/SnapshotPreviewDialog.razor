@@ -1,0 +1,50 @@
+@inject IStringLocalizer<SharedResource> L
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.subtitle2" Class="mb-2">@SnapshotDescription</MudText>
+        <div style="height: calc(100vh - 180px); overflow: hidden;">
+            <StandaloneCodeEditor @ref="_editor"
+                                  ConstructionOptions="EditorConstructionOptions"
+                                  OnDidInit="OnEditorInit" />
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close">@L["Btn_Cancel"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public string Content { get; set; } = "";
+    [Parameter] public string SnapshotDescription { get; set; } = "";
+
+    private StandaloneCodeEditor _editor = null!;
+
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+        {
+            Language = "json",
+            Theme = "vs-dark",
+            Value = Content,
+            ReadOnly = true,
+            AutomaticLayout = true,
+            Folding = true,
+            LineNumbers = "on",
+            Minimap = new EditorMinimapOptions { Enabled = false },
+            ScrollBeyondLastLine = false,
+            RenderLineHighlight = "none",
+            FontSize = 13,
+        };
+    }
+
+    private async Task OnEditorInit()
+    {
+        await _editor.SetValue(Content);
+    }
+
+    private void Close() => MudDialog.Close();
+}

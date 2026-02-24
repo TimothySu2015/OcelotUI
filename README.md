@@ -1,6 +1,6 @@
 # OcelotUI
 
-[Ocelot](https://github.com/ThreeMammals/Ocelot) API Gateway 設定檔的視覺化編輯器。以 Blazor Server 與 MudBlazor 打造，讓你不需要手動編輯 JSON 就能管理 `ocelot.json`。
+[Ocelot](https://github.com/ThreeMammals/Ocelot) API Gateway 設定檔的視覺化編輯器。以 Blazor 與 MudBlazor 打造，讓你不需要手動編輯 JSON 就能管理 `ocelot.json`。同時支援 **Web（Blazor Server）** 與 **Windows 桌面（WinForms + BlazorWebView）** 兩種執行模式。
 
 > **對應版本：** 本工具的設定結構對應 [Ocelot **24.1**](https://ocelot.readthedocs.io/en/latest/)，涵蓋其所有路由、聚合、動態路由及全域設定屬性。
 
@@ -19,6 +19,7 @@
 - **原子寫入** — 透過暫存檔 + rename 的方式寫入設定，避免寫入中斷造成檔案損毀
 - **版本歷史** — 每次儲存自動建立快照，支援手動建立、預覽、還原、刪除，以及兩筆快照的 side-by-side JSON 差異比對
 - **匯出/匯入** — 匯出目前的 `ocelot.json` 或匯入外部配置檔
+- **雙平台支援** — 同一套 UI 元件同時支援瀏覽器（Web）與 Windows 桌面應用程式（Desktop）
 
 ## 截圖
 
@@ -67,20 +68,22 @@
 | 層級 | 技術 |
 |------|------|
 | 執行環境 | .NET 10、C# 13 |
-| UI 框架 | Blazor Server (InteractiveServer) |
+| UI 框架 | Blazor Server (Web) / BlazorWebView (Desktop) |
 | 元件庫 | MudBlazor 8.x |
 | 架構 | Clean Architecture + CQRS (MediatR) |
 | 程式碼編輯器 | BlazorMonaco (Monaco Editor) |
 | JSON 序列化 | System.Text.Json |
 | 資料持久化 | 純檔案 I/O（無資料庫） |
+| 桌面宿主 | WinForms + WebView2 |
 
 ## 快速開始
 
 ### 前置需求
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- Desktop 版另需 [WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/)（Windows 11 已內建）
 
-### 執行
+### Web 版
 
 ```bash
 git clone https://github.com/<your-username>/OcelotUI.git
@@ -96,9 +99,17 @@ dotnet run --project src/Web
 dotnet run --project src/Web --urls http://localhost:5001
 ```
 
+### Desktop 版
+
+```bash
+dotnet run --project src/Desktop
+```
+
+啟動後即開啟「OcelotUI 配置編輯器」視窗，無需瀏覽器。
+
 ### 指定 `ocelot.json` 路徑
 
-預設讀寫工作目錄下的 `ocelot.json`。可在 `src/Web/appsettings.json` 中覆寫路徑：
+預設讀寫工作目錄下的 `ocelot.json`。可在各專案的 `appsettings.json` 中覆寫路徑：
 
 ```json
 {
@@ -107,6 +118,9 @@ dotnet run --project src/Web --urls http://localhost:5001
   }
 }
 ```
+
+- Web 版：`src/Web/appsettings.json`
+- Desktop 版：`src/Desktop/appsettings.json`（或與執行檔同目錄）
 
 若指定路徑的檔案不存在，OcelotUI 會在首次儲存時自動建立空白設定檔。
 
@@ -118,12 +132,13 @@ OcelotUI/
 │   ├── Domain/           # Ocelot 設定的純 POCO（無外部依賴）
 │   ├── Application/      # CQRS 處理器（MediatR）
 │   ├── Infrastructure/   # 檔案 I/O Repository
-│   └── Web/              # Blazor Server UI（MudBlazor）
-│       └── Components/
-│           ├── Pages/    # Routes、Aggregates、DynamicRoutes、GlobalConfig、History、Guide
-│           └── Shared/   # 可重用的子屬性編輯器元件
+│   ├── UI/               # 共用 Razor Class Library（元件、頁面、服務、資源）
+│   ├── Web/              # Blazor Server Host（瀏覽器版）
+│   └── Desktop/          # WinForms + BlazorWebView Host（桌面版）
 └── OcelotUI.slnx
 ```
+
+**UI（RCL）** 包含所有共用的 Blazor 元件、頁面、Services、i18n 資源與靜態資產。Web 與 Desktop 兩個 Host 專案僅負責啟動邏輯與平台特定實作（如語系切換方式）。
 
 ## 頁面導覽
 

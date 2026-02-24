@@ -9,7 +9,13 @@
   <Folder Name="/src/Infrastructure/">
     <Project Path="src/Infrastructure/OcelotUI.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/src/UI/">
+    <Project Path="src/UI/OcelotUI.UI.csproj" />
+  </Folder>
   <Folder Name="/src/Web/">
     <Project Path="src/Web/OcelotUI.Web.csproj" />
+  </Folder>
+  <Folder Name="/src/Desktop/">
+    <Project Path="src/Desktop/OcelotUI.Desktop.csproj" />
   </Folder>
 </Solution>

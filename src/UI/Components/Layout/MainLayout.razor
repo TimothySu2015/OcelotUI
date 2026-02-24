@@ -126,8 +126,10 @@
 
             await Repository.SaveAsync(config);
             Snackbar.Add(L["Import_Success"], Severity.Success);
+            if (!PreviewState.IsOpen && !PreviewState.IsLocked)
+                PreviewState.Toggle();
             PreviewState.NotifyChanged();
-            Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
+            Navigation.NavigateTo("/routes", forceLoad: true);
         }
         catch
         {

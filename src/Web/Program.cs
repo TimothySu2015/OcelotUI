@@ -1,9 +1,7 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
-using MudBlazor;
-using MudBlazor.Services;
-using OcelotUI.Application.Routes.Queries.GetAllRoutes;
-using OcelotUI.Infrastructure;
+using OcelotUI.UI;
+using OcelotUI.UI.Services;
 using OcelotUI.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,19 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddMudServices(config =>
-{
-    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
-});
-
-builder.Services.AddLocalization();
-
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(GetAllRoutesQuery).Assembly));
-
-builder.Services.AddScoped<JsonPreviewState>();
-
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddOcelotUI(builder.Configuration);
+builder.Services.AddScoped<ICultureSwitcher, WebCultureSwitcher>();
 
 var app = builder.Build();
 
@@ -56,6 +43,7 @@ app.MapGet("/api/set-culture", (string culture, string redirectUri, HttpContext 
 });
 
 app.MapRazorComponents<OcelotUI.Web.Components.App>()
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode()
+    .AddAdditionalAssemblies(typeof(OcelotUI.UI.Components.Routes).Assembly);
 
 app.Run();

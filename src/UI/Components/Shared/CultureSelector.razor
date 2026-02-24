@@ -1,4 +1,4 @@
-@inject NavigationManager Navigation
+@inject ICultureSwitcher CultureSwitcher
 
 <MudMenu Icon="@Icons.Material.Filled.Language"
          Color="Color.Inherit"
@@ -35,14 +35,6 @@
     private void OnCultureChanged(string culture)
     {
         if (culture == _currentCulture) return;
-
-        var uri = new Uri(Navigation.Uri)
-            .GetComponents(System.UriComponents.PathAndQuery, UriFormat.Unescaped);
-        var encodedCulture = Uri.EscapeDataString(culture);
-        var encodedRedirect = Uri.EscapeDataString("/" + uri.TrimStart('/'));
-
-        Navigation.NavigateTo(
-            $"/api/set-culture?culture={encodedCulture}&redirectUri={encodedRedirect}",
-            forceLoad: true);
+        CultureSwitcher.SetCulture(culture);
     }
 }

@@ -1,6 +1,6 @@
 using OcelotUI.Domain.Entities;
 
-namespace OcelotUI.Web.Services;
+namespace OcelotUI.UI.Services;
 
 public record RouteTemplate(string NameKey, string DescriptionKey, OcelotRoute Route);
 

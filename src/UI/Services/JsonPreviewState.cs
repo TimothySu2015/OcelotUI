@@ -1,4 +1,4 @@
-namespace OcelotUI.Web.Services;
+namespace OcelotUI.UI.Services;
 
 public enum PreviewSection
 {

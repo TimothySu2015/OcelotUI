@@ -33,6 +33,7 @@
   <data name="Btn_Cancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="Btn_Delete" xml:space="preserve"><value>Delete</value></data>
   <data name="Btn_Add" xml:space="preserve"><value>Add</value></data>
+  <data name="Btn_ClearSection" xml:space="preserve"><value>Clear all values in this section</value></data>
   <data name="Saving" xml:space="preserve"><value>Saving...</value></data>
   <data name="Confirm" xml:space="preserve"><value>Confirm</value></data>
 

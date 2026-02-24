@@ -33,6 +33,7 @@
   <data name="Btn_Cancel" xml:space="preserve"><value>取消 (Cancel)</value></data>
   <data name="Btn_Delete" xml:space="preserve"><value>刪除 (Delete)</value></data>
   <data name="Btn_Add" xml:space="preserve"><value>新增 (Add)</value></data>
+  <data name="Btn_ClearSection" xml:space="preserve"><value>清除此區段所有值 (Clear section)</value></data>
   <data name="Saving" xml:space="preserve"><value>儲存中... (Saving)</value></data>
   <data name="Confirm" xml:space="preserve"><value>確認 (Confirm)</value></data>
 

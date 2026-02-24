@@ -10,7 +10,9 @@
 @inject IStringLocalizer<SharedResource> L
 @inject JsonPreviewState PreviewState
 
-<MudText Typo="Typo.h5" Class="mb-4">@L["RouteList_Title"]</MudText>
+<div class="page-header page-header-routes">
+    <MudText Typo="Typo.h5">@L["RouteList_Title"]</MudText>
+</div>
 
 <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-4" Spacing="2">
     <MudTextField T="string"

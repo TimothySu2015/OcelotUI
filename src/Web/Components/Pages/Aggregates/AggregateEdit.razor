@@ -11,10 +11,14 @@
 @inject ISnackbar Snackbar
 @inject IStringLocalizer<SharedResource> L
 @inject IJSRuntime JS
+@inject JsonPreviewState PreviewState
+@implements IDisposable
 
-<MudText Typo="Typo.h5" Class="mb-4">
-    @(IsNew ? L["Aggregate_NewTitle"] : string.Format(L["Aggregate_EditTitle"], Index))
-</MudText>
+<div class="page-header page-header-aggregates">
+    <MudText Typo="Typo.h5">
+        @(IsNew ? L["Aggregate_NewTitle"] : string.Format(L["Aggregate_EditTitle"], Index))
+    </MudText>
+</div>
 
 @if (_loading)
 {
@@ -78,12 +82,12 @@ else
 
             <MudExpansionPanels>
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitleWithGuide(L["Aggregate_RouteKeysConfig"], OcelotDocs + "aggregation.html")</TitleContent>
+                    <TitleContent>@PanelTitleWithGuide(L["Aggregate_RouteKeysConfig"], OcelotDocs + "aggregation.html", _aggregate.RouteKeysConfig is { Count: > 0 }, () => _aggregate.RouteKeysConfig = null)</TitleContent>
                     <ChildContent><AggregateRouteConfigEditor @bind-Items="_aggregate.RouteKeysConfig" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitleWithGuide(L["Aggregate_UpstreamHeaderTemplates"], OcelotDocs + "aggregation.html")</TitleContent>
+                    <TitleContent>@PanelTitleWithGuide(L["Aggregate_UpstreamHeaderTemplates"], OcelotDocs + "aggregation.html", _aggregate.UpstreamHeaderTemplates is { Count: > 0 }, () => _aggregate.UpstreamHeaderTemplates = null)</TitleContent>
                     <ChildContent>
                         <DictionaryEditor @bind-Items="_aggregate.UpstreamHeaderTemplates"
                                           Label="@L["Aggregate_UpstreamHeaderTemplates"]"
@@ -118,6 +122,7 @@ else
             if (result.IsSuccess && result.Value is not null)
             {
                 _aggregate = result.Value.Aggregate;
+                PreviewState.SetFocus(PreviewSection.Aggregates, Index);
             }
             else
             {
@@ -142,7 +147,8 @@ else
                 if (result.IsSuccess)
                 {
                     Snackbar.Add(L["Aggregate_SaveSuccess"], Severity.Success);
-                    Navigation.NavigateTo("/aggregates");
+                    PreviewState.NotifyChanged();
+                    Navigation.NavigateTo($"/aggregates/edit/{result.Value}");
                 }
                 else
                 {
@@ -155,7 +161,7 @@ else
                 if (result.IsSuccess)
                 {
                     Snackbar.Add(L["Aggregate_SaveSuccess"], Severity.Success);
-                    Navigation.NavigateTo("/aggregates");
+                    PreviewState.NotifyChanged();
                 }
                 else
                 {
@@ -168,9 +174,11 @@ else
 
     private void Cancel() => Navigation.NavigateTo("/aggregates");
 
+    public void Dispose() => PreviewState.ClearFocus();
+
     private const string OcelotDocs = "https://ocelot.readthedocs.io/en/latest/features/";
 
-    private RenderFragment PanelTitleWithGuide(string label, string docUrl) => builder =>
+    private RenderFragment PanelTitleWithGuide(string label, string docUrl, bool configured = false, Action? onClear = null) => builder =>
     {
         builder.OpenComponent<MudStack>(0);
         builder.AddAttribute(1, "Row", true);
@@ -181,6 +189,15 @@ else
             inner.OpenComponent<MudText>(0);
             inner.AddAttribute(1, "ChildContent", (RenderFragment)(t => t.AddContent(0, label)));
             inner.CloseComponent();
+            if (configured)
+            {
+                inner.OpenComponent<MudChip<string>>(2);
+                inner.AddAttribute(3, "Size", Size.Small);
+                inner.AddAttribute(4, "Color", Color.Info);
+                inner.AddAttribute(5, "Variant", Variant.Filled);
+                inner.AddAttribute(6, "ChildContent", (RenderFragment)(c => c.AddContent(0, "✔")));
+                inner.CloseComponent();
+            }
             inner.OpenComponent<MudTooltip>(10);
             inner.AddAttribute(11, "Text", L["Nav_Guide"].Value);
             inner.AddAttribute(12, "ChildContent", (RenderFragment)(tip =>
@@ -193,6 +210,31 @@ else
                 tip.CloseComponent();
             }));
             inner.CloseComponent();
+            if (configured && onClear is not null)
+            {
+                var clearAction = onClear;
+                inner.OpenElement(30, "div");
+                inner.AddAttribute(31, "style", "display:inline-flex");
+                inner.AddAttribute(32, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, () => { }));
+                inner.AddEventStopPropagationAttribute(33, "onclick", true);
+                inner.OpenComponent<MudTooltip>(34);
+                inner.AddAttribute(35, "Text", L["Btn_ClearSection"].Value);
+                inner.AddAttribute(36, "ChildContent", (RenderFragment)(tip =>
+                {
+                    tip.OpenComponent<MudIconButton>(0);
+                    tip.AddAttribute(1, "Icon", Icons.Material.Outlined.ClearAll);
+                    tip.AddAttribute(2, "Size", Size.Small);
+                    tip.AddAttribute(3, "Color", Color.Warning);
+                    tip.AddAttribute(4, "OnClick", EventCallback.Factory.Create<MouseEventArgs>(this, () =>
+                    {
+                        clearAction();
+                        StateHasChanged();
+                    }));
+                    tip.CloseComponent();
+                }));
+                inner.CloseComponent();
+                inner.CloseElement();
+            }
         }));
         builder.CloseComponent();
     };

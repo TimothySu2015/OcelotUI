@@ -18,37 +18,40 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="1">
+    <MudAppBar Elevation="1" Style="background: linear-gradient(90deg, #4a148c 0%, #7c4dff 28%, #42a5f5 56%, #bbdefb 80%, #e8eaf6 100%);">
         <MudIconButton Icon="@Icons.Material.Filled.Menu"
                        Color="Color.Inherit"
                        Edge="Edge.Start"
                        OnClick="ToggleDrawer" />
         <MudText Typo="Typo.h6" Class="ml-3">@L["AppTitle"]</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.Download"
-                       Color="Color.Inherit"
-                       OnClick="ExportAsync"
-                       title="@L["Export_Tooltip"]" />
-        <MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="ImportAsync" Class="d-inline-flex" Style="margin:0;padding:0;">
-            <ActivatorContent>
-                <MudIconButton Icon="@Icons.Material.Filled.Upload"
-                               Color="Color.Inherit"
-                               title="@L["Import_Tooltip"]" />
-            </ActivatorContent>
-        </MudFileUpload>
-        <MudIconButton Icon="@Icons.Material.Filled.DataObject"
-                       Color="@(PreviewState.IsOpen ? Color.Warning : Color.Inherit)"
-                       OnClick="PreviewState.Toggle"
-                       title="@L["JsonPreview_Toggle"]" />
-        <MudIconButton Icon="@Icons.Material.Filled.History"
-                       Color="Color.Inherit"
-                       Href="/history"
-                       title="@L["Nav_History"]" />
-        <MudIconButton Icon="@Icons.Material.Filled.MenuBook"
-                       Color="Color.Inherit"
-                       Href="/guide"
-                       title="@L["Nav_Guide"]" />
-        <CultureSelector />
+        <div style="display: flex; align-items: center; background: rgba(74, 20, 140, 0.45); border-radius: 24px; padding: 0 4px;">
+            <MudIconButton Icon="@Icons.Material.Filled.Download"
+                           Color="Color.Inherit"
+                           OnClick="ExportAsync"
+                           title="@L["Export_Tooltip"]" />
+            <MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="ImportAsync" Class="d-inline-flex" Style="margin:0;padding:0;">
+                <ActivatorContent>
+                    <MudIconButton Icon="@Icons.Material.Filled.Upload"
+                                   Color="Color.Inherit"
+                                   title="@L["Import_Tooltip"]" />
+                </ActivatorContent>
+            </MudFileUpload>
+            <MudIconButton Icon="@Icons.Material.Filled.DataObject"
+                           Color="@(PreviewState.IsOpen ? Color.Warning : Color.Inherit)"
+                           OnClick="PreviewState.Toggle"
+                           Disabled="PreviewState.IsLocked"
+                           title="@L["JsonPreview_Toggle"]" />
+            <MudIconButton Icon="@Icons.Material.Filled.History"
+                           Color="Color.Inherit"
+                           Href="/history"
+                           title="@L["Nav_History"]" />
+            <MudIconButton Icon="@Icons.Material.Filled.MenuBook"
+                           Color="Color.Inherit"
+                           Href="/guide"
+                           title="@L["Nav_Guide"]" />
+            <CultureSelector />
+        </div>
     </MudAppBar>
 
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">

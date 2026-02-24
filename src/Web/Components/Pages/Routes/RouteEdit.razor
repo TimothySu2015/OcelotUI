@@ -15,9 +15,11 @@
 @inject JsonPreviewState PreviewState
 @implements IDisposable
 
-<MudText Typo="Typo.h5" Class="mb-4">
-    @(IsNew ? L["RouteEdit_NewTitle"] : string.Format(L["RouteEdit_EditTitle"], Index))
-</MudText>
+<div class="page-header page-header-routes">
+    <MudText Typo="Typo.h5">
+        @(IsNew ? L["RouteEdit_NewTitle"] : string.Format(L["RouteEdit_EditTitle"], Index))
+    </MudText>
+</div>
 
 @if (_loading)
 {
@@ -153,7 +155,7 @@ else
             @* Options & Sub-object Sections *@
             <MudExpansionPanels>
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_Options"], HasOptions, docUrl: OcelotDocs + "routing.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_Options"], HasOptions, docUrl: OcelotDocs + "routing.html", onClear: ClearOptions)</TitleContent>
                     <ChildContent>
                         <MudStack Spacing="3" Class="pa-2">
                             <MudGrid>
@@ -229,42 +231,42 @@ else
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_AuthenticationOptions"], _route.AuthenticationOptions is not null, tag: L["Tag_Common"], docUrl: OcelotDocs + "authentication.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_AuthenticationOptions"], _route.AuthenticationOptions is not null, tag: L["Tag_Common"], docUrl: OcelotDocs + "authentication.html", onClear: () => _route.AuthenticationOptions = null)</TitleContent>
                     <ChildContent><AuthenticationOptionsEditor @bind-Value="_route.AuthenticationOptions" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_RateLimitOptions"], _route.RateLimitOptions is not null, tag: L["Tag_Common"], docUrl: OcelotDocs + "ratelimiting.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_RateLimitOptions"], _route.RateLimitOptions is not null, tag: L["Tag_Common"], docUrl: OcelotDocs + "ratelimiting.html", onClear: () => _route.RateLimitOptions = null)</TitleContent>
                     <ChildContent><RateLimitOptionsEditor @bind-Value="_route.RateLimitOptions" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_LoadBalancerOptions"], _route.LoadBalancerOptions is not null, tag: L["Tag_Common"], docUrl: OcelotDocs + "loadbalancer.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_LoadBalancerOptions"], _route.LoadBalancerOptions is not null, tag: L["Tag_Common"], docUrl: OcelotDocs + "loadbalancer.html", onClear: () => _route.LoadBalancerOptions = null)</TitleContent>
                     <ChildContent><LoadBalancerOptionsEditor @bind-Value="_route.LoadBalancerOptions" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_QoSOptions"], _route.QoSOptions is not null, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "qualityofservice.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_QoSOptions"], _route.QoSOptions is not null, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "qualityofservice.html", onClear: () => _route.QoSOptions = null)</TitleContent>
                     <ChildContent><QoSOptionsEditor @bind-Value="_route.QoSOptions" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_CacheOptions"], _route.CacheOptions is not null, tag: L["Tag_Common"], docUrl: OcelotDocs + "caching.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_CacheOptions"], _route.CacheOptions is not null, tag: L["Tag_Common"], docUrl: OcelotDocs + "caching.html", onClear: () => _route.CacheOptions = null)</TitleContent>
                     <ChildContent><CacheOptionsEditor @bind-Value="_route.CacheOptions" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_HttpHandlerOptions"], _route.HttpHandlerOptions is not null, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "configuration.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_HttpHandlerOptions"], _route.HttpHandlerOptions is not null, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "configuration.html", onClear: () => _route.HttpHandlerOptions = null)</TitleContent>
                     <ChildContent><HttpHandlerOptionsEditor @bind-Value="_route.HttpHandlerOptions" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_SecurityOptions"], _route.SecurityOptions is not null, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "routing.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_SecurityOptions"], _route.SecurityOptions is not null, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "routing.html", onClear: () => _route.SecurityOptions = null)</TitleContent>
                     <ChildContent><SecurityOptionsEditor @bind-Value="_route.SecurityOptions" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_Metadata"], _route.Metadata is not null && _route.Metadata.Any(kvp => !_metadataHiddenKeys.Contains(kvp.Key)), tag: L["Tag_Advanced"], docUrl: OcelotDocs + "metadata.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_Metadata"], _route.Metadata is not null && _route.Metadata.Any(kvp => !_metadataHiddenKeys.Contains(kvp.Key)), tag: L["Tag_Advanced"], docUrl: OcelotDocs + "metadata.html", onClear: ClearMetadata)</TitleContent>
                     <ChildContent>
                         <DictionaryEditor @bind-Items="_route.Metadata"
                                           Label="@L["RouteEdit_Metadata"]"
@@ -275,7 +277,7 @@ else
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_AddHeadersToRequest"], _route.AddHeadersToRequest is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "claimstransformation.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_AddHeadersToRequest"], _route.AddHeadersToRequest is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "claimstransformation.html", onClear: () => _route.AddHeadersToRequest = null)</TitleContent>
                     <ChildContent>
                         <ExampleBox Items="_addHeadersExamples" />
                         <DictionaryEditor @bind-Items="_route.AddHeadersToRequest"
@@ -286,7 +288,7 @@ else
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_AddClaimsToRequest"], _route.AddClaimsToRequest is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "claimstransformation.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_AddClaimsToRequest"], _route.AddClaimsToRequest is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "claimstransformation.html", onClear: () => _route.AddClaimsToRequest = null)</TitleContent>
                     <ChildContent>
                         <ExampleBox Items="_addClaimsExamples" />
                         <DictionaryEditor @bind-Items="_route.AddClaimsToRequest"
@@ -297,7 +299,7 @@ else
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_AddQueriesToRequest"], _route.AddQueriesToRequest is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "claimstransformation.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_AddQueriesToRequest"], _route.AddQueriesToRequest is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "claimstransformation.html", onClear: () => _route.AddQueriesToRequest = null)</TitleContent>
                     <ChildContent>
                         <ExampleBox Items="_addQueriesToRequestExamples" />
                         <DictionaryEditor @bind-Items="_route.AddQueriesToRequest"
@@ -308,7 +310,7 @@ else
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_RouteClaimsRequirement"], _route.RouteClaimsRequirement is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "authorization.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_RouteClaimsRequirement"], _route.RouteClaimsRequirement is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "authorization.html", onClear: () => _route.RouteClaimsRequirement = null)</TitleContent>
                     <ChildContent>
                         <ExampleBox Items="_routeClaimsExamples" />
                         <DictionaryEditor @bind-Items="_route.RouteClaimsRequirement"
@@ -319,7 +321,7 @@ else
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_UpstreamHeaderTemplates"], _route.UpstreamHeaderTemplates is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "routing.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_UpstreamHeaderTemplates"], _route.UpstreamHeaderTemplates is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "routing.html", onClear: () => _route.UpstreamHeaderTemplates = null)</TitleContent>
                     <ChildContent>
                         <DictionaryEditor @bind-Items="_route.UpstreamHeaderTemplates"
                                           Label="@L["RouteEdit_UpstreamHeaderTemplates"]"
@@ -329,7 +331,7 @@ else
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_UpstreamHeaderTransform"], _route.UpstreamHeaderTransform is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "headerstransformation.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_UpstreamHeaderTransform"], _route.UpstreamHeaderTransform is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "headerstransformation.html", onClear: () => _route.UpstreamHeaderTransform = null)</TitleContent>
                     <ChildContent>
                         <ExampleBox Items="_upstreamHeaderTransformExamples" />
                         <DictionaryEditor @bind-Items="_route.UpstreamHeaderTransform"
@@ -340,7 +342,7 @@ else
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_DownstreamHeaderTransform"], _route.DownstreamHeaderTransform is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "headerstransformation.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_DownstreamHeaderTransform"], _route.DownstreamHeaderTransform is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "headerstransformation.html", onClear: () => _route.DownstreamHeaderTransform = null)</TitleContent>
                     <ChildContent>
                         <ExampleBox Items="_downstreamHeaderTransformExamples" />
                         <DictionaryEditor @bind-Items="_route.DownstreamHeaderTransform"
@@ -351,7 +353,7 @@ else
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_ChangeDownstreamPath"], _route.ChangeDownstreamPathTemplate is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "claimstransformation.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_ChangeDownstreamPath"], _route.ChangeDownstreamPathTemplate is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "claimstransformation.html", onClear: () => _route.ChangeDownstreamPathTemplate = null)</TitleContent>
                     <ChildContent>
                         <ExampleBox Items="_changeDownstreamPathExamples" />
                         <DictionaryEditor @bind-Items="_route.ChangeDownstreamPathTemplate"
@@ -362,7 +364,7 @@ else
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitle(L["RouteEdit_DelegatingHandlers"], _route.DelegatingHandlers is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "delegatinghandlers.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_DelegatingHandlers"], _route.DelegatingHandlers is { Count: > 0 }, tag: L["Tag_Advanced"], docUrl: OcelotDocs + "delegatinghandlers.html", onClear: () => _route.DelegatingHandlers = null)</TitleContent>
                     <ChildContent>
                         <StringListEditor @bind-Items="_route.DelegatingHandlers"
                                           Label="@L["RouteEdit_DelegatingHandlers"]"
@@ -401,7 +403,7 @@ else
                 _route = result.Value.Route;
                 if (_route.Metadata is not null && _route.Metadata.TryGetValue("_displayName", out var dn))
                     _displayName = dn;
-                PreviewState.SetFocus(Index);
+                PreviewState.SetFocus(PreviewSection.Routes, Index);
             }
             else
             {
@@ -533,11 +535,37 @@ else
         || _route.RouteIsCaseSensitive is not null
         || _route.DangerousAcceptAnyServerCertificateValidator is not null;
 
+    private void ClearOptions()
+    {
+        _route.Key = null;
+        _route.Priority = null;
+        _route.Timeout = null;
+        _route.ServiceName = null;
+        _route.ServiceNamespace = null;
+        _route.RequestIdKey = null;
+        _route.RouteIsCaseSensitive = null;
+        _route.DangerousAcceptAnyServerCertificateValidator = null;
+    }
+
+    private void ClearMetadata()
+    {
+        if (_route.Metadata is null) return;
+        // Preserve _displayName if present
+        if (_route.Metadata.TryGetValue("_displayName", out var dn))
+        {
+            _route.Metadata = new Dictionary<string, string> { ["_displayName"] = dn };
+        }
+        else
+        {
+            _route.Metadata = null;
+        }
+    }
+
     private static readonly IReadOnlySet<string> _metadataHiddenKeys = new HashSet<string> { "_displayName" };
 
     private const string OcelotDocs = "https://ocelot.readthedocs.io/en/latest/features/";
 
-    private RenderFragment PanelTitle(string label, bool configured, string? tag = null, string? docUrl = null) => builder =>
+    private RenderFragment PanelTitle(string label, bool configured, string? tag = null, string? docUrl = null, Action? onClear = null) => builder =>
     {
         builder.OpenComponent<MudStack>(0);
         builder.AddAttribute(1, "Row", true);
@@ -580,6 +608,31 @@ else
                     tip.CloseComponent();
                 }));
                 inner.CloseComponent();
+            }
+            if (configured && onClear is not null)
+            {
+                var clearAction = onClear;
+                inner.OpenElement(30, "div");
+                inner.AddAttribute(31, "style", "display:inline-flex");
+                inner.AddAttribute(32, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, () => { }));
+                inner.AddEventStopPropagationAttribute(33, "onclick", true);
+                inner.OpenComponent<MudTooltip>(34);
+                inner.AddAttribute(35, "Text", L["Btn_ClearSection"].Value);
+                inner.AddAttribute(36, "ChildContent", (RenderFragment)(tip =>
+                {
+                    tip.OpenComponent<MudIconButton>(0);
+                    tip.AddAttribute(1, "Icon", Icons.Material.Outlined.ClearAll);
+                    tip.AddAttribute(2, "Size", Size.Small);
+                    tip.AddAttribute(3, "Color", Color.Warning);
+                    tip.AddAttribute(4, "OnClick", EventCallback.Factory.Create<MouseEventArgs>(this, () =>
+                    {
+                        clearAction();
+                        StateHasChanged();
+                    }));
+                    tip.CloseComponent();
+                }));
+                inner.CloseComponent();
+                inner.CloseElement();
             }
         }));
         builder.CloseComponent();

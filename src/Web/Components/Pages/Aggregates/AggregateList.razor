@@ -7,8 +7,11 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject IStringLocalizer<SharedResource> L
+@inject JsonPreviewState PreviewState
 
-<MudText Typo="Typo.h5" Class="mb-4">@L["Aggregate_Title"]</MudText>
+<div class="page-header page-header-aggregates">
+    <MudText Typo="Typo.h5">@L["Aggregate_Title"]</MudText>
+</div>
 
 <MudStack Row="true" Justify="Justify.FlexEnd" Class="mb-4">
     <MudButton Variant="Variant.Filled"
@@ -95,6 +98,7 @@ else
         if (result.IsSuccess)
         {
             Snackbar.Add(L["Aggregate_DeleteSuccess"], Severity.Success);
+            PreviewState.NotifyChanged();
             await Load();
         }
         else

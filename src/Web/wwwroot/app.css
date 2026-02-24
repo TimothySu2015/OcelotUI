@@ -20,8 +20,66 @@
     background-color: var(--mud-palette-primary);
 }
 
-/* JSON preview: highlight focused route block */
+/* JSON preview: highlight focused section blocks */
 .monaco-editor .route-highlight {
     background: rgba(255, 200, 50, 0.45) !important;
     border-left: 4px solid #ffc832 !important;
+}
+
+.monaco-editor .global-highlight {
+    background: rgba(50, 150, 255, 0.35) !important;
+    border-left: 4px solid #3296ff !important;
+}
+
+.monaco-editor .aggregate-highlight {
+    background: rgba(50, 220, 100, 0.35) !important;
+    border-left: 4px solid #32dc64 !important;
+}
+
+.monaco-editor .dynamic-highlight {
+    background: rgba(180, 100, 255, 0.35) !important;
+    border-left: 4px solid #b464ff !important;
+}
+
+/* Page header gradient bars */
+.page-header {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border-left: 4px solid;
+    margin-bottom: 16px;
+}
+
+.page-header .mud-typography {
+    margin: 0;
+    font-weight: 700;
+}
+
+.page-header-routes {
+    background: linear-gradient(135deg, rgba(255, 200, 50, 0.22) 0%, rgba(255, 160, 0, 0.04) 100%);
+    border-left-color: #ffc832;
+}
+
+.page-header-global {
+    background: linear-gradient(135deg, rgba(50, 150, 255, 0.18) 0%, rgba(50, 120, 255, 0.03) 100%);
+    border-left-color: #3296ff;
+}
+
+.page-header-aggregates {
+    background: linear-gradient(135deg, rgba(50, 220, 100, 0.18) 0%, rgba(50, 180, 80, 0.03) 100%);
+    border-left-color: #32dc64;
+}
+
+.page-header-dynamic {
+    background: linear-gradient(135deg, rgba(180, 100, 255, 0.18) 0%, rgba(150, 80, 255, 0.03) 100%);
+    border-left-color: #b464ff;
+}
+
+.page-header-history {
+    background: linear-gradient(135deg, rgba(120, 144, 156, 0.18) 0%, rgba(96, 125, 139, 0.03) 100%);
+    border-left-color: #78909c;
+}
+
+.page-header-guide {
+    background: linear-gradient(135deg, rgba(0, 150, 136, 0.18) 0%, rgba(0, 121, 107, 0.03) 100%);
+    border-left-color: #009688;
 }

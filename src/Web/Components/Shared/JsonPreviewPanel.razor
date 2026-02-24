@@ -79,9 +79,9 @@
         if (!_editorReady)
             return;
 
-        if (PreviewState.FocusRouteIndex is { } index)
+        if (PreviewState.FocusSection is { } section)
         {
-            await InvokeAsync(async () => await ScrollToRouteAsync(index));
+            await InvokeAsync(async () => await ScrollToSectionAsync(section, PreviewState.FocusIndex));
         }
         else
         {
@@ -93,28 +93,62 @@
     {
         _editorReady = true;
 
-        // Inject highlight CSS into the page (Monaco doesn't pick up external CSS reliably)
+        // Inject highlight CSS for all sections
         await JS.InvokeVoidAsync("eval", """
-            if (!document.getElementById('route-highlight-style')) {
+            if (!document.getElementById('preview-highlight-style')) {
                 var s = document.createElement('style');
-                s.id = 'route-highlight-style';
-                s.textContent = '.monaco-editor .route-highlight { background: rgba(255, 200, 50, 0.45) !important; border-left: 4px solid #ffc832 !important; }';
+                s.id = 'preview-highlight-style';
+                s.textContent = [
+                    '.monaco-editor .route-highlight { background: rgba(255, 200, 50, 0.45) !important; border-left: 4px solid #ffc832 !important; }',
+                    '.monaco-editor .global-highlight { background: rgba(50, 150, 255, 0.35) !important; border-left: 4px solid #3296ff !important; }',
+                    '.monaco-editor .aggregate-highlight { background: rgba(50, 220, 100, 0.35) !important; border-left: 4px solid #32dc64 !important; }',
+                    '.monaco-editor .dynamic-highlight { background: rgba(180, 100, 255, 0.35) !important; border-left: 4px solid #b464ff !important; }'
+                ].join('\n');
                 document.head.appendChild(s);
             }
         """);
 
-        if (PreviewState.FocusRouteIndex is { } index)
+        if (PreviewState.FocusSection is { } section)
         {
-            await ScrollToRouteAsync(index);
+            await ScrollToSectionAsync(section, PreviewState.FocusIndex);
         }
     }
 
-    private async Task ScrollToRouteAsync(int routeIndex)
+    private static (string ClassName, string RulerColor) GetHighlightStyle(PreviewSection section) => section switch
     {
-        var range = FindRouteLineRange(_json, routeIndex);
+        PreviewSection.Routes => ("route-highlight", "rgba(255, 200, 50, 0.5)"),
+        PreviewSection.GlobalConfiguration => ("global-highlight", "rgba(50, 150, 255, 0.5)"),
+        PreviewSection.Aggregates => ("aggregate-highlight", "rgba(50, 220, 100, 0.5)"),
+        PreviewSection.DynamicRoutes => ("dynamic-highlight", "rgba(180, 100, 255, 0.5)"),
+        _ => ("route-highlight", "rgba(255, 200, 50, 0.5)"),
+    };
+
+    private static string SectionJsonKey(PreviewSection section) => section switch
+    {
+        PreviewSection.Routes => "Routes",
+        PreviewSection.GlobalConfiguration => "GlobalConfiguration",
+        PreviewSection.Aggregates => "Aggregates",
+        PreviewSection.DynamicRoutes => "DynamicRoutes",
+        _ => "Routes",
+    };
+
+    private async Task ScrollToSectionAsync(PreviewSection section, int? index)
+    {
+        (int Start, int End)? range;
+
+        if (section == PreviewSection.GlobalConfiguration)
+        {
+            range = FindObjectLineRange(_json, SectionJsonKey(section));
+        }
+        else
+        {
+            range = index.HasValue ? FindArrayItemLineRange(_json, SectionJsonKey(section), index.Value) : null;
+        }
+
         if (range is not null)
         {
-            // Clear previous decorations and add new highlight
+            var (className, rulerColor) = GetHighlightStyle(section);
+
             _decorationIds = await _editor.DeltaDecorations(_decorationIds,
             [
                 new ModelDeltaDecoration
@@ -123,10 +157,10 @@
                     Options = new ModelDecorationOptions
                     {
                         IsWholeLine = true,
-                        ClassName = "route-highlight",
+                        ClassName = className,
                         OverviewRuler = new ModelDecorationOverviewRulerOptions
                         {
-                            Color = "rgba(255, 200, 50, 0.5)",
+                            Color = rulerColor,
                             Position = OverviewRulerLane.Full,
                         },
                     },
@@ -144,20 +178,22 @@
         }
     }
 
-    private static (int Start, int End)? FindRouteLineRange(string json, int routeIndex)
+    /// <summary>
+    /// Find the line range of an array item (e.g. Routes[2], Aggregates[0]) in JSON text.
+    /// </summary>
+    private static (int Start, int End)? FindArrayItemLineRange(string json, string sectionName, int itemIndex)
     {
-        // Find the "Routes": [ marker
-        var routesArrayStart = json.IndexOf("\"Routes\"", StringComparison.Ordinal);
-        if (routesArrayStart < 0)
+        var marker = $"\"{sectionName}\"";
+        var sectionStart = json.IndexOf(marker, StringComparison.Ordinal);
+        if (sectionStart < 0)
             return null;
 
-        var bracketStart = json.IndexOf('[', routesArrayStart);
+        var bracketStart = json.IndexOf('[', sectionStart);
         if (bracketStart < 0)
             return null;
 
-        // Walk from the bracket, counting top-level '{' at depth 1 (inside the array)
         var depth = 0;
-        var routeCount = 0;
+        var itemCount = 0;
         var inString = false;
         var escape = false;
         var startOffset = -1;
@@ -166,54 +202,72 @@
         {
             var c = json[i];
 
-            if (escape)
-            {
-                escape = false;
-                continue;
-            }
-
-            if (c == '\\' && inString)
-            {
-                escape = true;
-                continue;
-            }
-
-            if (c == '"')
-            {
-                inString = !inString;
-                continue;
-            }
-
-            if (inString)
-                continue;
+            if (escape) { escape = false; continue; }
+            if (c == '\\' && inString) { escape = true; continue; }
+            if (c == '"') { inString = !inString; continue; }
+            if (inString) continue;
 
             if (c == '{')
             {
                 depth++;
                 if (depth == 1)
                 {
-                    if (routeCount == routeIndex)
-                    {
+                    if (itemCount == itemIndex)
                         startOffset = i;
-                    }
-                    else if (routeCount > routeIndex)
-                    {
+                    else if (itemCount > itemIndex)
                         break;
-                    }
-                    routeCount++;
+                    itemCount++;
                 }
             }
             else if (c == '}')
             {
                 depth--;
                 if (depth == 0 && startOffset >= 0)
-                {
                     return (CharOffsetToLine(json, startOffset), CharOffsetToLine(json, i));
-                }
             }
             else if (c == ']' && depth == 0)
             {
                 break;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Find the line range of a top-level object property (e.g. "GlobalConfiguration": { ... }).
+    /// </summary>
+    private static (int Start, int End)? FindObjectLineRange(string json, string sectionName)
+    {
+        var marker = $"\"{sectionName}\"";
+        var keyStart = json.IndexOf(marker, StringComparison.Ordinal);
+        if (keyStart < 0)
+            return null;
+
+        // Find the opening '{' after the key
+        var braceStart = json.IndexOf('{', keyStart + marker.Length);
+        if (braceStart < 0)
+            return null;
+
+        var depth = 0;
+        var inString = false;
+        var escape = false;
+
+        for (var i = braceStart; i < json.Length; i++)
+        {
+            var c = json[i];
+
+            if (escape) { escape = false; continue; }
+            if (c == '\\' && inString) { escape = true; continue; }
+            if (c == '"') { inString = !inString; continue; }
+            if (inString) continue;
+
+            if (c == '{') depth++;
+            else if (c == '}')
+            {
+                depth--;
+                if (depth == 0)
+                    return (CharOffsetToLine(json, braceStart), CharOffsetToLine(json, i));
             }
         }
 
@@ -240,9 +294,9 @@
         {
             await _editor.SetValue(_json);
             _decorationIds = [];
-            if (PreviewState.FocusRouteIndex is { } index)
+            if (PreviewState.FocusSection is { } section)
             {
-                await ScrollToRouteAsync(index);
+                await ScrollToSectionAsync(section, PreviewState.FocusIndex);
             }
         }
     }

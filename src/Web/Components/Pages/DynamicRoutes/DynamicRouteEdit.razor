@@ -11,10 +11,14 @@
 @inject ISnackbar Snackbar
 @inject IStringLocalizer<SharedResource> L
 @inject IJSRuntime JS
+@inject JsonPreviewState PreviewState
+@implements IDisposable
 
-<MudText Typo="Typo.h5" Class="mb-4">
-    @(IsNew ? L["DynamicRoute_NewTitle"] : string.Format(L["DynamicRoute_EditTitle"], Index))
-</MudText>
+<div class="page-header page-header-dynamic">
+    <MudText Typo="Typo.h5">
+        @(IsNew ? L["DynamicRoute_NewTitle"] : string.Format(L["DynamicRoute_EditTitle"], Index))
+    </MudText>
+</div>
 
 @if (_loading)
 {
@@ -75,37 +79,37 @@ else
 
             <MudExpansionPanels>
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitleWithGuide(L["RouteEdit_AuthenticationOptions"], OcelotDocs + "servicediscovery.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_AuthenticationOptions"], _dynamicRoute.AuthenticationOptions is not null, docUrl: OcelotDocs + "authentication.html", onClear: () => _dynamicRoute.AuthenticationOptions = null)</TitleContent>
                     <ChildContent><AuthenticationOptionsEditor @bind-Value="_dynamicRoute.AuthenticationOptions" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitleWithGuide(L["RouteEdit_RateLimitOptions"], OcelotDocs + "servicediscovery.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_RateLimitOptions"], _dynamicRoute.RateLimitOptions is not null, docUrl: OcelotDocs + "ratelimiting.html", onClear: () => _dynamicRoute.RateLimitOptions = null)</TitleContent>
                     <ChildContent><RateLimitOptionsEditor @bind-Value="_dynamicRoute.RateLimitOptions" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitleWithGuide(L["RouteEdit_LoadBalancerOptions"], OcelotDocs + "servicediscovery.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_LoadBalancerOptions"], _dynamicRoute.LoadBalancerOptions is not null, docUrl: OcelotDocs + "loadbalancer.html", onClear: () => _dynamicRoute.LoadBalancerOptions = null)</TitleContent>
                     <ChildContent><LoadBalancerOptionsEditor @bind-Value="_dynamicRoute.LoadBalancerOptions" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitleWithGuide(L["RouteEdit_QoSOptions"], OcelotDocs + "servicediscovery.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_QoSOptions"], _dynamicRoute.QoSOptions is not null, docUrl: OcelotDocs + "qualityofservice.html", onClear: () => _dynamicRoute.QoSOptions = null)</TitleContent>
                     <ChildContent><QoSOptionsEditor @bind-Value="_dynamicRoute.QoSOptions" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitleWithGuide(L["RouteEdit_CacheOptions"], OcelotDocs + "servicediscovery.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_CacheOptions"], _dynamicRoute.CacheOptions is not null, docUrl: OcelotDocs + "caching.html", onClear: () => _dynamicRoute.CacheOptions = null)</TitleContent>
                     <ChildContent><CacheOptionsEditor @bind-Value="_dynamicRoute.CacheOptions" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitleWithGuide(L["RouteEdit_HttpHandlerOptions"], OcelotDocs + "servicediscovery.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_HttpHandlerOptions"], _dynamicRoute.HttpHandlerOptions is not null, docUrl: OcelotDocs + "configuration.html", onClear: () => _dynamicRoute.HttpHandlerOptions = null)</TitleContent>
                     <ChildContent><HttpHandlerOptionsEditor @bind-Value="_dynamicRoute.HttpHandlerOptions" /></ChildContent>
                 </MudExpansionPanel>
 
                 <MudExpansionPanel>
-                    <TitleContent>@PanelTitleWithGuide(L["RouteEdit_Metadata"], OcelotDocs + "servicediscovery.html")</TitleContent>
+                    <TitleContent>@PanelTitle(L["RouteEdit_Metadata"], _dynamicRoute.Metadata is not null && _dynamicRoute.Metadata.Count > 0, docUrl: OcelotDocs + "metadata.html", onClear: () => _dynamicRoute.Metadata = null)</TitleContent>
                     <ChildContent>
                         <DictionaryEditor @bind-Items="_dynamicRoute.Metadata"
                                           Label="@L["RouteEdit_Metadata"]"
@@ -134,6 +138,7 @@ else
             if (result.IsSuccess && result.Value is not null)
             {
                 _dynamicRoute = result.Value.DynamicRoute;
+                PreviewState.SetFocus(PreviewSection.DynamicRoutes, Index);
             }
             else
             {
@@ -158,7 +163,8 @@ else
                 if (result.IsSuccess)
                 {
                     Snackbar.Add(L["DynamicRoute_SaveSuccess"], Severity.Success);
-                    Navigation.NavigateTo("/dynamic-routes");
+                    PreviewState.NotifyChanged();
+                    Navigation.NavigateTo($"/dynamic-routes/edit/{result.Value}");
                 }
                 else
                 {
@@ -171,7 +177,7 @@ else
                 if (result.IsSuccess)
                 {
                     Snackbar.Add(L["DynamicRoute_SaveSuccess"], Severity.Success);
-                    Navigation.NavigateTo("/dynamic-routes");
+                    PreviewState.NotifyChanged();
                 }
                 else
                 {
@@ -184,9 +190,11 @@ else
 
     private void Cancel() => Navigation.NavigateTo("/dynamic-routes");
 
+    public void Dispose() => PreviewState.ClearFocus();
+
     private const string OcelotDocs = "https://ocelot.readthedocs.io/en/latest/features/";
 
-    private RenderFragment PanelTitleWithGuide(string label, string docUrl) => builder =>
+    private RenderFragment PanelTitle(string label, bool configured, string? docUrl = null, Action? onClear = null) => builder =>
     {
         builder.OpenComponent<MudStack>(0);
         builder.AddAttribute(1, "Row", true);
@@ -197,18 +205,55 @@ else
             inner.OpenComponent<MudText>(0);
             inner.AddAttribute(1, "ChildContent", (RenderFragment)(t => t.AddContent(0, label)));
             inner.CloseComponent();
-            inner.OpenComponent<MudTooltip>(10);
-            inner.AddAttribute(11, "Text", L["Nav_Guide"].Value);
-            inner.AddAttribute(12, "ChildContent", (RenderFragment)(tip =>
+            if (configured)
             {
-                tip.OpenComponent<MudIconButton>(0);
-                tip.AddAttribute(1, "Icon", Icons.Material.Outlined.HelpOutline);
-                tip.AddAttribute(2, "Size", Size.Small);
-                tip.AddAttribute(3, "Color", Color.Default);
-                tip.AddAttribute(4, "OnClick", EventCallback.Factory.Create<MouseEventArgs>(this, () => JS.InvokeVoidAsync("open", docUrl, "_blank")));
-                tip.CloseComponent();
-            }));
-            inner.CloseComponent();
+                inner.OpenComponent<MudChip<string>>(2);
+                inner.AddAttribute(3, "Size", Size.Small);
+                inner.AddAttribute(4, "Color", Color.Info);
+                inner.AddAttribute(5, "Variant", Variant.Filled);
+                inner.AddAttribute(6, "ChildContent", (RenderFragment)(c => c.AddContent(0, "✔")));
+                inner.CloseComponent();
+            }
+            if (docUrl is not null)
+            {
+                inner.OpenComponent<MudTooltip>(20);
+                inner.AddAttribute(21, "Text", L["Nav_Guide"].Value);
+                inner.AddAttribute(22, "ChildContent", (RenderFragment)(tip =>
+                {
+                    tip.OpenComponent<MudIconButton>(0);
+                    tip.AddAttribute(1, "Icon", Icons.Material.Outlined.HelpOutline);
+                    tip.AddAttribute(2, "Size", Size.Small);
+                    tip.AddAttribute(3, "Color", Color.Default);
+                    tip.AddAttribute(4, "OnClick", EventCallback.Factory.Create<MouseEventArgs>(this, () => JS.InvokeVoidAsync("open", docUrl, "_blank")));
+                    tip.CloseComponent();
+                }));
+                inner.CloseComponent();
+            }
+            if (configured && onClear is not null)
+            {
+                var clearAction = onClear;
+                inner.OpenElement(30, "div");
+                inner.AddAttribute(31, "style", "display:inline-flex");
+                inner.AddAttribute(32, "onclick", EventCallback.Factory.Create<MouseEventArgs>(this, () => { }));
+                inner.AddEventStopPropagationAttribute(33, "onclick", true);
+                inner.OpenComponent<MudTooltip>(34);
+                inner.AddAttribute(35, "Text", L["Btn_ClearSection"].Value);
+                inner.AddAttribute(36, "ChildContent", (RenderFragment)(tip =>
+                {
+                    tip.OpenComponent<MudIconButton>(0);
+                    tip.AddAttribute(1, "Icon", Icons.Material.Outlined.ClearAll);
+                    tip.AddAttribute(2, "Size", Size.Small);
+                    tip.AddAttribute(3, "Color", Color.Warning);
+                    tip.AddAttribute(4, "OnClick", EventCallback.Factory.Create<MouseEventArgs>(this, () =>
+                    {
+                        clearAction();
+                        StateHasChanged();
+                    }));
+                    tip.CloseComponent();
+                }));
+                inner.CloseComponent();
+                inner.CloseElement();
+            }
         }));
         builder.CloseComponent();
     };

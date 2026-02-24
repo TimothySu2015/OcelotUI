@@ -83,3 +83,24 @@
     background: linear-gradient(135deg, rgba(0, 150, 136, 0.18) 0%, rgba(0, 121, 107, 0.03) 100%);
     border-left-color: #009688;
 }
+
+/* Fixed bottom toolbar for edit pages */
+.edit-toolbar-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--mud-palette-surface);
+    border-top: 1px solid var(--mud-palette-lines-default);
+    padding: 12px 24px;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.mud-drawer-open-responsive-md-left .edit-toolbar-bottom {
+    left: 240px;
+}
+
+.d-flex.flex-column:has(> .edit-toolbar-bottom) {
+    padding-bottom: 64px;
+}

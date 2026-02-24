@@ -28,16 +28,6 @@ else
 {
     <EditForm Model="_aggregate" OnValidSubmit="Save">
         <MudStack Spacing="4">
-            <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2">
-                <MudButton Variant="Variant.Outlined" OnClick="Cancel">@L["Btn_Cancel"]</MudButton>
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           ButtonType="ButtonType.Submit"
-                           Disabled="_saving">
-                    @(_saving ? L["Saving"] : L["Btn_Save"])
-                </MudButton>
-            </MudStack>
-
             <MudPaper Class="pa-4" Elevation="1">
                 <MudStack Spacing="3">
                     <MudTextField T="string"
@@ -96,6 +86,19 @@ else
                     </ChildContent>
                 </MudExpansionPanel>
             </MudExpansionPanels>
+
+            @* Sticky Bottom Toolbar *@
+            <div class="edit-toolbar-bottom">
+                <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2">
+                    <MudButton Variant="Variant.Outlined" OnClick="Cancel">@L["Btn_Cancel"]</MudButton>
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               ButtonType="ButtonType.Submit"
+                               Disabled="_saving">
+                        @(_saving ? L["Saving"] : L["Btn_Save"])
+                    </MudButton>
+                </MudStack>
+            </div>
         </MudStack>
     </EditForm>
 }

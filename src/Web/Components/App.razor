@@ -59,6 +59,30 @@
             document.addEventListener('mousemove', onMove);
             document.addEventListener('mouseup', onUp);
         };
+
+        // Sync edit toolbar right edge with JSON preview panel
+        (function() {
+            var _resizeObs = new ResizeObserver(syncToolbar);
+            var _lastPanel = null;
+
+            function syncToolbar() {
+                var panel = document.getElementById('json-preview-panel');
+                var toolbars = document.querySelectorAll('.edit-toolbar-bottom');
+                var handle = panel ? panel.previousElementSibling : null;
+                var anchorLeft = handle ? handle.getBoundingClientRect().left : (panel ? panel.getBoundingClientRect().left : 0);
+                var right = panel ? (document.documentElement.clientWidth - anchorLeft) + 'px' : '0px';
+                toolbars.forEach(function(tb) { tb.style.right = right; });
+
+                if (panel !== _lastPanel) {
+                    if (_lastPanel) _resizeObs.unobserve(_lastPanel);
+                    if (panel) _resizeObs.observe(panel);
+                    _lastPanel = panel;
+                }
+            }
+
+            new MutationObserver(syncToolbar)
+                .observe(document.body, { childList: true, subtree: true });
+        })();
     </script>
 </body>
 </html>

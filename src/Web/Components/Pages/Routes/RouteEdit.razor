@@ -35,35 +35,6 @@ else
                 <MudAlert Severity="@warn.Severity" Dense="true" Class="mb-0">@warn.Message</MudAlert>
             }
 
-            @* Toolbar *@
-            <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2">
-                <MudMenu Label="@L["RouteEdit_ApplyTemplate"]"
-                         Variant="Variant.Outlined"
-                         StartIcon="@Icons.Material.Filled.ContentPaste"
-                         EndIcon="@Icons.Material.Filled.ArrowDropDown">
-                    @foreach (var tpl in RouteTemplateProvider.Templates)
-                    {
-                        var current = tpl;
-                        <MudMenuItem OnClick="@(() => ApplyTemplate(current))">
-                            <MudStack Spacing="0">
-                                <MudText Typo="Typo.body2"><b>@L[current.NameKey]</b></MudText>
-                                <MudText Typo="Typo.caption" Class="mud-text-secondary">@L[current.DescriptionKey]</MudText>
-                            </MudStack>
-                        </MudMenuItem>
-                    }
-                </MudMenu>
-                <MudButton Variant="Variant.Outlined"
-                           OnClick="Cancel">
-                    @L["Btn_Cancel"]
-                </MudButton>
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           ButtonType="ButtonType.Submit"
-                           Disabled="_saving">
-                    @(_saving ? L["Saving"] : L["Btn_Save"])
-                </MudButton>
-            </MudStack>
-
             @* Display Name *@
             <MudTooltip Text="@L["RouteEdit_DisplayName_Desc"]" Arrow="true" Placement="Placement.Top">
                 <MudTextField T="string"
@@ -372,6 +343,39 @@ else
                     </ChildContent>
                 </MudExpansionPanel>
             </MudExpansionPanels>
+
+            @* Sticky Bottom Toolbar *@
+            <div class="edit-toolbar-bottom">
+                <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2">
+                    <MudMenu Label="@L["RouteEdit_ApplyTemplate"]"
+                             Variant="Variant.Outlined"
+                             StartIcon="@Icons.Material.Filled.ContentPaste"
+                             EndIcon="@Icons.Material.Filled.ArrowDropDown"
+                             AnchorOrigin="Origin.TopRight"
+                             TransformOrigin="Origin.BottomRight">
+                        @foreach (var tpl in RouteTemplateProvider.Templates)
+                        {
+                            var current = tpl;
+                            <MudMenuItem OnClick="@(() => ApplyTemplate(current))">
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.body2"><b>@L[current.NameKey]</b></MudText>
+                                    <MudText Typo="Typo.caption" Class="mud-text-secondary">@L[current.DescriptionKey]</MudText>
+                                </MudStack>
+                            </MudMenuItem>
+                        }
+                    </MudMenu>
+                    <MudButton Variant="Variant.Outlined"
+                               OnClick="Cancel">
+                        @L["Btn_Cancel"]
+                    </MudButton>
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               ButtonType="ButtonType.Submit"
+                               Disabled="_saving">
+                        @(_saving ? L["Saving"] : L["Btn_Save"])
+                    </MudButton>
+                </MudStack>
+            </div>
         </MudStack>
     </EditForm>
 }

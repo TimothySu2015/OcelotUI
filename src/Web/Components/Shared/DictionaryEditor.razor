@@ -3,18 +3,36 @@
 <MudPaper Class="pa-3" Outlined="true">
     <MudText Typo="Typo.caption" Class="mb-2">@Label</MudText>
 
-    @if (VisibleItems.Any())
+    @if (_entries.Count > 0)
     {
-        @foreach (var kvp in VisibleItems)
+        @for (var i = 0; i < _entries.Count; i++)
         {
-            var key = kvp.Key;
+            var index = i;
             <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-1" Spacing="1">
-                <MudText Typo="Typo.body2" Style="min-width:120px;"><b>@key</b></MudText>
-                <MudText Typo="Typo.body2" Class="flex-grow-1">@kvp.Value</MudText>
+                <MudTextField T="string"
+                              Value="_entries[index].Key"
+                              ValueChanged="v => OnKeyChanged(index, v)"
+                              Placeholder="@KeyPlaceholder"
+                              Label="@KeyLabel"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Style="min-width:120px;"
+                              Required="true"
+                              RequiredError="@L["DictEditor_KeyRequired"]"
+                              Error="@IsDuplicateKey(index)"
+                              ErrorText="@L["DictEditor_DuplicateKey"]" />
+                <MudTextField T="string"
+                              Value="_entries[index].Value"
+                              ValueChanged="v => OnValueChanged(index, v)"
+                              Placeholder="@ValuePlaceholder"
+                              Label="@ValueLabel"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Class="flex-grow-1" />
                 <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                Color="Color.Error"
                                Size="Size.Small"
-                               OnClick="() => RemoveItem(key)" />
+                               OnClick="() => RemoveItem(index)" />
             </MudStack>
         }
     }
@@ -23,31 +41,13 @@
         <MudText Typo="Typo.body2" Class="mud-text-secondary mb-2">@L["DictEditor_Empty"]</MudText>
     }
 
-    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-        <MudTextField T="string"
-                      @bind-Value="_newKey"
-                      Placeholder="@KeyPlaceholder"
-                      Label="@KeyLabel"
-                      Variant="Variant.Outlined"
-                      Margin="Margin.Dense"
-                      Style="min-width:120px;" />
-        <MudTextField T="string"
-                      @bind-Value="_newValue"
-                      Placeholder="@ValuePlaceholder"
-                      Label="@ValueLabel"
-                      Variant="Variant.Outlined"
-                      Margin="Margin.Dense"
-                      Class="flex-grow-1" />
-        <MudIconButton Icon="@Icons.Material.Filled.Add"
-                       Color="Color.Primary"
-                       Size="Size.Small"
-                       Disabled="@(string.IsNullOrWhiteSpace(_newKey) || _duplicateKey)"
-                       OnClick="AddItem" />
-    </MudStack>
-    @if (_duplicateKey)
-    {
-        <MudText Typo="Typo.caption" Color="Color.Error">@L["DictEditor_DuplicateKey"]</MudText>
-    }
+    <MudButton Variant="Variant.Text"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               OnClick="AddItem"
+               Size="Size.Small">
+        @L["Btn_Add"]
+    </MudButton>
 </MudPaper>
 
 @code {
@@ -60,30 +60,88 @@
     [Parameter] public string? ValuePlaceholder { get; set; }
     [Parameter] public IReadOnlySet<string>? HiddenKeys { get; set; }
 
-    private IEnumerable<KeyValuePair<string, string>> VisibleItems =>
-        Items?.Where(kvp => HiddenKeys is null || !HiddenKeys.Contains(kvp.Key)) ?? [];
-
-    private string? _newKey;
-    private string? _newValue;
-    private bool _duplicateKey => !string.IsNullOrWhiteSpace(_newKey)
-                                  && Items is not null
-                                  && Items.ContainsKey(_newKey!.Trim());
-
-    private async Task AddItem()
+    private sealed class Entry
     {
-        if (string.IsNullOrWhiteSpace(_newKey) || _duplicateKey) return;
-
-        Items ??= new Dictionary<string, string>();
-        Items[_newKey.Trim()] = _newValue?.Trim() ?? string.Empty;
-        _newKey = null;
-        _newValue = null;
-        await ItemsChanged.InvokeAsync(Items);
+        public string Key { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
     }
 
-    private async Task RemoveItem(string key)
+    private readonly List<Entry> _entries = [];
+    private bool _selfUpdating;
+
+    protected override void OnParametersSet()
     {
+        if (_selfUpdating) { _selfUpdating = false; return; }
+        RebuildEntries();
+    }
+
+    private void RebuildEntries()
+    {
+        _entries.Clear();
         if (Items is null) return;
-        Items.Remove(key);
+        foreach (var kvp in Items)
+        {
+            if (HiddenKeys is not null && HiddenKeys.Contains(kvp.Key)) continue;
+            _entries.Add(new Entry { Key = kvp.Key, Value = kvp.Value });
+        }
+    }
+
+    private bool IsDuplicateKey(int index)
+    {
+        var key = _entries[index].Key.Trim();
+        if (string.IsNullOrWhiteSpace(key)) return false;
+        for (var i = 0; i < _entries.Count; i++)
+        {
+            if (i == index) continue;
+            if (string.Equals(_entries[i].Key.Trim(), key, StringComparison.Ordinal)) return true;
+        }
+        return false;
+    }
+
+    private async Task OnKeyChanged(int index, string value)
+    {
+        _entries[index].Key = value;
+        await SyncToDictionary();
+    }
+
+    private async Task OnValueChanged(int index, string value)
+    {
+        _entries[index].Value = value;
+        await SyncToDictionary();
+    }
+
+    private async Task SyncToDictionary()
+    {
+        // Preserve hidden keys
+        var hidden = Items?
+            .Where(kvp => HiddenKeys is not null && HiddenKeys.Contains(kvp.Key))
+            .ToList() ?? [];
+
+        Items ??= new Dictionary<string, string>();
+        Items.Clear();
+
+        foreach (var h in hidden)
+            Items[h.Key] = h.Value;
+
+        foreach (var e in _entries)
+        {
+            var key = e.Key.Trim();
+            if (string.IsNullOrWhiteSpace(key) || Items.ContainsKey(key)) continue;
+            Items[key] = e.Value?.Trim() ?? string.Empty;
+        }
+
+        _selfUpdating = true;
         await ItemsChanged.InvokeAsync(Items.Count == 0 ? null : Items);
+    }
+
+    private void AddItem()
+    {
+        _entries.Add(new Entry());
+    }
+
+    private async Task RemoveItem(int index)
+    {
+        _entries.RemoveAt(index);
+        await SyncToDictionary();
     }
 }

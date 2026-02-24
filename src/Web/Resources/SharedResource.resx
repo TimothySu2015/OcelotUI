@@ -184,6 +184,8 @@
   <data name="ListEditor_Empty" xml:space="preserve"><value>No items added yet.</value></data>
   <data name="DictEditor_Empty" xml:space="preserve"><value>No entries added yet.</value></data>
   <data name="DictEditor_DuplicateKey" xml:space="preserve"><value>Key already exists.</value></data>
+  <data name="DictEditor_KeyRequired" xml:space="preserve"><value>Key is required.</value></data>
+  <data name="ListEditor_Required" xml:space="preserve"><value>Value is required.</value></data>
 
   <!-- GlobalConfig -->
   <data name="GlobalConfig_Title" xml:space="preserve"><value>Global Configuration</value></data>

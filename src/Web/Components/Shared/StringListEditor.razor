@@ -12,7 +12,15 @@
         {
             var index = i;
             <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-1" Spacing="1">
-                <MudText Typo="Typo.body2" Class="flex-grow-1">@Items[index]</MudText>
+                <MudTextField T="string"
+                              Value="Items[index]"
+                              ValueChanged="v => OnItemChanged(index, v)"
+                              Placeholder="@Placeholder"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Required="true"
+                              RequiredError="@L["ListEditor_Required"]"
+                              Class="flex-grow-1" />
                 <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                Color="Color.Error"
                                Size="Size.Small"
@@ -25,19 +33,13 @@
         <MudText Typo="Typo.body2" Class="mud-text-secondary mb-2">@L["ListEditor_Empty"]</MudText>
     }
 
-    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-        <MudTextField T="string"
-                      @bind-Value="_newItem"
-                      Placeholder="@Placeholder"
-                      Variant="Variant.Outlined"
-                      Margin="Margin.Dense"
-                      Class="flex-grow-1" />
-        <MudIconButton Icon="@Icons.Material.Filled.Add"
-                       Color="Color.Primary"
-                       Size="Size.Small"
-                       Disabled="@string.IsNullOrWhiteSpace(_newItem)"
-                       OnClick="AddItem" />
-    </MudStack>
+    <MudButton Variant="Variant.Text"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               OnClick="AddItem"
+               Size="Size.Small">
+        @L["Btn_Add"]
+    </MudButton>
 </MudPaper>
 
 @code {
@@ -47,15 +49,17 @@
     [Parameter] public string? Placeholder { get; set; }
     [Parameter] public string? HelpText { get; set; }
 
-    private string? _newItem;
+    private async Task OnItemChanged(int index, string value)
+    {
+        if (Items is null) return;
+        Items[index] = value;
+        await ItemsChanged.InvokeAsync(Items);
+    }
 
     private async Task AddItem()
     {
-        if (string.IsNullOrWhiteSpace(_newItem)) return;
-
         Items ??= [];
-        Items.Add(_newItem.Trim());
-        _newItem = null;
+        Items.Add(string.Empty);
         await ItemsChanged.InvokeAsync(Items);
     }
 

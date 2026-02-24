@@ -184,6 +184,8 @@
   <data name="ListEditor_Empty" xml:space="preserve"><value>尚未新增任何項目。</value></data>
   <data name="DictEditor_Empty" xml:space="preserve"><value>尚未新增任何項目。</value></data>
   <data name="DictEditor_DuplicateKey" xml:space="preserve"><value>鍵值已存在。</value></data>
+  <data name="DictEditor_KeyRequired" xml:space="preserve"><value>鍵值為必填。</value></data>
+  <data name="ListEditor_Required" xml:space="preserve"><value>值為必填。</value></data>
 
   <!-- 全域設定 -->
   <data name="GlobalConfig_Title" xml:space="preserve"><value>全域設定</value></data>

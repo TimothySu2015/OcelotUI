@@ -24,8 +24,8 @@
           "Port": 443
         }
       ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
+      "Metadata": {
+        "_displayName": "test"
       }
     },
     {
@@ -47,6 +47,26 @@
       "AuthenticationOptions": {
         "AllowAnonymous": false,
         "AllowedScopes": []
+      }
+    }
+  ],
+  "DynamicRoutes": [
+    {
+      "ServiceName": "2313",
+      "ServiceNamespace": "12321"
+    }
+  ],
+  "Aggregates": [
+    {
+      "UpstreamPathTemplate": "/api/test",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "RouteKeys": [
+        "aaaa"
+      ],
+      "UpstreamHeaderTemplates": {
+        "332": "323"
       }
     }
   ],

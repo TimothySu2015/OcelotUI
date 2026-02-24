@@ -2,6 +2,8 @@
 
 [Ocelot](https://github.com/ThreeMammals/Ocelot) API Gateway 設定檔的視覺化編輯器。以 Blazor Server 與 MudBlazor 打造，讓你不需要手動編輯 JSON 就能管理 `ocelot.json`。
 
+> **對應版本：** 本工具的設定結構對應 [Ocelot **24.1**](https://ocelot.readthedocs.io/en/latest/)，涵蓋其所有路由、聚合、動態路由及全域設定屬性。
+
 ## 功能特色
 
 - **路由管理** — 以完整表單新增、編輯、刪除、搜尋路由，涵蓋 Ocelot 所有路由屬性

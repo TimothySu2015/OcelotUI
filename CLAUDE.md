@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 溝通語言
+
+一律使用**繁體中文**回覆與撰寫註解、commit message、PR 說明等文字內容。
+
 ## 專案概述
 
 OcelotUI 是一個 Blazor Server 應用程式，用於視覺化編輯 Ocelot API Gateway 的 `ocelot.json` 配置文件。無資料庫，純檔案 I/O 搭配原子寫入。內建版本歷史功能，每次儲存自動建立快照。
@@ -45,10 +49,17 @@ Web (Blazor UI) → Application (CQRS) → Domain (Entities)
 
 ## 關鍵模式
 
-### CQRS 流程（在 Blazor 頁面中）
+### CQRS 慣例
+- Commands/Queries 使用 `record` 定義，Handler 為獨立 class（primary constructor 注入相依）。
+- 驗證邏輯直接寫在 Handler 中（無 FluentValidation），失敗回傳 `Result.Failure<T>("message")`。
+- `Result<T>` 定義在 `Application/Common/Result.cs`，提供 `IsSuccess`/`IsFailure`/`Value`/`Error` 屬性。
+
 ```csharp
-// 載入
+// 在 Blazor 頁面中的標準用法
 var result = await Mediator.Send(new GetRouteByIndexQuery(index));
+if (result.IsFailure) { Snackbar.Add(string.Format(L["Error"], result.Error), Severity.Error); return; }
+var dto = result.Value;
+
 // 儲存
 var result = IsNew
     ? await Mediator.Send(new AddRouteCommand(dto))
@@ -77,15 +88,31 @@ private void Update(Action<CacheOptions> apply) {
 
 快照以檔案形式存於 `.ocelot-history/` 目錄（與 ocelot.json 同層），`snapshots.json` 為索引檔。ID 格式：`yyyy-MM-ddTHHmmss_random2bytes`。還原前會自動建立備份快照。
 
+### JSON 預覽面板狀態
+`JsonPreviewState`（Scoped 服務）管理側欄 JSON 預覽面板。提供 `Toggle()`、`Lock()/Unlock()`、`SetFocus(PreviewSection, int?)` 方法及 `OnChange`/`OnFocusChange` 事件。變更配置後呼叫 `PreviewState.NotifyChanged()` 刷新面板。
+
+### 路由範本
+`RouteTemplateProvider` 定義 7 種預設路由範本（BasicRestApi、WebSocket、RateLimited 等），用於新增路由時快速套用。
+
 ### 國際化 (i18n)
 - 資源檔：`src/Web/Resources/SharedResource.resx`（英文）與 `SharedResource.zh-TW.resx`（繁中）
+- 錨點類別：`SharedResource.cs`（空 class，作為 `IStringLocalizer<SharedResource>` 的型別標記）
 - 使用方式：`@inject IStringLocalizer<SharedResource> L`，然後 `L["KeyName"]`
 - 命名規則：`{Section}_{Property}` 為標籤，`{Section}_{Property}_Desc` 為提示說明
+- 語系切換：透過 `/api/set-culture?culture=zh-TW&redirectUri=/` 端點，以 Cookie 儲存偏好
 
 ## MudBlazor 慣例
 
 - **MudBlazor 8 要求 HTML 屬性必須小寫**（例如 `title` 而非 `Title`）。MUD0002 分析器會強制執行，違規會變成建置錯誤。
 - 在 `MudIconButton` 上加提示，使用 `MudTooltip` 包裹或小寫 `title` 屬性。
+
+### 頁面路由慣例
+頁面使用多個 `@page` 指令區分新增與編輯模式：
+```razor
+@page "/routes/new"            ← IsNew = true（Index 為 null）
+@page "/routes/edit/{Index:int}" ← 編輯模式
+```
+同模式套用於 `/aggregates`、`/dynamic-routes`。特殊頁面：`/global-config`、`/history`、`/guide`。
 
 ## 重要檔案位置
 
@@ -104,6 +131,9 @@ private void Update(Action<CacheOptions> apply) {
 | 共用元件 | `src/Web/Components/Shared/` |
 | 領域實體 | `src/Domain/Entities/` |
 | CQRS 處理器 | `src/Application/Routes/`、`src/Application/Aggregates/`、`src/Application/Snapshots/` 等 |
+| Result 型別 | `src/Application/Common/Result.cs` |
+| JSON 預覽面板狀態 | `src/Web/Services/JsonPreviewState.cs` |
+| 路由範本 | `src/Web/Services/RouteTemplateProvider.cs` |
 | 配置檔路徑 | 透過 `appsettings.json` → `OcelotConfig:FilePath` 設定（預設：`ocelot.json`） |
 
 ## 功能規格索引

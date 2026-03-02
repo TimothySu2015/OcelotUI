@@ -1,14 +1,28 @@
 @using OcelotUI.Application.Interfaces
+@using OcelotUI.Application.DeprecatedProperties
 @inject IStringLocalizer<SharedResource> L
 @inject IJSRuntime JS
 @inject ISnackbar Snackbar
+@inject IMediator Mediator
+@inject IDialogService DialogService
 @inject IOcelotConfigurationRepository Repository
 @inject JsonPreviewState PreviewState
 @implements IDisposable
 
 <MudPaper Class="pa-3" Elevation="1" Style="height: 100%; display: flex; flex-direction: column; overflow: hidden; background: #1e1e1e; color: #fff;">
     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-2">
-        <MudText Typo="Typo.subtitle1" Style="color: #fff;"><b>@L["JsonPreview_Title"]</b></MudText>
+        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.subtitle1" Style="color: #fff;"><b>@L["JsonPreview_Title"]</b></MudText>
+            @if (_deprecatedCount > 0)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Error" Variant="Variant.Outlined"
+                         Icon="@Icons.Material.Filled.Warning"
+                         OnClick="OnDeprecatedChipClick"
+                         title="@L["Deprecated_RemoveAll_Title"]">
+                    @string.Format(L["JsonPreview_DeprecatedCount"], _deprecatedCount)
+                </MudChip>
+            }
+        </MudStack>
         <MudStack Row="true" Spacing="0">
             <MudIconButton Icon="@Icons.Material.Filled.Refresh"
                            Size="Size.Small"
@@ -34,6 +48,8 @@
     private StandaloneCodeEditor _editor = null!;
     private bool _editorReady;
     private string[] _decorationIds = [];
+    private string[] _deprecatedDecorationIds = [];
+    private int _deprecatedCount;
 
     private static readonly System.Text.Json.JsonSerializerOptions JsonOptions = new()
     {
@@ -53,6 +69,7 @@
             AutomaticLayout = true,
             Folding = true,
             LineNumbers = "on",
+            GlyphMargin = true,
             Minimap = new EditorMinimapOptions { Enabled = false },
             ScrollBeyondLastLine = false,
             RenderLineHighlight = "none",
@@ -93,7 +110,7 @@
     {
         _editorReady = true;
 
-        // Inject highlight CSS for all sections
+        // Inject highlight CSS for all sections + deprecated decorations
         await JS.InvokeVoidAsync("eval", """
             if (!document.getElementById('preview-highlight-style')) {
                 var s = document.createElement('style');
@@ -102,11 +119,17 @@
                     '.monaco-editor .route-highlight { background: rgba(255, 200, 50, 0.45) !important; border-left: 4px solid #ffc832 !important; }',
                     '.monaco-editor .global-highlight { background: rgba(50, 150, 255, 0.35) !important; border-left: 4px solid #3296ff !important; }',
                     '.monaco-editor .aggregate-highlight { background: rgba(50, 220, 100, 0.35) !important; border-left: 4px solid #32dc64 !important; }',
-                    '.monaco-editor .dynamic-highlight { background: rgba(180, 100, 255, 0.35) !important; border-left: 4px solid #b464ff !important; }'
+                    '.monaco-editor .dynamic-highlight { background: rgba(180, 100, 255, 0.35) !important; border-left: 4px solid #b464ff !important; }',
+                    '.monaco-editor .deprecated-line { background: rgba(244, 67, 54, 0.12) !important; }',
+                    '.monaco-editor .deprecated-inline { text-decoration: line-through; opacity: 0.7; }',
+                    '.monaco-editor .deprecated-glyph { }',
+                    '.monaco-editor .deprecated-glyph::before { content: "⚠"; color: #f44336; font-size: 14px; }'
                 ].join('\n');
                 document.head.appendChild(s);
             }
         """);
+
+        await ApplyDeprecatedDecorationsAsync();
 
         if (PreviewState.FocusSection is { } section)
         {
@@ -294,10 +317,101 @@
         {
             await _editor.SetValue(_json);
             _decorationIds = [];
+            await ApplyDeprecatedDecorationsAsync();
             if (PreviewState.FocusSection is { } section)
             {
                 await ScrollToSectionAsync(section, PreviewState.FocusIndex);
             }
+        }
+    }
+
+    private static List<(int LineNumber, string PropertyName, DeprecatedPropertyInfo Info)> FindDeprecatedPropertyLines(string json)
+    {
+        var results = new List<(int, string, DeprecatedPropertyInfo)>();
+        var lines = json.Split('\n');
+        for (var i = 0; i < lines.Length; i++)
+        {
+            var line = lines[i];
+            foreach (var (name, info) in DeprecatedPropertyMap.Entries)
+            {
+                var marker = $"\"{name}\":";
+                var pos = line.IndexOf(marker, StringComparison.Ordinal);
+                if (pos >= 0)
+                {
+                    // 確認引號前沒有其他非空白字元（避免值內的誤判）
+                    var beforeQuote = line[..pos].Trim();
+                    if (beforeQuote.Length == 0 || beforeQuote == "," || beforeQuote == "{")
+                    {
+                        results.Add((i + 1, name, info)); // Monaco 行號從 1 起算
+                    }
+                }
+            }
+        }
+        return results;
+    }
+
+    private async Task ApplyDeprecatedDecorationsAsync()
+    {
+        var hits = FindDeprecatedPropertyLines(_json);
+        _deprecatedCount = hits.Count;
+
+        if (hits.Count == 0)
+        {
+            if (_deprecatedDecorationIds.Length > 0)
+                _deprecatedDecorationIds = await _editor.DeltaDecorations(_deprecatedDecorationIds, []);
+            return;
+        }
+
+        var decorations = new ModelDeltaDecoration[hits.Count];
+        for (var i = 0; i < hits.Count; i++)
+        {
+            var (lineNumber, propertyName, info) = hits[i];
+            var hoverText = $"⚠ **{propertyName}**: {L[info.DescriptionKey]}";
+
+            decorations[i] = new ModelDeltaDecoration
+            {
+                Range = new BlazorMonaco.Range(lineNumber, 1, lineNumber, 1),
+                Options = new ModelDecorationOptions
+                {
+                    IsWholeLine = true,
+                    ClassName = "deprecated-line",
+                    InlineClassName = "deprecated-inline",
+                    GlyphMarginClassName = "deprecated-glyph",
+                    GlyphMarginHoverMessage = [new BlazorMonaco.MarkdownString { Value = hoverText }],
+                    HoverMessage = [new BlazorMonaco.MarkdownString { Value = hoverText }],
+                    OverviewRuler = new ModelDecorationOverviewRulerOptions
+                    {
+                        Color = "rgba(244, 67, 54, 0.8)",
+                        Position = OverviewRulerLane.Full,
+                    },
+                },
+            };
+        }
+
+        _deprecatedDecorationIds = await _editor.DeltaDecorations(_deprecatedDecorationIds, decorations);
+    }
+
+    private async Task OnDeprecatedChipClick()
+    {
+        var confirmed = await DialogService.ShowMessageBox(
+            L["Deprecated_RemoveAll_Title"],
+            string.Format(L["Deprecated_RemoveAll_Confirm"], _deprecatedCount),
+            yesText: L["Confirm"],
+            cancelText: L["Btn_Cancel"]);
+
+        if (confirmed != true)
+            return;
+
+        var result = await Mediator.Send(new RemoveAllDeprecatedPropertiesCommand());
+
+        if (result.IsSuccess)
+        {
+            Snackbar.Add(L["Deprecated_RemoveAll_Success"], Severity.Success);
+            PreviewState.NotifyChanged();
+        }
+        else
+        {
+            Snackbar.Add(result.Error!, Severity.Error);
         }
     }
 

@@ -592,4 +592,22 @@ Unknown properties: The editor preserves any JSON properties it doesn't recogniz
   <data name="MetadataOpt_Separators_Desc" xml:space="preserve"><value>Delimiter strings used to split metadata values. Default: comma.</value></data>
   <data name="MetadataOpt_StringSplitOption_Desc" xml:space="preserve"><value>StringSplitOptions for metadata value splitting.</value></data>
   <data name="MetadataOpt_TrimChars_Desc" xml:space="preserve"><value>Characters to trim from parsed metadata values. Default: space.</value></data>
+
+  <!-- Deprecated Property Indicators -->
+  <data name="JsonPreview_DeprecatedCount" xml:space="preserve"><value>{0} deprecated</value></data>
+  <data name="Deprecated_QoS_DurationOfBreak" xml:space="preserve"><value>Deprecated in Ocelot 24.1. Use "BreakDuration" instead.</value></data>
+  <data name="Deprecated_QoS_ExceptionsAllowedBeforeBreaking" xml:space="preserve"><value>Deprecated in Ocelot 24.1. Use "MinimumThroughput" instead.</value></data>
+  <data name="Deprecated_QoS_TimeoutValue" xml:space="preserve"><value>Deprecated in Ocelot 24.1. Use "Timeout" instead.</value></data>
+  <data name="Deprecated_RateLimit_DisableRateLimitHeaders" xml:space="preserve"><value>Deprecated in Ocelot 24.1. Use "EnableHeaders" instead.</value></data>
+  <data name="Deprecated_RateLimit_HttpStatusCode" xml:space="preserve"><value>Deprecated in Ocelot 24.1. Use "StatusCode" instead.</value></data>
+  <data name="Deprecated_RateLimit_QuotaExceededMessage" xml:space="preserve"><value>Deprecated in Ocelot 24.1. Use "QuotaMessage" instead.</value></data>
+  <data name="Deprecated_RateLimit_RateLimitCounterPrefix" xml:space="preserve"><value>Deprecated in Ocelot 24.1. Use "KeyPrefix" instead.</value></data>
+  <data name="Deprecated_RateLimit_PeriodTimespan" xml:space="preserve"><value>Deprecated in Ocelot 24.1. Use "Wait" instead.</value></data>
+  <data name="Deprecated_Auth_AuthenticationProviderKey" xml:space="preserve"><value>Deprecated in Ocelot 24.1. Use "AuthenticationProviderKeys" instead.</value></data>
+  <data name="Deprecated_Route_FileCacheOptions" xml:space="preserve"><value>Deprecated in Ocelot 24.1. Use "CacheOptions" instead.</value></data>
+
+  <!-- 移除棄用屬性 -->
+  <data name="Deprecated_RemoveAll_Title" xml:space="preserve"><value>Remove Deprecated Properties</value></data>
+  <data name="Deprecated_RemoveAll_Confirm" xml:space="preserve"><value>Remove all {0} deprecated properties from configuration? A backup snapshot will be created automatically.</value></data>
+  <data name="Deprecated_RemoveAll_Success" xml:space="preserve"><value>Deprecated properties removed successfully.</value></data>
 </root>

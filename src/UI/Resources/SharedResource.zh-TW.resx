@@ -592,4 +592,22 @@ HTTP 處理器選項（HTTP Handler Options）
   <data name="MetadataOpt_Separators_Desc" xml:space="preserve"><value>分割 Metadata 值的分隔符號。預設：逗號。</value></data>
   <data name="MetadataOpt_StringSplitOption_Desc" xml:space="preserve"><value>Metadata 值分割的 StringSplitOptions。</value></data>
   <data name="MetadataOpt_TrimChars_Desc" xml:space="preserve"><value>從解析的 Metadata 值中修剪的字元。預設：空白。</value></data>
+
+  <!-- 棄用屬性標示 -->
+  <data name="JsonPreview_DeprecatedCount" xml:space="preserve"><value>已棄用 {0} 項</value></data>
+  <data name="Deprecated_QoS_DurationOfBreak" xml:space="preserve"><value>已在 Ocelot 24.1 棄用，請改用 "BreakDuration"。</value></data>
+  <data name="Deprecated_QoS_ExceptionsAllowedBeforeBreaking" xml:space="preserve"><value>已在 Ocelot 24.1 棄用，請改用 "MinimumThroughput"。</value></data>
+  <data name="Deprecated_QoS_TimeoutValue" xml:space="preserve"><value>已在 Ocelot 24.1 棄用，請改用 "Timeout"。</value></data>
+  <data name="Deprecated_RateLimit_DisableRateLimitHeaders" xml:space="preserve"><value>已在 Ocelot 24.1 棄用，請改用 "EnableHeaders"。</value></data>
+  <data name="Deprecated_RateLimit_HttpStatusCode" xml:space="preserve"><value>已在 Ocelot 24.1 棄用，請改用 "StatusCode"。</value></data>
+  <data name="Deprecated_RateLimit_QuotaExceededMessage" xml:space="preserve"><value>已在 Ocelot 24.1 棄用，請改用 "QuotaMessage"。</value></data>
+  <data name="Deprecated_RateLimit_RateLimitCounterPrefix" xml:space="preserve"><value>已在 Ocelot 24.1 棄用，請改用 "KeyPrefix"。</value></data>
+  <data name="Deprecated_RateLimit_PeriodTimespan" xml:space="preserve"><value>已在 Ocelot 24.1 棄用，請改用 "Wait"。</value></data>
+  <data name="Deprecated_Auth_AuthenticationProviderKey" xml:space="preserve"><value>已在 Ocelot 24.1 棄用，請改用 "AuthenticationProviderKeys"。</value></data>
+  <data name="Deprecated_Route_FileCacheOptions" xml:space="preserve"><value>已在 Ocelot 24.1 棄用，請改用 "CacheOptions"。</value></data>
+
+  <!-- 移除棄用屬性 -->
+  <data name="Deprecated_RemoveAll_Title" xml:space="preserve"><value>移除已棄用屬性</value></data>
+  <data name="Deprecated_RemoveAll_Confirm" xml:space="preserve"><value>確定要從配置中移除所有 {0} 項已棄用屬性嗎？系統會自動建立備份快照。</value></data>
+  <data name="Deprecated_RemoveAll_Success" xml:space="preserve"><value>已棄用屬性已移除。</value></data>
 </root>

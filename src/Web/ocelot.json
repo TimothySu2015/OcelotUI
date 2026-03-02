@@ -24,6 +24,9 @@
           "Port": 443
         }
       ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "bearer"
+      },
       "Metadata": {
         "_displayName": "test"
       }
@@ -67,7 +70,8 @@
       ],
       "UpstreamHeaderTemplates": {
         "332": "323"
-      }
+      },
+      "Aggregator": "123,456,789"
     }
   ],
   "GlobalConfiguration": {
